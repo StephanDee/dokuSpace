@@ -1,0 +1,20 @@
+<ion-content padding>
+  <ion-icon name="arrow-back" (click)="goToRootPage()"></ion-icon>
+  <form [formGroup]="signUpForm">
+    <ion-item>
+      <ion-label floating>E Mail</ion-label>
+      <ion-input type="text" formControlName="email"></ion-input>
+    </ion-item>
+    <div class="error" *ngIf="signUpForm.get('email').hasError('pattern')" padding>
+      Bitte geben Sie eine valide E Mail Adresse ein.
+    </div>
+    <ion-item>
+      <ion-label floating>Passwort</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+    <div class="error" *ngIf="signUpForm.get('password').hasError('minlength')" padding>
+      Das Passwort hat mind. 6 Zeichen.
+    </div>
+  </form>
+  <button ion-button [disabled]="signUpForm.invalid" (click)="signUp();">Registrieren</button>
+</ion-content>
