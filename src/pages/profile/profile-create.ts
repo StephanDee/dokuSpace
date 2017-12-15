@@ -3,7 +3,7 @@ import { BasePage } from '../base/base';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Profile } from '../../models/profile';
 import { TabsPage } from "../tabs/tabs";
 
@@ -46,23 +46,23 @@ export class ProfileCreatePage extends BasePage {
     });
   }
 
-  protected async createProfile() {
+  protected createProfile() {
     if (this.profileForm.invalid) {
       console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
     }
     try {
-      // take(1).subscribe...
-      this.afAuth.authState.subscribe(auth => {
-        const profile = new Profile();
-        profile.name = this.profileForm.value.name;
-        profile.email = auth.email;
-        profile.role = Profile.ROLE_STUDENT;
-        this.afDb.list(`/profile/${auth.uid}`).push(profile)
-          .then(() => this.navCtrl.push(TabsPage));
-      })
+      this.afAuth.authState.take(1).subscribe(auth => {
+          const profile = new Profile();
+          profile.name = this.profileForm.value.name;
+          profile.email = auth.email;
+          profile.role = Profile.ROLE_STUDENT;
+          // object to have only one version of the profile
+          this.afDb.object(`/profiles/${auth.uid}`).set(profile)
+            .then(() => this.navCtrl.setRoot(TabsPage));
+        })
     } catch (err) {
       console.error(err);
-    }
+   }
   }
 
 }

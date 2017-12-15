@@ -15,6 +15,6 @@
       <ion-input type="password" formControlName="password"></ion-input>
     </ion-item>
   </form>
-  <button ion-button [disabled]="loginForm.invalid" (click)="login();">LOGIN</button>
-  <button ion-button (click)="openSignUpPage();">ACCOUNT ERSTELLEN</button>
+  <button ion-button block [disabled]="loginForm.invalid" (click)="login();">LOGIN</button>
+  <button ion-button clear block (click)="openSignUpPage();">ACCOUNT ERSTELLEN</button>
 </ion-content>

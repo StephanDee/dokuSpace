@@ -1,11 +1,10 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-
 import { AngularFireModule } from 'angularfire2';
 import { FIREBASE_CONFIG } from './app.firebase.config';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { AngularFireDatabaseModule } from 'angularfire2/database'
+import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated'
 import {ReactiveFormsModule } from '@angular/forms';
 
 import { MyApp } from './app.component';
@@ -14,9 +13,9 @@ import { LoginPage } from '../pages/login/login';
 import { SignUpPage } from '../pages/signup/signup';
 import { ProfileCreatePage } from '../pages/profile/profile-create';
 import { TabsPage } from '../pages/tabs/tabs';
+import { ProfileTabPage } from '../pages/profile/profile-tab';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
-import { HomePage } from '../pages/home/home';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -28,9 +27,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     SignUpPage,
     ProfileCreatePage,
     TabsPage,
+    ProfileTabPage,
     AboutPage,
     ContactPage,
-    HomePage
   ],
   imports: [
     BrowserModule,
@@ -47,9 +46,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     SignUpPage,
     ProfileCreatePage,
     TabsPage,
+    ProfileTabPage,
     AboutPage,
-    ContactPage,
-    HomePage
+    ContactPage
   ],
   providers: [
     StatusBar,

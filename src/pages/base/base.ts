@@ -23,6 +23,7 @@ export class BasePage implements OnInit {
    * OnInit.
    */
   ngOnInit() {
+
   }
 
   // For Secondary Pages

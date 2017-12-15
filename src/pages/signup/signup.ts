@@ -60,7 +60,7 @@ export class SignUpPage extends BasePage {
 
   protected signUpSuccessToast() {
     let toast = this.toastCtrl.create({
-      message: 'Das Profil wurde erfolgreich erstellt.',
+      message: 'Profil wurde erfolgreich erstellt.',
       showCloseButton: true,
       closeButtonText: 'Ok'
     });

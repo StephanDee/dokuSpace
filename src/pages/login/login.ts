@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SignUpPage } from '../signup/signup';
-// import { TabsPage } from '../tabs/tabs';
-import { ProfileCreatePage } from '../profile/profile-create';
 import { BasePage } from '../base/base';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { TabsPage } from '../tabs/tabs';
+import { AngularFireDatabase } from 'angularfire2/database-deprecated';
+import { ProfileCreatePage } from "../profile/profile-create";
 
 /**
  * This class represents the login-page.
@@ -23,14 +24,17 @@ export class LoginPage extends BasePage {
    * @param {NavController} navCtrl
    * @param {FormBuilder} formBuilder
    * @param {AngularFireAuth} afAuth
+   * @param {AngularFireDatabase} afDb
    */
   constructor(public navCtrl: NavController,
               protected formBuilder: FormBuilder,
-              private afAuth: AngularFireAuth) {
+              private afAuth: AngularFireAuth,
+              private afDb: AngularFireDatabase) {
     super(navCtrl);
   }
 
   async ngOnInit() {
+
     this.initForm();
   }
 
@@ -46,17 +50,26 @@ export class LoginPage extends BasePage {
 
   protected async login() {
     if (this.loginForm.invalid) {
-      console.log('Anmeldung fehlgeschlagen, Das Passwort ist falsch oder der Nutzer existiert nicht.');
+      console.log('Bitte Formularfelder richtig ausfüllen.');
     } else {
-      await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.get('email').value, this.loginForm.get('password').value).then(user => {
-          if (user) {
-            this.navCtrl.push(ProfileCreatePage);
+      try {
+        const user = await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.get('email').value, this.loginForm.get('password').value);
+        if (user) {
+          console.log('userid: ', user.uid);
+          // TODO: Check if Profile already made or go to ProfileCreatePage
+          if (user.uid) {
+            this.navCtrl.setRoot(ProfileCreatePage);
           } else {
-            console.log('Ein Fehler ist aufgetreten.');
+            this.navCtrl.setRoot(TabsPage);
+            console.log(user);
           }
-        }).catch((err) => {
-          console.error(err);
-        });
+        }
+        else {
+          console.log('Anmeldung fehlgeschlagen, Das Passwort ist falsch oder der Nutzer existiert nicht.');
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 
