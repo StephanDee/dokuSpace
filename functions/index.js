@@ -7,6 +7,7 @@ const ref = admin.database().ref();
 
 exports.createProfile = functions.auth.user().onCreate(event => {
   // user data
+  const displayName = user.data.displayName;
   const uid = event.data.uid;
   const email = event.data.email;
   const photoURL = event.data.photoURL ||
@@ -19,6 +20,8 @@ exports.createProfile = functions.auth.user().onCreate(event => {
   // set a new profile to database
   return newProfileRef.set({
     photoURL: photoURL,
-    email: email
+    email: email,
+    displayName: displayName,
+    title: 'Student'
   });
 });

@@ -50,6 +50,7 @@ export class SignUpPage extends BasePage {
     try {
       const user = await this.afAuth.auth.createUserWithEmailAndPassword(this.signUpForm.get('email').value, this.signUpForm.get('password').value);
       await user.sendEmailVerification();
+      user.data.displayName = 'asd';
       console.log(user);
       this.goToRootPage();
       this.signUpSuccessToast();
