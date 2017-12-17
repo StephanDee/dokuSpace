@@ -1,4 +1,9 @@
 <ion-content padding>
+  <ion-item>
+
+      <ion-img width="150" height="190" src="{{(profileData | async)?.photoURL}}"></ion-img>
+
+  </ion-item>
   <ion-list>
     <ion-item>
       <p>Name: {{(profileData | async)?.name}}</p>
@@ -10,4 +15,5 @@
       <p>Role: {{(profileData | async)?.role}}</p>
     </ion-item>
   </ion-list>
+  <button ion-button clear block (click)="userSignOut();">Ausloggen</button>
 </ion-content>

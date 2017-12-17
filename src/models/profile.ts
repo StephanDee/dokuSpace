@@ -9,30 +9,33 @@ export class Profile {
   public static readonly ROLE_ADMIN = 'Admin';
 
   // Attributes
-  public key: string;
   public name: string;
   public email: string;
+  public emailVerified: string;
   public role: string; // ['student', 'teacher', 'admin']
   // public accountKey: string;
 
   // User Image
-  // public profileFileKey: string;
+  public photoURL: string;
 
   /**
    *
-   * @param {string} key
    * @param {string} name
    * @param {string} email
+   * @param {string} emailVerified
    * @param {string} role
+   * @param {string} photoURL
    */
-  constructor(key: string = null,
-              name: string = null,
+  constructor(name: string = null,
               email: string = null,
-              role: string = null) {
-    this.key = key;
+              emailVerified: string = null,
+              role: string = null,
+              photoURL: string = null) {
     this.name = name;
     this.email = email;
+    this.emailVerified = emailVerified;
     this.role = role;
+    this.photoURL = photoURL;
     // this.accountKey = accountKey;
   }
 

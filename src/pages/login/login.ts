@@ -4,9 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SignUpPage } from '../signup/signup';
 import { BasePage } from '../base/base';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { TabsPage } from '../tabs/tabs';
-import { AngularFireDatabase } from 'angularfire2/database-deprecated';
-import { ProfileCreatePage } from "../profile/profile-create";
+import { TabsPage } from "../tabs/tabs";
 
 /**
  * This class represents the login-page.
@@ -24,12 +22,10 @@ export class LoginPage extends BasePage {
    * @param {NavController} navCtrl
    * @param {FormBuilder} formBuilder
    * @param {AngularFireAuth} afAuth
-   * @param {AngularFireDatabase} afDb
    */
   constructor(public navCtrl: NavController,
               protected formBuilder: FormBuilder,
-              private afAuth: AngularFireAuth,
-              private afDb: AngularFireDatabase) {
+              private afAuth: AngularFireAuth) {
     super(navCtrl);
   }
 
@@ -48,7 +44,7 @@ export class LoginPage extends BasePage {
     });
   }
 
-  protected async login() {
+  protected async userSignIn() {
     if (this.loginForm.invalid) {
       console.log('Bitte Formularfelder richtig ausfüllen.');
     } else {
@@ -56,13 +52,7 @@ export class LoginPage extends BasePage {
         const user = await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.get('email').value, this.loginForm.get('password').value);
         if (user) {
           console.log('userid: ', user.uid);
-          // TODO: Check if Profile already made or go to ProfileCreatePage
-          if (!user.uid) {
-            this.navCtrl.setRoot(ProfileCreatePage);
-          } else {
-            this.navCtrl.setRoot(TabsPage);
-            console.log(user);
-          }
+          this.navCtrl.setRoot(TabsPage);
         }
         else {
           console.log('Anmeldung fehlgeschlagen, Das Passwort ist falsch oder der Nutzer existiert nicht.');

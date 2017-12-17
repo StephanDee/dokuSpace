@@ -5,7 +5,9 @@ import { NavController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Profile } from '../../models/profile';
-import { TabsPage } from "../tabs/tabs";
+import { Subscription } from 'rxjs/Subscription';
+import { ProfileTabPage } from "./profile-tab";
+
 
 /**
  * This class represents the profile-create-page.
@@ -16,6 +18,7 @@ import { TabsPage } from "../tabs/tabs";
 })
 export class ProfileCreatePage extends BasePage {
 
+  protected userAuthSubcription: Subscription;
   protected profileForm: FormGroup;
 
   /**
@@ -37,6 +40,19 @@ export class ProfileCreatePage extends BasePage {
     this.initForm();
   }
 
+  // public getUserProfileName() {
+  //   this.afAuth.authState.subscribe(data => {
+  //     if (data && data.email && data.uid) {
+  //       this.afDb.object(`profiles/${data.uid}`).subscribe(user => {
+  //         console.log(user.name);
+  //         if (user.name !== undefined) {
+  //           this.navCtrl.setRoot(TabsPage);
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
   /**
    * Initialize the form.
    */
@@ -46,23 +62,28 @@ export class ProfileCreatePage extends BasePage {
     });
   }
 
+  protected unsubscribeUserAuthSubcription() {
+    this.userAuthSubcription.unsubscribe();
+  }
+
   protected createProfile() {
     if (this.profileForm.invalid) {
       console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
     }
     try {
-      this.afAuth.authState.take(1).subscribe(auth => {
-          const profile = new Profile();
-          profile.name = this.profileForm.value.name;
-          profile.email = auth.email;
-          profile.role = Profile.ROLE_STUDENT;
-          // object to have only one version of the profile
-          this.afDb.object(`/profiles/${auth.uid}`).set(profile)
-            .then(() => this.navCtrl.setRoot(TabsPage));
-        })
+      this.userAuthSubcription = this.afAuth.authState.take(1).subscribe(auth => {
+        const profile = new Profile();
+        profile.name = this.profileForm.value.name;
+
+        // object to have only one version of the profile
+        this.afDb.object(`/profiles/${auth.uid}`).set(profile)
+          .then(() =>
+            this.navCtrl.setRoot(ProfileTabPage));
+        this.unsubscribeUserAuthSubcription();
+      });
     } catch (err) {
       console.error(err);
-   }
+    }
   }
 
 }
