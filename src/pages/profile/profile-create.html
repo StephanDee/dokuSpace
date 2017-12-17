@@ -1,0 +1,9 @@
+<ion-content padding>
+  <form [formGroup]="profileForm">
+    <ion-item>
+      <ion-label floating>Name</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+  </form>
+  <button ion-button [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>
+</ion-content>

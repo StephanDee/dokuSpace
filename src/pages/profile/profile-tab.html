@@ -1,0 +1,13 @@
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <p>Name: {{(profileData | async)?.name}}</p>
+    </ion-item>
+    <ion-item>
+      <p>Email: {{(profileData | async)?.email}}</p>
+    </ion-item>
+    <ion-item>
+      <p>Role: {{(profileData | async)?.role}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
