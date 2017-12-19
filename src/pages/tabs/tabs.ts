@@ -2,14 +2,15 @@ import { Component } from '@angular/core';
 import { ProfileTabPage } from '../profile/profile-tab';
 import { CourseTabPage } from '../course/course-tab';
 import { FavouriteTabPage } from '../favourite/favourite-tab';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Subscription } from 'rxjs/Subscription';
-import { ProfileCreatePage } from "../profile/profile-create";
-import { NavController } from "ionic-angular";
+import { ProfileCreatePage } from '../profile/profile-create';
+import { NavController } from 'ionic-angular';
+import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
-  templateUrl: 'tabs.html'
+  templateUrl: 'tabs.html',
+  providers: [AuthService, ProfileService]
 })
 export class TabsPage {
 
@@ -21,8 +22,8 @@ export class TabsPage {
   tab3Root = FavouriteTabPage;
 
   constructor(public navCtrl: NavController,
-              protected afAuth: AngularFireAuth,
-              protected afDb: AngularFireDatabase) {
+              protected authService: AuthService,
+              protected profileService: ProfileService) {
   }
 
   async ngOnInit() {
@@ -30,10 +31,10 @@ export class TabsPage {
   }
 
   protected getUserProfileData() {
-    this.userAuthSubscription = this.afAuth.authState.subscribe(data => {
+    this.userAuthSubscription = this.authService.getAuthState().subscribe(data => {
       if (data && data.email && data.uid) {
 
-        this.userProfileDataSubscription = this.afDb.object(`profiles/${data.uid}`).subscribe(user => {
+        this.userProfileDataSubscription = this.profileService.getProfile(data.uid).subscribe(user => {
           console.log(user.name);
           if (user.name === undefined) {
             this.navCtrl.setRoot(ProfileCreatePage);

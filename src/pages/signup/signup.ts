@@ -2,14 +2,15 @@ import { Component } from '@angular/core';
 import { BasePage } from '../base/base';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, ToastController } from 'ionic-angular';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { AuthService } from '../../services/auth.service';
 
 /**
  * This class represents the signup-page.
  */
 @Component({
   selector: 'page-signup',
-  templateUrl: 'signup.html'
+  templateUrl: 'signup.html',
+  providers: [AuthService]
 })
 export class SignUpPage extends BasePage {
 
@@ -19,12 +20,12 @@ export class SignUpPage extends BasePage {
    *
    * @param {NavController} navCtrl
    * @param {FormBuilder} formBuilder
-   * @param {AngularFireAuth} afAuth
+   * @param {AuthService} authService
    * @param {ToastController} toastCtrl
    */
   constructor(public navCtrl: NavController,
               protected formBuilder: FormBuilder,
-              private afAuth: AngularFireAuth,
+              private authService: AuthService,
               private toastCtrl: ToastController) {
     super(navCtrl);
   }
@@ -47,14 +48,13 @@ export class SignUpPage extends BasePage {
     if (this.signUpForm.invalid) {
       console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
     }
-    await this.afAuth.auth.createUserWithEmailAndPassword(this.signUpForm.get('email').value,
-      this.signUpForm.get('password').value).then((user) => {
-      console.log(user);
-      // this.goToRootPage();
-      this.signUpSuccessToast();
-    }).catch((err) => {
-      console.error(err);
-    });
+    await this.authService.register(this.signUpForm.get('email').value, this.signUpForm.get('password').value)
+      .then((user) => {
+        console.log(user);
+        this.signUpSuccessToast();
+      }).catch((err) => {
+        console.error(err);
+      });
   }
 
   protected signUpSuccessToast() {

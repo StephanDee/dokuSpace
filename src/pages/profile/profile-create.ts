@@ -2,19 +2,20 @@ import { Component } from '@angular/core';
 import { BasePage } from '../base/base';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from 'ionic-angular';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Subscription } from 'rxjs/Subscription';
 import { Profile } from '../../models/profile';
-import { TabsPage } from "../tabs/tabs";
-
+import { TabsPage } from '../tabs/tabs';
+import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 
 /**
  * This class represents the profile-create-page.
  */
 @Component({
   selector: 'page-profile-create',
-  templateUrl: 'profile-create.html'
+  templateUrl: 'profile-create.html',
+  providers: [AuthService, ProfileService]
 })
 export class ProfileCreatePage extends BasePage {
 
@@ -25,13 +26,15 @@ export class ProfileCreatePage extends BasePage {
    *
    * @param {NavController} navCtrl
    * @param {FormBuilder} formBuilder
-   * @param {AngularFireAuth} afAuth
+   * @param {AuthService} authService
+   * @param {ProfileService} profileService
    * @param {AngularFireDatabase} afDb
    */
   constructor(public navCtrl: NavController,
               protected formBuilder: FormBuilder,
-              private afAuth: AngularFireAuth,
-              private afDb: AngularFireDatabase) {
+              protected authService: AuthService,
+              protected profileService: ProfileService,
+              protected afDb: AngularFireDatabase) {
     super(navCtrl);
   }
 
@@ -57,7 +60,7 @@ export class ProfileCreatePage extends BasePage {
     if (this.profileForm.invalid) {
       console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
     }
-    this.userAuthSubscription = this.afAuth.authState.subscribe(auth => {
+    this.userAuthSubscription = this.authService.getAuthState().subscribe(auth => {
       const profile = new Profile();
       profile.name = this.profileForm.value.name;
       profile.email = auth.email;
@@ -65,6 +68,7 @@ export class ProfileCreatePage extends BasePage {
       profile.role = Profile.ROLE_STUDENT;
       profile.photoURL = Profile.DEFAULT_PHOTOURL;
 
+      // TODO: ProfileService update Profile
       // object to have only one version of the profile
       this.afDb.object(`/profiles/${auth.uid}`).set(profile)
         .then(() => {

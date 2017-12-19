@@ -18,5 +18,4 @@ export class ProfileService {
   public updateUserProfile(profile: Profile): Promise<void> {
     return this.afDb.object(`/profiles/${profile.name}`).update(profile) as Promise<void>;
   }
-
 }
