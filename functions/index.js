@@ -9,7 +9,7 @@ exports.createProfile = functions.auth.user().onCreate(event => {
   // user data
   const uid = event.data.uid;
   const email = event.data.email;
-  const emailVerified = 'false';
+  const emailVerified = false;
   const role = 'Student';
   const photoURL = event.data.photoURL ||
     'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/cover.png?alt=media&token=4fbdcc40-8b7b-4797-97db-261c4447ac45';
@@ -24,4 +24,14 @@ exports.createProfile = functions.auth.user().onCreate(event => {
     photoURL: photoURL,
     role: role
   });
+});
+
+exports.deleteProfile = functions.auth.user().onDelete(event => {
+  // user data
+  const uid = event.data.uid;
+  // reference to database
+  const profileRef = ref.child(`/profiles/${uid}`);
+
+  // set a new profile to database
+  return profileRef.remove();
 });

@@ -1,36 +1,22 @@
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/toPromise';
-import { Subscription } from 'rxjs/Subscription';
 import { Injectable } from '@angular/core';
-
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
+import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Profile } from '../models/profile';
 import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class ProfileService {
 
-  // protected userSubcription: Subscription;
-  protected profileData: FirebaseObjectObservable<Profile>;
-
-  constructor(protected afAuth: AngularFireAuth,
-              protected afDb: AngularFireDatabase) {
-
+  constructor(protected afDb: AngularFireDatabase) {
   }
 
-  public getUserProfile(): FirebaseObjectObservable<Profile> {
-    this.afAuth.authState.subscribe(data => {
-      if (data && data.email && data.uid) {
-       this.profileData = this.afDb.object(`profiles/${data.uid}`) as FirebaseObjectObservable<Profile>;
-       console.log(this.profileData);
-      }
-    });
-    return;
+  public getProfile(uid: string): Observable<Profile> {
+    return this.afDb.object(`/profiles/${uid}`);
   }
 
-  public updateUserProfileName(name: string): Promise<void> {
-    return this.profileData.update(name);
+  public updateUserProfile(profile: Profile): Promise<void> {
+    return this.afDb.object(`/profiles/${profile.name}`).update(profile) as Promise<void>;
   }
 
 }

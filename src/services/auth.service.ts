@@ -3,20 +3,24 @@ import { Injectable } from '@angular/core';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Profile } from '../models/profile';
+import { AngularFireDatabase } from "angularfire2/database-deprecated";
 
 @Injectable()
 export class AuthService {
 
-  constructor(protected afAuth: AngularFireAuth) {
+  constructor(protected afAuth: AngularFireAuth,
+              protected afDb: AngularFireDatabase) {
   }
 
-  public login(email: string, password: string): Promise<void> {
+  public login(email: string, password: string): Promise<Profile> {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (user) => {
-      if (!user.emailVerified) {
-        await this.afAuth.auth.signOut();
-        return Promise.reject('Please verify your email.');
-      }
-    });
+      // if (!user.emailVerified) {
+      //   await this.afAuth.auth.signOut();
+      //   return Promise.reject('Bevor Sie sich einloggen, bestätigen Sie die Verifizierung in der Email.');
+      // }
+
+      return this.afDb.object(`/profiles/${user.uid}`).first().toPromise();
+    }) as Promise<any>;
   }
 
   public logout(): Promise<void> {

@@ -5,7 +5,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 import { LoginPage } from "../pages/login/login";
-import { ProfileCreatePage } from '../pages/profile/profile-create';
 import { TabsPage } from "../pages/tabs/tabs";
 
 @Component({

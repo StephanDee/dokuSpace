@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SignUpPage } from '../signup/signup';
 import { BasePage } from '../base/base';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { AuthService } from '../../services/auth.service';
 import { TabsPage } from "../tabs/tabs";
 
 /**
@@ -11,7 +11,8 @@ import { TabsPage } from "../tabs/tabs";
  */
 @Component({
   selector: 'page-login',
-  templateUrl: 'login.html'
+  templateUrl: 'login.html',
+  providers: [AuthService]
 })
 export class LoginPage extends BasePage {
 
@@ -21,11 +22,11 @@ export class LoginPage extends BasePage {
    *
    * @param {NavController} navCtrl
    * @param {FormBuilder} formBuilder
-   * @param {AngularFireAuth} afAuth
+   * @param {AuthService} authService
    */
   constructor(public navCtrl: NavController,
               protected formBuilder: FormBuilder,
-              private afAuth: AngularFireAuth) {
+              private authService: AuthService) {
     super(navCtrl);
   }
 
@@ -48,18 +49,17 @@ export class LoginPage extends BasePage {
     if (this.loginForm.invalid) {
       console.log('Bitte Formularfelder richtig ausfüllen.');
     } else {
-      try {
-        const user = await this.afAuth.auth.signInWithEmailAndPassword(this.loginForm.get('email').value, this.loginForm.get('password').value);
-        if (user) {
-          console.log('userid: ', user.uid);
-          this.navCtrl.setRoot(TabsPage);
-        }
-        else {
-          console.log('Anmeldung fehlgeschlagen, Das Passwort ist falsch oder der Nutzer existiert nicht.');
-        }
-      } catch (err) {
+        this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value).then( (user) => {
+          console.log(user);
+          if (user) {
+              console.log('userid: ', user.name);
+              this.navCtrl.setRoot(TabsPage);
+            } else {
+            console.log('Anmeldung fehlgeschlagen, Das Passwort ist falsch oder der Nutzer existiert nicht.');
+          }
+        }).catch ((err) => {
         console.error(err);
-      }
+      });
     }
   }
 

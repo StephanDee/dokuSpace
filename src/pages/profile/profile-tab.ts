@@ -6,8 +6,7 @@ import { Profile } from '../../models/profile';
 import { AngularFireDatabase, FirebaseObjectObservable } from "angularfire2/database-deprecated";
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
-import { ProfileCreatePage } from './profile-create';
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'page-profile-tab',
@@ -16,8 +15,7 @@ import { Subscription } from "rxjs/Subscription";
 })
 export class ProfileTabPage extends BasePage {
 
-  protected userAuthSubcription: Subscription;
-  protected userProfileDataSubcription: Subscription;
+  protected userAuthSubscription: Subscription;
   protected profileData: FirebaseObjectObservable<Profile>;
 
   constructor(public navCtrl: NavController,
@@ -34,23 +32,15 @@ export class ProfileTabPage extends BasePage {
   }
 
   protected getUserProfileData() {
-    this.userAuthSubcription = this.afAuth.authState.subscribe(data => {
+    this.userAuthSubscription = this.afAuth.authState.subscribe(data => {
       if (data && data.email && data.uid) {
         this.profileData = this.afDb.object(`profiles/${data.uid}`);
-
-        this.userProfileDataSubcription = this.afDb.object(`profiles/${data.uid}`).subscribe(user => {
-          console.log(user.name);
-          if (user.name === undefined) {
-            this.navCtrl.setRoot(ProfileCreatePage);
-          }
-        });
       }
     });
   }
 
   protected unsubscribeUserProfileData() {
-    this.userAuthSubcription.unsubscribe();
-    this.userProfileDataSubcription.unsubscribe();
+  this.userAuthSubscription.unsubscribe();
   }
 
 
