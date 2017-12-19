@@ -13,6 +13,7 @@ export class Profile {
   public static readonly DEFAULT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/cover.png?alt=media&token=4fbdcc40-8b7b-4797-97db-261c4447ac45';
 
   // Attributes
+  public key: string;
   public name: string;
   public email: string;
   public emailVerified: boolean;
@@ -24,17 +25,20 @@ export class Profile {
 
   /**
    *
+   * @param {string} key
    * @param {string} name
    * @param {string} email
-   * @param {string} emailVerified
+   * @param {boolean} emailVerified
    * @param {string} role
    * @param {string} photoURL
    */
-  constructor(name: string = null,
+  constructor(key: string = null,
+              name: string = null,
               email: string = null,
               emailVerified: boolean = null,
               role: string = null,
               photoURL: string = null) {
+    this.key = key;
     this.name = name;
     this.email = email;
     this.emailVerified = emailVerified;

@@ -14,8 +14,8 @@ import { SignUpPage } from '../pages/signup/signup';
 import { ProfileCreatePage } from '../pages/profile/profile-create';
 import { TabsPage } from '../pages/tabs/tabs';
 import { ProfileTabPage } from '../pages/profile/profile-tab';
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
+import { CourseTabPage } from '../pages/course/course-tab';
+import { FavouriteTabPage } from '../pages/favourite/favourite-tab';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -28,8 +28,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ProfileCreatePage,
     TabsPage,
     ProfileTabPage,
-    AboutPage,
-    ContactPage,
+    CourseTabPage,
+    FavouriteTabPage,
   ],
   imports: [
     BrowserModule,
@@ -47,8 +47,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ProfileCreatePage,
     TabsPage,
     ProfileTabPage,
-    AboutPage,
-    ContactPage
+    CourseTabPage,
+    FavouriteTabPage
   ],
   providers: [
     StatusBar,

@@ -47,15 +47,14 @@ export class SignUpPage extends BasePage {
     if (this.signUpForm.invalid) {
       console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
     }
-    try {
-      const user = await this.afAuth.auth.createUserWithEmailAndPassword(this.signUpForm.get('email').value, this.signUpForm.get('password').value);
-      await user.sendEmailVerification();
+    await this.afAuth.auth.createUserWithEmailAndPassword(this.signUpForm.get('email').value,
+      this.signUpForm.get('password').value).then((user) => {
       console.log(user);
-      this.goToRootPage();
+      // this.goToRootPage();
       this.signUpSuccessToast();
-    } catch (err) {
+    }).catch((err) => {
       console.error(err);
-    }
+    });
   }
 
   protected signUpSuccessToast() {

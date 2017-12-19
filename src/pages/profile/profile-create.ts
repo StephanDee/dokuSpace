@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
-import { Profile } from '../../models/profile';
 import { Subscription } from 'rxjs/Subscription';
+import { Profile } from '../../models/profile';
 import { TabsPage } from "../tabs/tabs";
 
 
