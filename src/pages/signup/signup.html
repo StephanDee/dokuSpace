@@ -1,6 +1,10 @@
-<ion-content padding>
-  <ion-icon name="arrow-back" (click)="goToRootPage()"></ion-icon>
+<ion-content>
+  <ion-icon padding-horizontal padding-top name="arrow-back" (click)="goToRootPage()"></ion-icon>
   <form [formGroup]="signUpForm">
+    <div padding-horizontal>
+      <h1>Registrieren:</h1>
+      <p>Bitte füllen Sie das Formular aus.</p>
+    </div>
     <ion-item>
       <ion-label floating>E Mail</ion-label>
       <ion-input type="text" formControlName="email"></ion-input>
@@ -16,5 +20,7 @@
       Das Passwort hat mind. 6 Zeichen.
     </div>
   </form>
-  <button ion-button block [disabled]="signUpForm.invalid" (click)="signUp();">Registrieren</button>
+  <div padding>
+    <button ion-button block [disabled]="signUpForm.invalid" (click)="signUp();">Registrieren</button>
+  </div>
 </ion-content>
