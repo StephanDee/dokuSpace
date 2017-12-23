@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BasePage } from '../base/base';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController, ToastController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController, ToastController } from 'ionic-angular';
 import { AuthService } from '../../services/auth.service';
 
 /**
@@ -19,18 +19,23 @@ export class SignUpPage extends BasePage {
   /**
    *
    * @param {NavController} navCtrl
+   * @param {AlertController} alertCtrl
+   * @param {LoadingController} loadingCtrl
    * @param {FormBuilder} formBuilder
    * @param {AuthService} authService
    * @param {ToastController} toastCtrl
    */
   constructor(public navCtrl: NavController,
+              public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
               private toastCtrl: ToastController) {
-    super(navCtrl);
+    super(navCtrl, alertCtrl, loadingCtrl);
   }
 
   async ngOnInit() {
+    this.createLoading('Profil wird erstellt...');
     this.initForm();
   }
 
@@ -46,15 +51,18 @@ export class SignUpPage extends BasePage {
 
   protected async signUp() {
     if (this.signUpForm.invalid) {
-      console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
+      this.showAlert('Registrieren', 'Bitte Formularfelder richtig ausfüllen.');
     }
+    this.loading.present();
     await this.authService.register(this.signUpForm.get('email').value, this.signUpForm.get('password').value)
       .then((user) => {
         console.log(user);
         this.signUpSuccessToast();
       }).catch((err) => {
+        this.showAlert('Registrieren', 'Ein Fehler ist aufgetreten.');
         console.error(err);
       });
+    this.loading.dismiss();
   }
 
   protected signUpSuccessToast() {

@@ -7,13 +7,13 @@
     </ion-item>
     <ion-item>
       <ion-label floating>Passwort</ion-label>
-      <ion-input type="password" formControlName="password"></ion-input>
+      <ion-input clearInput type="password" formControlName="password"></ion-input>
     </ion-item>
   </form>
   <div padding>
-    <button ion-button block [disabled]="loginForm.invalid" (click)="userSignIn();">LOGIN</button>
+    <button ion-button block [disabled]="loginForm.invalid" (click)="userSignIn();">Login</button>
   </div>
   <div padding-horizontal>
-    <button ion-button clear block (click)="openSignUpPage();">REGISTRIEREN</button>
+    <button ion-button clear block (click)="openSignUpPage();">Registrieren</button>
   </div>
 </ion-content>

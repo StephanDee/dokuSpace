@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { BasePage } from '../base/base';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController } from 'ionic-angular';
-import { AngularFireDatabase } from 'angularfire2/database-deprecated';
+import { AlertController, LoadingController, NavController } from 'ionic-angular';
 import { Subscription } from 'rxjs/Subscription';
-import { Profile } from '../../models/profile';
 import { TabsPage } from '../tabs/tabs';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
@@ -25,21 +23,23 @@ export class ProfileCreatePage extends BasePage {
   /**
    *
    * @param {NavController} navCtrl
+   * @param {AlertController} alertCtrl
+   * @param {LoadingController} loadingCtrl
    * @param {FormBuilder} formBuilder
    * @param {AuthService} authService
    * @param {ProfileService} profileService
-   * @param {AngularFireDatabase} afDb
    */
   constructor(public navCtrl: NavController,
+              public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController,
               protected formBuilder: FormBuilder,
-              protected authService: AuthService,
-              protected profileService: ProfileService,
-              protected afDb: AngularFireDatabase) {
-    super(navCtrl);
+              private authService: AuthService,
+              private profileService: ProfileService) {
+    super(navCtrl, alertCtrl, loadingCtrl);
   }
 
   async ngOnInit() {
-
+    this.createLoading('Daten werden synchronisiert...');
     this.initForm();
   }
 
@@ -58,25 +58,21 @@ export class ProfileCreatePage extends BasePage {
 
   protected createProfile() {
     if (this.profileForm.invalid) {
-      console.log('Bitte geben Sie ihre Daten in der richtigen Form ein.');
+      this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
-    this.userAuthSubscription = this.authService.getAuthState().subscribe(auth => {
-      const profile = new Profile();
-      profile.name = this.profileForm.value.name;
-      profile.email = auth.email;
-      profile.emailVerified = auth.emailVerified;
-      profile.role = Profile.ROLE_STUDENT;
-      profile.photoURL = Profile.DEFAULT_PHOTOURL;
-
-      // TODO: ProfileService update Profile
-      // object to have only one version of the profile
-      this.afDb.object(`/profiles/${auth.uid}`).set(profile)
+    this.loading.present();
+    this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
+      // set profile name
+      this.profileService.setProfileName(auth.uid, this.profileForm.value.name)
         .then(() => {
           this.unsubscribeUserAuthSubscription();
           this.navCtrl.setRoot(TabsPage);
-        }).catch((err) =>
-        console.error(err));
+        }).catch((err) => {
+        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+        console.error(err);
+      });
     });
+    this.loading.dismiss();
   }
 
 }

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 import { SignUpPage } from '../signup/signup';
 import { BasePage } from '../base/base';
-import { AuthService } from '../../services/auth.service';
-import { TabsPage } from "../tabs/tabs";
+import { TabsPage } from '../tabs/tabs';
 
 /**
  * This class represents the login-page.
@@ -21,17 +21,21 @@ export class LoginPage extends BasePage {
   /**
    *
    * @param {NavController} navCtrl
+   * @param {AlertController} alertCtrl
    * @param {FormBuilder} formBuilder
    * @param {AuthService} authService
+   * @param {LoadingController} loadingCtrl
    */
   constructor(public navCtrl: NavController,
+              public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController,
               protected formBuilder: FormBuilder,
               private authService: AuthService) {
-    super(navCtrl);
+    super(navCtrl, alertCtrl, loadingCtrl);
   }
 
   async ngOnInit() {
-
+    this.createLoading('Authentifizierung...');
     this.initForm();
   }
 
@@ -47,17 +51,18 @@ export class LoginPage extends BasePage {
 
   protected async userSignIn() {
     if (this.loginForm.invalid) {
-      console.log('Bitte Formularfelder richtig ausfüllen.');
+      this.showAlert('Login', 'Bitte Formularfelder richtig ausfüllen.');
     } else {
-        this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value).then( (user) => {
-          console.log(user);
-          if (user) {
-              console.log('userid: ', user.name);
-              this.navCtrl.setRoot(TabsPage);
-            } else {
-            console.log('Anmeldung fehlgeschlagen, Das Passwort ist falsch oder der Nutzer existiert nicht.');
-          }
-        }).catch ((err) => {
+      this.loading.present();
+      await this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value).then((user) => {
+        if (user) {
+          this.loading.dismiss();
+          this.navCtrl.setRoot(TabsPage);
+        } else {
+          this.showAlert('Anmeldung fehlgeschlagen', 'Ein Fehler ist aufgetreten.');
+        }
+      }).catch((err) => {
+        this.showAlert('Anmeldung fehlgeschlagen', 'Das Passwort ist falsch oder der Nutzer existiert nicht.');
         console.error(err);
       });
     }

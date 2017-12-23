@@ -1,18 +1,59 @@
 <ion-content>
+  <ion-fab top left>
+    <button ion-fab menuToggle mini color="light">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+  </ion-fab>
+
+  <ion-fab top right>
+    <button ion-fab mini color="light">
+      <ion-icon name="create"></ion-icon>
+    </button>
+    <ion-fab-list side="bottom">
+      <button ion-fab>
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-fab>
+        <ion-icon name="aperture"></ion-icon>
+      </button>
+      <button ion-fab (click)="deleteUserPhotoURL();">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
+
   <img src="{{(profileData | async)?.photoURL}}">
+
   <ion-list>
+    <ion-item-sliding>
+      <ion-item>
+        <ion-icon name="person" item-start></ion-icon>
+        <p>{{(profileData | async)?.name}}</p>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button>
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+    <ion-item-sliding>
+      <ion-item>
+        <ion-icon name="mail" item-start></ion-icon>
+        <p>{{(profileData | async)?.email}}</p>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button>
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
     <ion-item>
-      <p>Name: {{(profileData | async)?.name}}</p>
-      <ion-icon name="create" item-end></ion-icon>
-    </ion-item>
-    <ion-item>
-      <p>Email: {{(profileData | async)?.email}}</p>
-      <ion-icon name="create" item-end></ion-icon>
-    </ion-item>
-    <ion-item>
-      <p>Rang: {{(profileData | async)?.role}}</p>
-      <ion-icon name="create" item-end></ion-icon>
+      <ion-icon name="school" item-start></ion-icon>
+      <p>{{(profileData | async)?.role}}</p>
     </ion-item>
   </ion-list>
-  <button ion-button clear block (click)="userSignOut();">Ausloggen</button>
+
 </ion-content>
+

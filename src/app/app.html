@@ -1,1 +1,29 @@
 <ion-nav [root]="rootPage"></ion-nav>
+
+<div *ngIf="sideMenuState">
+<ion-menu type="overlay" [content]="content" style="z-index: 999">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menü</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <button ion-item menuClose>
+        <ion-icon name="briefcase" item-start></ion-icon>
+        Unternehmen
+      </button>
+      <button ion-item menuClose>
+        <ion-icon name="contacts" item-start></ion-icon>
+        Benutzer
+      </button>
+      <button ion-item (click)="userSignOut();">
+        <ion-icon name="power" item-start></ion-icon>
+        Ausloggen
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+<ion-nav #content [root]="rootPage"></ion-nav>
+</div>
+

@@ -1,6 +1,27 @@
-<ion-content>
-  <ion-card>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
 
+<ion-content>
+
+  <ion-fab right bottom>
+    <button ion-fab color="danger"><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+
+  <div padding>
+    <ion-segment [(ngModel)]="courses">
+      <ion-segment-button value="allcourses">
+        Alle Kurse
+      </ion-segment-button>
+      <ion-segment-button value="mycourses">
+        Meine Kurse
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <ion-card>
     <ion-item>
       <ion-avatar item-start>
         <img src="assets/imgs/logo.png">
@@ -75,6 +96,6 @@
         </button>
       </ion-col>
     </ion-row>
-
   </ion-card>
+
 </ion-content>

@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { AlertController, LoadingController, MenuController, NavController } from 'ionic-angular';
 import { BasePage } from '../base/base';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { Profile } from '../../models/profile';
-import { AngularFireDatabase, FirebaseObjectObservable } from "angularfire2/database-deprecated";
+import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
+import { Profile } from '../../models/profile';
 
 @Component({
   selector: 'page-profile-tab',
@@ -15,37 +14,72 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class ProfileTabPage extends BasePage {
 
+  public deleteUserPhotoURLConfirmed: boolean;
   protected userAuthSubscription: Subscription;
   protected profileData: FirebaseObjectObservable<Profile>;
 
+  /**
+   *
+   * @param {NavController} navCtrl
+   * @param {AlertController} alertCtrl
+   * @param {LoadingController} loadingCtrl
+   * @param {MenuController} menuCtrl
+   * @param {AuthService} authService
+   * @param {ProfileService} profileService
+   */
   constructor(public navCtrl: NavController,
+              public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController,
+              protected menuCtrl: MenuController,
               private authService: AuthService,
-              // private profileService: ProfileService,
-              protected afAuth: AngularFireAuth,
-              protected afDb: AngularFireDatabase) {
-    super(navCtrl);
+              private profileService: ProfileService) {
+    super(navCtrl, alertCtrl, loadingCtrl);
+    this.menuCtrl.enable(false);
   }
 
   async ngOnInit() {
+    this.createLoading('Profil wird geladen...');
     this.getUserProfileData();
-    // this.profileService.getUserProfile();
   }
 
   protected getUserProfileData() {
-    this.userAuthSubscription = this.afAuth.authState.subscribe(data => {
-      if (data && data.email && data.uid) {
-        this.profileData = this.afDb.object(`profiles/${data.uid}`);
+    this.loading.present();
+    this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
+      if (auth && auth.email && auth.uid) {
+        this.profileData = this.profileService.getProfile(auth.uid);
       }
     });
+    this.loading.dismiss();
   }
 
   protected unsubscribeUserProfileData() {
-  this.userAuthSubscription.unsubscribe();
+    this.userAuthSubscription.unsubscribe();
   }
-
 
   protected userSignOut() {
     this.unsubscribeUserProfileData();
     this.authService.logout();
+  }
+
+  protected deleteUserPhotoURL() {
+    if (this.deleteUserPhotoURLConfirmed == false) {
+      this.showAlert('Profilbild', 'Es ist kein Profilbild vorhanden.')
+    } else {
+      let cancelHandler = () => {
+      };
+      let agreeHandler = () => {
+        this.deleteUserPhotoURLConfirmed = true;
+      };
+      this.showConfirm('Profilbild löschen', 'Möchten Sie das Profilbild wirklich löschen?', cancelHandler(), agreeHandler());
+    }
+  }
+
+  ionViewDidEnter() {
+    this.menuCtrl.enable(true);
+  }
+
+  ionViewDidLeave() {
+    this.unsubscribeUserProfileData();
+    this.menuCtrl.enable(false);
   }
 }
