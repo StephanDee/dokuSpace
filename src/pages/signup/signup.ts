@@ -52,17 +52,17 @@ export class SignUpPage extends BasePage {
   protected async signUp() {
     if (this.signUpForm.invalid) {
       this.showAlert('Registrieren', 'Bitte Formularfelder richtig ausfüllen.');
+    } else {
+      await this.authService.register(this.signUpForm.get('email').value, this.signUpForm.get('password').value)
+        .then(() => {
+          this.loading.present();
+          this.signUpSuccessToast();
+        }).catch((err) => {
+          this.showAlert('Registrieren', 'Ein Fehler ist aufgetreten.');
+          console.error(err);
+        });
+      this.loading.dismiss();
     }
-    this.loading.present();
-    await this.authService.register(this.signUpForm.get('email').value, this.signUpForm.get('password').value)
-      .then((user) => {
-        console.log(user);
-        this.signUpSuccessToast();
-      }).catch((err) => {
-        this.showAlert('Registrieren', 'Ein Fehler ist aufgetreten.');
-        console.error(err);
-      });
-    this.loading.dismiss();
   }
 
   protected signUpSuccessToast() {

@@ -53,10 +53,9 @@ export class LoginPage extends BasePage {
     if (this.loginForm.invalid) {
       this.showAlert('Login', 'Bitte Formularfelder richtig ausfüllen.');
     } else {
-      this.loading.present();
       await this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value).then((user) => {
+        this.loading.present();
         if (user) {
-          this.loading.dismiss();
           this.navCtrl.setRoot(TabsPage);
         } else {
           this.showAlert('Anmeldung fehlgeschlagen', 'Ein Fehler ist aufgetreten.');
@@ -65,6 +64,7 @@ export class LoginPage extends BasePage {
         this.showAlert('Anmeldung fehlgeschlagen', 'Das Passwort ist falsch oder der Nutzer existiert nicht.');
         console.error(err);
       });
+      this.loading.dismiss();
     }
   }
 

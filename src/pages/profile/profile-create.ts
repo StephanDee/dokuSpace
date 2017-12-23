@@ -60,8 +60,8 @@ export class ProfileCreatePage extends BasePage {
     if (this.profileForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
-    this.loading.present();
     this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
+      this.loading.present();
       // set profile name
       this.profileService.setProfileName(auth.uid, this.profileForm.value.name)
         .then(() => {

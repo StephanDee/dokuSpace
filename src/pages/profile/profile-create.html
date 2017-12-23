@@ -1,11 +1,16 @@
-<ion-content padding>
+<ion-content>
   <form [formGroup]="profileForm">
-    <ion-list>
-      <ion-item>
-        <ion-label floating>Name</ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
-    </ion-list>
+    <div padding-horizontal>
+      <h1>Profil:</h1>
+      <p>Bitte füllen Sie das Formular aus, um ihr Profil fertigzustellen.</p>
+    </div>
+    <ion-item>
+      <ion-label floating>Name</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+
   </form>
-  <button ion-button block [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>
+  <div padding>
+    <button ion-button block [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>
+  </div>
 </ion-content>
