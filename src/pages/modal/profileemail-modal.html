@@ -1,0 +1,15 @@
+<ion-content>
+  <ion-icon padding-horizontal padding-top name="arrow-back" (click)="dismiss();"></ion-icon>
+  <form [formGroup]="profileEmailModalForm">
+    <div padding-horizontal>
+      <p>Ändern Sie ihre E Mail Adresse.</p>
+    </div>
+    <ion-item>
+      <ion-label floating>E Mail</ion-label>
+      <ion-input type="text" formControlName="email"></ion-input>
+    </ion-item>
+  </form>
+  <div padding>
+    <button ion-button block [disabled]="profileEmailModalForm.invalid" (click)="setNewProfileEmail();">Ändern</button>
+  </div>
+</ion-content>

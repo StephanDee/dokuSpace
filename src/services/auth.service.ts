@@ -18,6 +18,10 @@ export class AuthService {
     return this.afAuth.authState as Observable<User>;
   }
 
+  public updateAuthEmail(email: string): Promise<void> {
+    return this.afAuth.auth.currentUser.updateEmail(email) as Promise<void>;
+  }
+
   public login(email: string, password: string): Promise<Profile> {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (user) => {
       // if (!user.emailVerified) {

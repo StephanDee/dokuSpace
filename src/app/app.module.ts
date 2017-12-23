@@ -16,6 +16,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { ProfileTabPage } from '../pages/profile/profile-tab';
 import { CourseTabPage } from '../pages/course/course-tab';
 import { FavouriteTabPage } from '../pages/favourite/favourite-tab';
+import { ProfileNameModalPage } from '../pages/modal/profilename-modal';
+import { ProfileEmailModalPage } from '../pages/modal/profileemail-modal';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -30,6 +32,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ProfileTabPage,
     CourseTabPage,
     FavouriteTabPage,
+    ProfileNameModalPage,
+    ProfileEmailModalPage
   ],
   imports: [
     BrowserModule,
@@ -48,7 +52,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     TabsPage,
     ProfileTabPage,
     CourseTabPage,
-    FavouriteTabPage
+    FavouriteTabPage,
+    ProfileNameModalPage,
+    ProfileEmailModalPage
   ],
   providers: [
     StatusBar,

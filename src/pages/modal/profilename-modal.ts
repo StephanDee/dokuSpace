@@ -1,30 +1,30 @@
 import { Component } from '@angular/core';
-import { BasePage } from '../base/base';
+import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, LoadingController, NavController } from 'ionic-angular';
-import { Subscription } from 'rxjs/Subscription';
-import { TabsPage } from '../tabs/tabs';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
+import { BasePage } from '../base/base';
+import { Subscription } from "rxjs/Subscription";
 
 /**
- * This class represents the profile-create-page.
+ * This class represents the login-page.
  */
 @Component({
-  selector: 'page-profile-create',
-  templateUrl: 'profile-create.html',
+  selector: 'page-profilename-modal',
+  templateUrl: 'profilename-modal.html',
   providers: [AuthService, ProfileService]
 })
-export class ProfileCreatePage extends BasePage {
+export class ProfileNameModalPage extends BasePage {
 
   protected userAuthSubscription: Subscription;
-  protected profileForm: FormGroup;
+  protected profileNameModalForm: FormGroup;
 
   /**
    *
    * @param {NavController} navCtrl
    * @param {AlertController} alertCtrl
    * @param {LoadingController} loadingCtrl
+   * @param {ViewController} viewCtrl
    * @param {FormBuilder} formBuilder
    * @param {AuthService} authService
    * @param {ProfileService} profileService
@@ -32,6 +32,7 @@ export class ProfileCreatePage extends BasePage {
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
+              public viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
               private profileService: ProfileService) {
@@ -39,7 +40,7 @@ export class ProfileCreatePage extends BasePage {
   }
 
   async ngOnInit() {
-    this.createLoading('Daten werden synchronisiert...');
+    this.createLoading('Änderungen werden vorgenommen...');
     this.initForm();
   }
 
@@ -47,7 +48,7 @@ export class ProfileCreatePage extends BasePage {
    * Initialize the form.
    */
   protected initForm() {
-    this.profileForm = this.formBuilder.group({
+    this.profileNameModalForm = this.formBuilder.group({
       name: ['', Validators.required]
     });
   }
@@ -56,23 +57,27 @@ export class ProfileCreatePage extends BasePage {
     this.userAuthSubscription.unsubscribe();
   }
 
-  protected createProfile() {
-    if (this.profileForm.invalid) {
+  protected setNewProfileName() {
+    if (this.profileNameModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
     this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
       this.loading.present();
       // set profile name
-      this.profileService.setProfileName(auth.uid, this.profileForm.value.name)
+      this.profileService.setProfileName(auth.uid, this.profileNameModalForm.value.name)
         .then(() => {
           this.unsubscribeUserAuthSubscription();
-          this.navCtrl.setRoot(TabsPage);
+          this.dismiss();
         }).catch((err) => {
         this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
         console.error(err);
       });
       this.loading.dismiss();
     });
+  }
+
+  dismiss(){
+    this.viewCtrl.dismiss();
   }
 
 }

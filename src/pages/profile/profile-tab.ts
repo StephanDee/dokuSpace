@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, MenuController, NavController } from 'ionic-angular';
+import { AlertController, LoadingController, MenuController, ModalController, NavController, ItemSliding } from 'ionic-angular';
 import { BasePage } from '../base/base';
 import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Profile } from '../../models/profile';
+import { ProfileNameModalPage } from '../modal/profilename-modal';
+import { ProfileEmailModalPage } from '../modal/profileemail-modal';
 
 @Component({
   selector: 'page-profile-tab',
@@ -24,6 +26,7 @@ export class ProfileTabPage extends BasePage {
    * @param {AlertController} alertCtrl
    * @param {LoadingController} loadingCtrl
    * @param {MenuController} menuCtrl
+   * @param {ModalController} modalCtrl
    * @param {AuthService} authService
    * @param {ProfileService} profileService
    */
@@ -31,6 +34,7 @@ export class ProfileTabPage extends BasePage {
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
               protected menuCtrl: MenuController,
+              protected modalCtrl: ModalController,
               private authService: AuthService,
               private profileService: ProfileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
@@ -72,6 +76,18 @@ export class ProfileTabPage extends BasePage {
       };
       this.showConfirm('Profilbild löschen', 'Möchten Sie das Profilbild wirklich löschen?', cancelHandler(), agreeHandler());
     }
+  }
+
+  protected editProfileName(slidingItemName: ItemSliding) {
+    slidingItemName.close();
+    let modal = this.modalCtrl.create(ProfileNameModalPage);
+    modal.present();
+  }
+
+  protected editProfileEmail(slidingItemEmail: ItemSliding) {
+    slidingItemEmail.close();
+    let modal = this.modalCtrl.create(ProfileEmailModalPage);
+    modal.present();
   }
 
   ionViewDidEnter() {
