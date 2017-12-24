@@ -8,6 +8,9 @@
       <ion-label floating>E Mail</ion-label>
       <ion-input type="text" formControlName="email"></ion-input>
     </ion-item>
+    <div class="error" *ngIf="profileEmailModalForm.get('email').hasError('pattern')" padding>
+      Bitte geben Sie eine valide E Mail Adresse ein.
+    </div>
   </form>
   <div padding>
     <button ion-button block [disabled]="profileEmailModalForm.invalid" (click)="setNewProfileEmail();">Ändern</button>

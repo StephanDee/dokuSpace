@@ -38,7 +38,8 @@ export class MyApp {
     authService.getAuthState().subscribe(auth => {
       if (auth) {
         this.userProfileDataSubscription = this.profileService.getProfile(auth.uid).subscribe(user => {
-          console.log(user.name);
+
+          // if new User was created open ProfileCreatePage
           if (user.name === undefined) {
             this.rootPage = ProfileCreatePage;
           } else {

@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { BasePage } from '../base/base';
-import { Subscription } from "rxjs/Subscription";
 
 /**
  * This class represents the login-page.
@@ -16,7 +15,6 @@ import { Subscription } from "rxjs/Subscription";
 })
 export class ProfileEmailModalPage extends BasePage {
 
-  protected userAuthSubscription: Subscription;
   protected profileEmailModalForm: FormGroup;
 
   /**
@@ -53,33 +51,32 @@ export class ProfileEmailModalPage extends BasePage {
     });
   }
 
-  protected unsubscribeUserAuthSubscription() {
-    this.userAuthSubscription.unsubscribe();
-  }
-
   protected setNewProfileEmail() {
     if (this.profileEmailModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
+    // Update Auth Email
     this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
 
     // TODO: This change with Cloud Function Auth Trigger
-    this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
-      this.loading.present();
-      // set profile email
-      this.profileService.setProfileEmail(auth.uid, this.profileEmailModalForm.value.email)
-        .then(() => {
-          this.unsubscribeUserAuthSubscription();
-          this.dismiss();
-        }).catch((err) => {
-        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
-        console.error(err);
-      });
-      this.loading.dismiss();
+    this.loading.present();
+
+    // get Auth Uid
+    const authUid = this.authService.getAuthUid();
+
+    // set Profile Email
+    this.profileService.setProfileEmail(authUid, this.profileEmailModalForm.value.email)
+      .then(() => {
+        this.dismiss();
+      }).catch((err) => {
+      this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+      console.error(err);
     });
+    this.loading.dismiss();
   }
 
-  dismiss() {
+  // close Modal View
+  protected dismiss() {
     this.viewCtrl.dismiss();
   }
 

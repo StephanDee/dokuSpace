@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { BasePage } from '../base/base';
-import { Subscription } from "rxjs/Subscription";
 
 /**
  * This class represents the login-page.
@@ -16,7 +15,6 @@ import { Subscription } from "rxjs/Subscription";
 })
 export class ProfileNameModalPage extends BasePage {
 
-  protected userAuthSubscription: Subscription;
   protected profileNameModalForm: FormGroup;
 
   /**
@@ -53,30 +51,27 @@ export class ProfileNameModalPage extends BasePage {
     });
   }
 
-  protected unsubscribeUserAuthSubscription() {
-    this.userAuthSubscription.unsubscribe();
-  }
-
   protected setNewProfileName() {
     if (this.profileNameModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
-    this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
-      this.loading.present();
-      // set profile name
-      this.profileService.setProfileName(auth.uid, this.profileNameModalForm.value.name)
-        .then(() => {
-          this.unsubscribeUserAuthSubscription();
-          this.dismiss();
-        }).catch((err) => {
-        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
-        console.error(err);
-      });
-      this.loading.dismiss();
+    this.loading.present();
+    // get Auth Uid
+    const authUid = this.authService.getAuthUid();
+
+    // set profile name
+    this.profileService.setProfileName(authUid, this.profileNameModalForm.value.name)
+      .then(() => {
+        this.dismiss();
+      }).catch((err) => {
+      this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+      console.error(err);
     });
+    this.loading.dismiss();
   }
 
-  dismiss(){
+  // Close Modal View
+  protected dismiss() {
     this.viewCtrl.dismiss();
   }
 

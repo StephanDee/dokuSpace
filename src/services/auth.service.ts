@@ -18,9 +18,17 @@ export class AuthService {
     return this.afAuth.authState as Observable<User>;
   }
 
+  public getAuthUid(): string {
+    return this.afAuth.auth.currentUser.uid as string;
+  }
+
   public updateAuthEmail(email: string): Promise<void> {
     return this.afAuth.auth.currentUser.updateEmail(email) as Promise<void>;
   }
+
+  // public updateAuthPhotoURL(photoURL: string): Promise<void> {
+  //   return this.afAuth.auth.currentUser.updateProfile(null, photoURL) as Promise<void>;
+  // }
 
   public login(email: string, password: string): Promise<Profile> {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (user) => {

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { BasePage } from '../base/base';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, LoadingController, NavController } from 'ionic-angular';
-import { Subscription } from 'rxjs/Subscription';
 import { TabsPage } from '../tabs/tabs';
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
@@ -17,7 +16,6 @@ import { ProfileService } from '../../services/profile.service';
 })
 export class ProfileCreatePage extends BasePage {
 
-  protected userAuthSubscription: Subscription;
   protected profileForm: FormGroup;
 
   /**
@@ -52,27 +50,23 @@ export class ProfileCreatePage extends BasePage {
     });
   }
 
-  protected unsubscribeUserAuthSubscription() {
-    this.userAuthSubscription.unsubscribe();
-  }
-
   protected createProfile() {
     if (this.profileForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
-    this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
-      this.loading.present();
-      // set profile name
-      this.profileService.setProfileName(auth.uid, this.profileForm.value.name)
-        .then(() => {
-          this.unsubscribeUserAuthSubscription();
-          this.navCtrl.setRoot(TabsPage);
-        }).catch((err) => {
-        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
-        console.error(err);
-      });
-      this.loading.dismiss();
+    this.loading.present();
+    // get Auth Uid
+    const authUid = this.authService.getAuthUid();
+
+    // set profile name
+    this.profileService.setProfileName(authUid, this.profileForm.value.name)
+      .then(() => {
+        this.navCtrl.setRoot(TabsPage);
+      }).catch((err) => {
+      this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+      console.error(err);
     });
+    this.loading.dismiss();
   }
 
 }
