@@ -12,7 +12,7 @@ exports.createProfile = functions.auth.user().onCreate(event => {
   const emailVerified = false;
   const role = 'Student';
   const photoURL = event.data.photoURL ||
-    'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/cover.png?alt=media&token=4fbdcc40-8b7b-4797-97db-261c4447ac45';
+    'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/defaultprofile_430x300.jpg?alt=media&token=a06a7924-cca4-4995-bee5-c8be08aa3815';
 
   // reference to database
   const newProfileRef = ref.child(`/profiles/${uid}`);

@@ -6,9 +6,9 @@
     </div>
     <ion-item>
       <ion-label floating>Name</ion-label>
-      <ion-input type="text" formControlName="name"></ion-input>
+      <ion-input type="text" maxlength="20" formControlName="name"></ion-input>
     </ion-item>
-
+    <p padding-horizontal>{{profileForm.get('name').value?.length}} / 20</p>
   </form>
   <div padding>
     <button ion-button block [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>

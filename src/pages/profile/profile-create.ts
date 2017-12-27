@@ -46,7 +46,7 @@ export class ProfileCreatePage extends BasePage {
    */
   protected initForm() {
     this.profileForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20), Validators.pattern(ProfileCreatePage.REGEX_NAME)]]
     });
   }
 
@@ -63,7 +63,8 @@ export class ProfileCreatePage extends BasePage {
       .then(() => {
         this.navCtrl.setRoot(TabsPage);
       }).catch((err) => {
-      this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+      this.authService.logout();
+      this.showAlert('Profil erstellen', 'Ein Fehler ist aufgetreten oder Sie haben keine Befugnis. Sie wurden ausgeloggt.');
       console.error(err);
     });
     this.loading.dismiss();

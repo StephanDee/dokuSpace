@@ -10,7 +10,8 @@ import { AlertController, LoadingController, NavController } from 'ionic-angular
 export class BasePage implements OnInit {
 
   // For Formulars
-  // Email Regular Expression
+  // Regular Expression
+  public static readonly REGEX_NAME = /^[a-zA-ZäöüÄÖÜ0-9][^\s]*$/;
   public static readonly REGEX_EMAIL = /^[a-zA-Z0-9._~-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-][a-zA-Z0-9-]+$/;
 
   // Attributes
