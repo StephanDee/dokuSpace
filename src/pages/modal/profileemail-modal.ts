@@ -55,10 +55,10 @@ export class ProfileEmailModalPage extends BasePage {
     if (this.profileEmailModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
+
     // Update Auth Email
     this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
 
-    // TODO: This change with Cloud Function Auth Trigger
     this.loading.present();
 
     // get Auth Uid

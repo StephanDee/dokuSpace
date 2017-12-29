@@ -10,8 +10,8 @@ import { User } from 'firebase';
 @Injectable()
 export class AuthService {
 
-  constructor(protected afAuth: AngularFireAuth,
-              protected afDb: AngularFireDatabase) {
+  constructor(private afAuth: AngularFireAuth,
+              private afDb: AngularFireDatabase) {
   }
 
   public getAuthState(): Observable<User> {

@@ -10,13 +10,13 @@
       <ion-icon name="create"></ion-icon>
     </button>
     <ion-fab-list side="bottom">
-      <button ion-fab>
+      <button ion-fab (click)="chooseAndUploadProfilePhoto();">
         <ion-icon name="create"></ion-icon>
       </button>
       <button ion-fab>
         <ion-icon name="aperture"></ion-icon>
       </button>
-      <button ion-fab (click)="deleteUserPhotoURL();">
+      <button ion-fab (click)="deleteProfilePhoto();">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-fab-list>

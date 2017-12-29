@@ -20,6 +20,7 @@ export class Profile {
   // public accountKey: string;
 
   // User Image
+  public photoName: string;
   public photoURL: string;
 
   /**
@@ -28,17 +29,20 @@ export class Profile {
    * @param {string} email
    * @param {boolean} emailVerified
    * @param {string} role
+   * @param {string} photoName
    * @param {string} photoURL
    */
   constructor(name: string = null,
               email: string = null,
               emailVerified: boolean = null,
               role: string = null,
+              photoName: string = null,
               photoURL: string = null) {
     this.name = name;
     this.email = email;
     this.emailVerified = emailVerified;
     this.role = role;
+    this.photoName = photoName;
     this.photoURL = photoURL;
     // this.accountKey = accountKey;
   }
