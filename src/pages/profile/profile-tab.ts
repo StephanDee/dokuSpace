@@ -83,7 +83,7 @@ export class ProfileTabPage extends BasePage {
       };
       let agreeHandler = () => {
         this.deleteUserPhotoURLConfirmed = true;
-        // const authUid = this.authService.getAuthUid();
+        const authUid = this.authService.getAuthUid();
         // const photoName = this.profileService.getProfilePhotoName(authUid);
         // this.fileService.deleteProfileImage(authUid, photoName);
       };
