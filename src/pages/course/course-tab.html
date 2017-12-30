@@ -7,11 +7,13 @@
 <ion-content>
 
   <ion-fab right bottom>
-    <button ion-fab color="danger"><ion-icon name="add"></ion-icon></button>
+    <button ion-fab color="danger">
+      <ion-icon name="add"></ion-icon>
+    </button>
   </ion-fab>
 
   <div padding>
-    <ion-segment [(ngModel)]="courses">
+    <ion-segment [(ngModel)]="segment">
       <ion-segment-button value="allcourses">
         Alle Kurse
       </ion-segment-button>
@@ -27,8 +29,8 @@
         <img src="assets/imgs/logo.png">
       </ion-avatar>
       <h2>Stephan Teacher</h2>
-      <p>Dezember 20, 2017</p>
     </ion-item>
+    <br>
 
     <img src="assets/imgs/logolarge.jpg">
 
@@ -38,26 +40,11 @@
         HTML, CSS, JavaScript, TypeScript, Angular, Firebase...</p>
     </ion-card-content>
 
-    <ion-row>
-      <ion-col>
-        <button ion-button icon-start clear small>
-          <ion-icon name="thumbs-up"></ion-icon>
-          <div>724</div>
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-left on clear small>
-          <ion-icon name="text"></ion-icon>
-          <div>103</div>
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-end clear small>
-          <ion-icon name="heart"></ion-icon>
-        </button>
-      </ion-col>
-    </ion-row>
-
+    <ion-item>
+      <button ion-button item-end clear small>
+        <ion-icon name="heart"></ion-icon>
+      </button>
+    </ion-item>
   </ion-card>
 
   <ion-card>

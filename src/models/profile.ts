@@ -16,12 +16,14 @@ export class Profile {
   public name: string;
   public email: string;
   public emailVerified: boolean;
-  public role: string; // ['student', 'teacher', 'admin']
-  // public accountKey: string;
+  public role: string;
 
   // User Image
   public photoName: string;
   public photoURL: string;
+
+  // Company Key
+  // public accountKey: string;
 
   /**
    *
@@ -44,7 +46,6 @@ export class Profile {
     this.role = role;
     this.photoName = photoName;
     this.photoURL = photoURL;
-    // this.accountKey = accountKey;
   }
 
 }

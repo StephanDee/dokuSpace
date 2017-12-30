@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Injectable()
 export class ProfileService {
 
-  private getDataSubscription: Subscription;
+  private getProfileSubSubscription: Subscription;
 
   constructor(private afDb: AngularFireDatabase) {
   }
@@ -32,7 +32,7 @@ export class ProfileService {
    */
   public getProfileSubscription(uid: string): Promise<Profile> {
     return new Promise(resolve => {
-      this.getDataSubscription = this.afDb.object(`profiles/${uid}`).subscribe((data) => {
+      this.getProfileSubSubscription = this.afDb.object(`profiles/${uid}`).subscribe((data) => {
         resolve(data);
       });
     });
@@ -42,7 +42,7 @@ export class ProfileService {
    * This method unsubscribe the getProfileSubscription(uid).
    */
   public unsubscribeGetProfileSubscription() {
-    this.getDataSubscription.unsubscribe();
+    this.getProfileSubSubscription.unsubscribe();
   }
 
   public setProfileName(uid: string, userName: string): Promise<void> {
