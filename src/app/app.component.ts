@@ -18,7 +18,7 @@ export class MyApp {
 
   public rootPage: any;
   public sideMenuState: boolean;
-  private profileSubcriptionActive: boolean;
+  private profileSubscriptionActive: boolean;
   protected userProfileDataSubscription: Subscription;
 
   /**
@@ -36,13 +36,12 @@ export class MyApp {
               public profileService: ProfileService) {
 
     // Authenticate if user is signed in or signed out
-    authService.getAuthState().subscribe(auth => {
+    authService.getAuthState().subscribe((auth) => {
       if (auth) {
-        this.profileSubcriptionActive = true;
+        this.profileSubscriptionActive = true;
 
         this.userProfileDataSubscription = this.profileService.getProfile(auth.uid).subscribe(user => {
-
-          // if new User was created open ProfileCreatePage
+          // if new User was created open TabsPage
           if (user.name === undefined) {
             this.rootPage = ProfileCreatePage;
           } else {
@@ -51,9 +50,9 @@ export class MyApp {
           }
         });
       } else {
-        if (this.profileSubcriptionActive) {
+        if (this.profileSubscriptionActive) {
           this.userProfileDataSubscription.unsubscribe();
-          this.profileSubcriptionActive = false;
+          this.profileSubscriptionActive = false;
         }
         this.sideMenuState = false;
         this.rootPage = LoginPage;

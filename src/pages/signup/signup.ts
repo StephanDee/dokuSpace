@@ -58,6 +58,7 @@ export class SignUpPage extends BasePage {
           this.loading.present();
           this.signUpSuccessToast();
         }).catch((err) => {
+          this.loading.dismiss();
           this.showAlert('Registrieren', 'Ein Fehler ist aufgetreten.');
           console.error(err);
         });

@@ -24,7 +24,6 @@ import { FileService } from '../../services/file.service';
 })
 export class ProfileTabPage extends BasePage {
 
-  public deleteUserPhotoURLConfirmed: boolean;
   protected userAuthSubscription: Subscription;
   protected profileData: FirebaseObjectObservable<Profile>;
 
@@ -60,6 +59,7 @@ export class ProfileTabPage extends BasePage {
     this.loading.present();
     this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
       if (auth && auth.email && auth.uid) {
+        console.log('test');
         this.profileData = this.profileService.getProfile(auth.uid);
       }
     });
@@ -76,22 +76,38 @@ export class ProfileTabPage extends BasePage {
   }
 
   protected deleteProfilePhoto() {
-    if (this.deleteUserPhotoURLConfirmed == false) {
-      this.showAlert('Profilbild', 'Es ist kein Profilbild vorhanden.')
-    } else {
-      let cancelHandler = () => {
-      };
-      let agreeHandler = () => {
-        this.deleteUserPhotoURLConfirmed = true;
-        const authUid = this.authService.getAuthUid();
-        // const photoName = this.profileService.getProfilePhotoName(authUid);
-        // this.fileService.deleteProfileImage(authUid, photoName);
-      };
-      this.showConfirm('Profilbild löschen', 'Möchten Sie das Profilbild wirklich löschen?', cancelHandler(), agreeHandler());
-    }
+    this.showConfirm('Profilbild löschen', 'Möchten Sie das Profilbild wirklich löschen?', this.cancelHandler, this.agreeHandler);
   }
 
-  chooseAndUploadProfilePhoto() {
+  private cancelHandler = () => {
+  };
+  private agreeHandler = () => {
+    this.createLoading('Profilbild wird gelöscht...');
+    this.loading.present();
+    const authUid = this.authService.getAuthUid();
+
+    this.profileService.getProfileSubscription(authUid).then((data) => {
+
+      let photoName = data.photoName;
+      let photoURL = Profile.DEFAULT_PHOTOURL;
+
+      if (photoName !== undefined) {
+        this.fileService.deleteProfileImage(authUid, photoName);
+        this.profileService.setProfilePhotoName(authUid, null);
+        this.profileService.setProfilePhotoURL(authUid, photoURL);
+        this.loading.dismiss();
+      } else {
+        this.showAlert('Profilbild', 'Es ist kein Profilbild vorhanden.')
+      }
+      this.loading.dismiss();
+    }).catch((err) => {
+      this.loading.dismiss();
+      alert(err);
+    });
+    this.profileService.unsubscribeGetProfileSubscription();
+  };
+
+  protected chooseAndUploadProfilePhoto() {
     this.fileService.chooseAndUploadProfileImage();
   }
 

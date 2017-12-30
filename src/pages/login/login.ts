@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { SignUpPage } from '../signup/signup';
 import { BasePage } from '../base/base';
-import { TabsPage } from '../tabs/tabs';
 
 /**
  * This class represents the login-page.
@@ -56,11 +55,12 @@ export class LoginPage extends BasePage {
       await this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value).then((user) => {
         this.loading.present();
         if (user) {
-          this.navCtrl.setRoot(TabsPage);
+          // this.navCtrl.setRoot(TabsPage);
         } else {
           this.showAlert('Anmeldung fehlgeschlagen', 'Ein Fehler ist aufgetreten.');
         }
       }).catch((err) => {
+        this.loading.dismiss();
         this.showAlert('Anmeldung fehlgeschlagen', 'Das Passwort ist falsch oder der Nutzer existiert nicht.');
         console.error(err);
       });

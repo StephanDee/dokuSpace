@@ -4,7 +4,7 @@ import * as firebase from "firebase";
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { FileChooser } from '@ionic-native/file-chooser';
-import { AlertController, LoadingController } from "ionic-angular";
+import { LoadingController, ToastController } from "ionic-angular";
 
 @Injectable()
 export class FileService {
@@ -15,8 +15,8 @@ export class FileService {
 
   constructor(private afAuth: AngularFireAuth,
               private afDb: AngularFireDatabase,
-              private alertCtrl: AlertController,
               private loadingCtrl: LoadingController,
+              private toastCtrl: ToastController,
               private fileChooser: FileChooser) {
   }
 
@@ -58,11 +58,12 @@ export class FileService {
           let authUid = this.getAuthUid();
 
           let imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
-          let imageStore = this.fireStore.ref().child(`profiles/${authUid}/${fileName}`);
+          let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
+
           imageStore.put(imgBlob).then((res) => {
             this.setPhotoURLAndName(authUid, fileName);
+            this.profileImageUploadSuccessToast();
             this.loading.dismiss();
-            alert('Upload Success');
           }).catch((err) => {
             this.loading.dismiss();
             alert('Upload Failed: ' + err);
@@ -73,14 +74,23 @@ export class FileService {
   }
 
   private setPhotoURLAndName(authUid: string, fileName: string) {
-    this.fireStore.ref(`profiles/${authUid}/${fileName}`).getDownloadURL().then((url) => {
+    this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).getDownloadURL().then((url) => {
       this.afDb.object(`/profiles/${authUid}/photoURL`).set(url);
       this.afDb.object(`/profiles/${authUid}/photoName`).set(fileName);
     });
   }
 
   public deleteProfileImage(authUid: string, fileName: any): Promise<void> {
-    return this.fireStore.ref(`profiles/${authUid}/${fileName}`).delete() as Promise<void>;
+    return this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).delete() as Promise<void>;
+  }
+
+  protected profileImageUploadSuccessToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Profilbild wurde erfolgreich hochgeladen.',
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
   }
 
 }
