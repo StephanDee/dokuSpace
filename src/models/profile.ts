@@ -4,10 +4,10 @@
  */
 export class Profile {
 
-  // Role Attributes
+  // Role Attribute Values
   public static readonly ROLE_STUDENT = 'Student';
   public static readonly ROLE_TEACHER = 'Teacher';
-  public static readonly ROLE_ADMIN = 'Admin';
+  // public static readonly ROLE_ADMIN = 'Admin';
 
   // Default PhotoURL
   public static readonly DEFAULT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/defaultprofile_430x300.jpg?alt=media&token=a06a7924-cca4-4995-bee5-c8be08aa3815';
@@ -16,12 +16,15 @@ export class Profile {
   public name: string;
   public email: string;
   public emailVerified: boolean;
+  public superAdmin: boolean;
   public role: string;
 
   // User Image
   public photoName: string;
   public photoURL: string;
 
+  // Company admin
+  // public admin: boolean;
   // Company Key
   // public accountKey: string;
 
@@ -30,6 +33,7 @@ export class Profile {
    * @param {string} name
    * @param {string} email
    * @param {boolean} emailVerified
+   * @param {boolean} superAdmin
    * @param {string} role
    * @param {string} photoName
    * @param {string} photoURL
@@ -37,12 +41,14 @@ export class Profile {
   constructor(name: string = null,
               email: string = null,
               emailVerified: boolean = null,
+              superAdmin: boolean = null,
               role: string = null,
               photoName: string = null,
               photoURL: string = null) {
     this.name = name;
     this.email = email;
     this.emailVerified = emailVerified;
+    this.superAdmin = superAdmin;
     this.role = role;
     this.photoName = photoName;
     this.photoURL = photoURL;

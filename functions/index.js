@@ -10,6 +10,7 @@ exports.createProfile = functions.auth.user().onCreate(event => {
   const uid = event.data.uid;
   const email = event.data.email;
   const emailVerified = false;
+  const superAdmin = false;
   const role = 'Student';
   const photoURL = event.data.photoURL ||
     'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/defaultprofile_430x300.jpg?alt=media&token=a06a7924-cca4-4995-bee5-c8be08aa3815';
@@ -22,6 +23,7 @@ exports.createProfile = functions.auth.user().onCreate(event => {
     email: email,
     emailVerified: emailVerified,
     photoURL: photoURL,
+    superAdmin: superAdmin,
     role: role
   });
 });

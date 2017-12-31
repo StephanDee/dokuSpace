@@ -1,4 +1,3 @@
-
 /**
  * This class represents a company account.
  */
@@ -6,17 +5,27 @@ export class Account {
 
   // Attributes
   public key: string;
-  public title: string;
+  public name: string;
 
   // Logo Image
-  // public logoFileKey: string;
+  public logoName: string;
+  public logoUrl: string;
 
   /**
    *
-   * @param {string} title
+   * @param {string} key
+   * @param {string} name
+   * @param {string} logoName
+   * @param {string} logoUrl
    */
-  public constructor(title: string = null) {
-    this.title = title;
+  public constructor(key: string = null,
+                     name: string = null,
+                     logoName: string = null,
+                     logoUrl: string = null) {
+    this.key = key;
+    this.name = name;
+    this.logoName = logoName;
+    this. logoUrl = logoUrl;
   }
 
 }

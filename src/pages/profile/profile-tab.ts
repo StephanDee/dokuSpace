@@ -11,7 +11,6 @@ import { BasePage } from '../base/base';
 import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs/Subscription';
 import { Profile } from '../../models/profile';
 import { ProfileNameModalPage } from '../modal/profilename-modal';
 import { ProfileEmailModalPage } from '../modal/profileemail-modal';
@@ -24,7 +23,6 @@ import { FileService } from '../../services/file.service';
 })
 export class ProfileTabPage extends BasePage {
 
-  protected userAuthSubscription: Subscription;
   protected profileData: FirebaseObjectObservable<Profile>;
 
   /**
@@ -57,21 +55,12 @@ export class ProfileTabPage extends BasePage {
 
   protected getUserProfileData() {
     this.loading.present();
-    this.userAuthSubscription = this.authService.getAuthState().subscribe((auth) => {
-      if (auth && auth.email && auth.uid) {
-        console.log('test');
-        this.profileData = this.profileService.getProfile(auth.uid);
-      }
-    });
+    const authUid = this.authService.getAuthUid();
+    this.profileData = this.profileService.getProfile(authUid);
     this.loading.dismiss();
   }
 
-  protected unsubscribeUserProfileData() {
-    this.userAuthSubscription.unsubscribe();
-  }
-
   protected userSignOut() {
-    this.unsubscribeUserProfileData();
     this.authService.logout();
   }
 
@@ -128,7 +117,6 @@ export class ProfileTabPage extends BasePage {
   }
 
   ionViewDidLeave() {
-    this.unsubscribeUserProfileData();
     this.menuCtrl.enable(false);
   }
 }
