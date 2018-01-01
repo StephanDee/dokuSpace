@@ -13,6 +13,7 @@ export class BasePage implements OnInit {
   // Regular Expression
   public static readonly REGEX_NAME = /^[a-zA-ZäöüÄÖÜ0-9][^\s]*$/;
   public static readonly REGEX_EMAIL = /^[a-zA-Z0-9._~-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-][a-zA-Z0-9-]+$/;
+  public static readonly REGEX_START_NOBLANK = /^[^\s].*$/;
 
   // Attributes
   public loading: any;

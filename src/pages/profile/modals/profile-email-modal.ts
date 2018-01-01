@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { ProfileService } from '../../services/profile.service';
-import { BasePage } from '../base/base';
+import { AuthService } from '../../../services/auth.service';
+import { ProfileService } from '../../../services/profile.service';
+import { BasePage } from '../../base/base';
 
 /**
  * This class represents the login-page.
  */
 @Component({
-  selector: 'page-profileemail-modal',
-  templateUrl: 'profileemail-modal.html',
+  selector: 'page-profile-email-modal',
+  templateUrl: './profile-email-modal.html',
   providers: [AuthService, ProfileService]
 })
 export class ProfileEmailModalPage extends BasePage {
@@ -47,6 +47,8 @@ export class ProfileEmailModalPage extends BasePage {
    */
   protected initForm() {
     this.profileEmailModalForm = this.formBuilder.group({
+      currentEmail: ['', [Validators.required, Validators.pattern(ProfileEmailModalPage.REGEX_EMAIL)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.pattern(ProfileEmailModalPage.REGEX_EMAIL)]]
     });
   }
@@ -56,23 +58,31 @@ export class ProfileEmailModalPage extends BasePage {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
 
-    // Update Auth Email
-    this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
+    this.authService.login(this.profileEmailModalForm.value.currentEmail, this.profileEmailModalForm.value.password).then(() => {
 
-    this.loading.present();
+      // Update Auth Email
+      this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
 
-    // get Auth Uid
-    const authUid = this.authService.getAuthUid();
+      this.loading.present();
 
-    // set Profile Email
-    this.profileService.setProfileEmail(authUid, this.profileEmailModalForm.value.email)
-      .then(() => {
-        this.dismiss();
-      }).catch((err) => {
-      this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
-      console.error(err);
+      // get Auth Uid
+      const authUid = this.authService.getAuthUid();
+
+      // set Profile Email
+      this.profileService.setProfileEmail(authUid, this.profileEmailModalForm.value.email)
+        .then(() => {
+          this.dismiss();
+        }).catch((err) => {
+        this.loading.dismiss();
+        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+        console.error(err);
+      });
+      this.loading.dismiss();
+    }).catch((err) => {
+      this.loading.dismiss();
+      this.showAlert('Verifikation', 'Die Verifikation ist Fehlgeschlagen.');
+      console.log(err);
     });
-    this.loading.dismiss();
   }
 
   // close Modal View

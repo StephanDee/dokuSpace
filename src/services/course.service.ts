@@ -18,18 +18,40 @@ export class CourseService {
   constructor(private afDb: AngularFireDatabase) {
   }
 
-  public getCourses(): FirebaseListObservable<any> {
-    return this.afDb.list(`/courses/`) as FirebaseListObservable<any>;
-  }
-
   /**
    * Get Course to display Course information.
    *
-   * @param {string} key The Course Key.
+   * @param {string} courseId The Course ID.
    * @returns {FirebaseObjectObservable<Course>} The FirebaseObjectObservable of a Course.
    */
-  public getCourse(key: string): FirebaseObjectObservable<Course> {
-    return this.afDb.object(`/courses/${key}`) as FirebaseObjectObservable<Course>;
+  public getCourse(courseId: string): FirebaseObjectObservable<Course> {
+    return this.afDb.object(`/courses/${courseId}`) as FirebaseObjectObservable<Course>;
+  }
+
+  /**
+   * Get Course Subscription to get access to Course data to work with.
+   * Do not forget to unsubscribe with unsubscribeGetCourseSubscription() method.
+   *
+   * @param {string} courseId The Course ID.
+   * @returns {Promise<Course>} The promised Course.
+   */
+  public getCourseSubscription(courseId: string): Promise<Course> {
+    return new Promise(resolve => {
+      this.getCourseSubSubscription = this.afDb.object(`/courses/${courseId}`).subscribe((data) => {
+        resolve(data);
+      });
+    });
+  }
+
+  /**
+   * This method unsubscribe the getCourseSubscription(key).
+   */
+  public unsubscribeGetCourseSubscription() {
+    this.getCourseSubSubscription.unsubscribe();
+  }
+
+  public getCourses(): FirebaseListObservable<any> {
+    return this.afDb.list(`/courses/`) as FirebaseListObservable<any>;
   }
 
   public getCoursesSubscription(): Promise<any> {
@@ -44,32 +66,31 @@ export class CourseService {
     this.getCoursesSubSubscription.unsubscribe();
   }
 
-  /**
-   * Get Course Subscription to get access to Course data to work with.
-   * Do not forget to unsubscribe with unsubscribeGetCourseSubscription() method.
-   *
-   * @param {string} key The Course Key.
-   * @returns {Promise<Course>} The promised Course.
-   */
-  public getCourseSubscription(key: string): Promise<Course> {
-    return new Promise(resolve => {
-      this.getCourseSubSubscription = this.afDb.object(`/courses/${key}`).subscribe((data) => {
-        resolve(data);
-      });
-    });
+  public createCourse(title: string, description: string, creatorName: string, creatorUid: string): Promise<void> {
+    const key = this.afDb.list(`/courses`).push({}).key;
+    return this.setCourse(key, title, description, creatorName, creatorUid) as Promise<void>
   }
 
-  /**
-   * This method unsubscribe the getCourseSubscription(key).
-   */
-  public unsubscribeGetCourseSubscription() {
-    this.getCourseSubSubscription.unsubscribe();
-  }
-
-  public setCourse(key: string, courseTitle: string): Promise<void> {
+  private setCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string): Promise<void> {
     const course = new Course();
-    course.title = courseTitle;
-    return this.afDb.object(`/courses/${key}`).set(course) as Promise<void>;
+    course.courseId = courseId;
+    course.title = title;
+    course.description = description;
+    course.creatorName = creatorName;
+    course.creatorUid = creatorUid;
+    return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
+  }
+
+  public updateCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, titleImageName: string, titleImageUrl: string): Promise<void> {
+    const course = new Course();
+    course.courseId = courseId;
+    course.title = title;
+    course.description = description;
+    course.creatorName = creatorName;
+    course.creatorUid = creatorUid;
+    course.titleImageName = titleImageName;
+    course.titleImageUrl = titleImageUrl;
+    return this.afDb.object(`/courses/${courseId}`).update(course) as Promise<void>;
   }
 
 }

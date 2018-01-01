@@ -12,8 +12,8 @@ import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
 import { Profile } from '../../models/profile';
-import { ProfileNameModalPage } from '../modal/profilename-modal';
-import { ProfileEmailModalPage } from '../modal/profileemail-modal';
+import { ProfileNameModalPage } from './modals/profile-name-modal';
+import { ProfileEmailModalPage } from './modals/profile-email-modal';
 import { FileService } from '../../services/file.service';
 
 @Component({

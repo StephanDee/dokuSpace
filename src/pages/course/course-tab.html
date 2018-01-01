@@ -7,7 +7,7 @@
 <ion-content>
 
   <ion-fab right bottom>
-    <button ion-fab color="danger">
+    <button ion-fab color="danger" (click)="openCreateCourseModal();">
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-fab>
@@ -47,8 +47,8 @@
     </ion-item>
   </ion-card>
 
-  <ion-card>
 
+  <ion-card>
     <ion-item>
       <ion-avatar item-start>
         <img src="assets/imgs/logo.png">
@@ -56,14 +56,11 @@
       <h2>Developer</h2>
       <p>Dezember 21, 2017</p>
     </ion-item>
-
     <img src="assets/imgs/logolarge.jpg">
-
     <ion-card-content>
       <h1>Cloud Functions</h1><br>
       <p>Funktionen in der Cloud ausführen lassen? Wir zeigen euch in diesem Kurs wie es funktioniert!</p>
     </ion-card-content>
-
     <ion-row>
       <ion-col>
         <button ion-button icon-start clear small>
@@ -84,5 +81,6 @@
       </ion-col>
     </ion-row>
   </ion-card>
+
 
 </ion-content>

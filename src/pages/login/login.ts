@@ -72,4 +72,8 @@ export class LoginPage extends BasePage {
     this.navCtrl.push(SignUpPage);
   }
 
+  protected openForgotPasswordDialog() {
+    this.showAlert('Passwort vergessen?', 'Es wurde ihnen eine E Mail an ihre E Mail Adresse verschickt.');
+  }
+
 }

@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { ProfileService } from '../../services/profile.service';
-import { BasePage } from '../base/base';
+import { AuthService } from '../../../services/auth.service';
+import { ProfileService } from '../../../services/profile.service';
+import { BasePage } from '../../base/base';
 
 /**
  * This class represents the login-page.
  */
 @Component({
   selector: 'page-profilename-modal',
-  templateUrl: 'profilename-modal.html',
+  templateUrl: './profile-name-modal.html',
   providers: [AuthService, ProfileService]
 })
 export class ProfileNameModalPage extends BasePage {
@@ -47,7 +47,7 @@ export class ProfileNameModalPage extends BasePage {
    */
   protected initForm() {
     this.profileNameModalForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20), Validators.pattern(ProfileNameModalPage.REGEX_NAME)]]
     });
   }
 

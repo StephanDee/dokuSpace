@@ -1,16 +1,15 @@
-<ion-content>
+<ion-content padding>
   <form [formGroup]="profileForm">
-    <div padding-horizontal>
       <h1>Profil:</h1>
       <p>Bitte füllen Sie das Formular aus, um ihr Profil fertigzustellen.</p>
-    </div>
     <ion-item>
-      <ion-label floating>Name</ion-label>
+      <ion-label floating>
+        <ion-icon name="person" item-start></ion-icon>
+        Name</ion-label>
       <ion-input type="text" maxlength="20" formControlName="name"></ion-input>
     </ion-item>
     <p padding-horizontal>{{profileForm.get('name').value?.length}} / 20</p>
   </form>
-  <div padding>
+  <div class="top-margin-2"></div>
     <button ion-button block [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>
-  </div>
 </ion-content>

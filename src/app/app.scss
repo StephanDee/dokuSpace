@@ -14,3 +14,24 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.top-margin-1 {
+  margin-top: 16px;
+}
+
+.top-margin-2 {
+  margin-top: 32px;
+}
+
+.top-margin-3 {
+  margin: 48px;
+}
+
+.center {
+  display: block;
+  margin: auto;
+}
+
+a:hover {
+  color: #a9a9a9;
+}

@@ -1,0 +1,18 @@
+<ion-content padding>
+  <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
+  <form [formGroup]="profileNameModalForm">
+    <p>Ändern Sie ihren Namen.</p>
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="person" item-start></ion-icon>
+        Name
+      </ion-label>
+      <ion-input type="text" maxlength="20" formControlName="name"></ion-input>
+    </ion-item>
+    <p padding-horizontal>{{profileNameModalForm.get('name').value?.length}} / 20</p>
+  </form>
+  <div class="top-margin-2">
+    <button ion-button block [disabled]="profileNameModalForm.invalid" (click)="setNewProfileName();">Ändern</button>
+  </div>
+</ion-content>
+

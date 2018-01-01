@@ -1,0 +1,35 @@
+<ion-content padding>
+  <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
+  <form [formGroup]="profileEmailModalForm">
+    <p>Bevor Sie ihre E Mail Adresse ändern verifizieren Sie sich.</p>
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="mail" item-start></ion-icon>
+        E Mail
+      </ion-label>
+      <ion-input type="text" formControlName="currentEmail"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="lock" item-start></ion-icon>
+        Passwort
+      </ion-label>
+      <ion-input clearInput type="password" formControlName="password"></ion-input>
+    </ion-item>
+    <div class="top-margin-2"></div>
+    <p>Geben Sie nun ihre neue E Mail Adresse an.</p>
+    <ion-item>
+      <ion-label floating>
+        <ion-icon name="mail" item-start></ion-icon>
+        Neue E Mail
+      </ion-label>
+      <ion-input type="text" formControlName="email"></ion-input>
+    </ion-item>
+    <div class="error" *ngIf="profileEmailModalForm.get('email').hasError('pattern')" padding>
+      Bitte geben Sie eine valide E Mail Adresse ein.
+    </div>
+  </form>
+  <div class="top-margin-2">
+    <button ion-button block [disabled]="profileEmailModalForm.invalid" (click)="setNewProfileEmail();">Ändern</button>
+  </div>
+</ion-content>
