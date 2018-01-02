@@ -63,4 +63,8 @@ export class ProfileService {
     return this.afDb.object(`/profiles/${uid}/role`).set(userRole) as Promise<void>;
   }
 
+  public deleteProfilePhotoId(uid: string): Promise<void> {
+    return this.afDb.object(`/profiles/${uid}/photoId`).remove() as Promise<void>;
+  }
+
 }

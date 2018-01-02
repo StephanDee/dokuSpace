@@ -15,11 +15,12 @@ import { Profile } from '../../models/profile';
 import { ProfileNameModalPage } from './modals/profile-name-modal';
 import { ProfileEmailModalPage } from './modals/profile-email-modal';
 import { FileService } from '../../services/file.service';
+import { PhotoService } from '../../services/photo.service';
 
 @Component({
   selector: 'page-profile-tab',
   templateUrl: 'profile-tab.html',
-  providers: [ProfileService, AuthService, FileService]
+  providers: [ProfileService, AuthService, FileService, PhotoService]
 })
 export class ProfileTabPage extends BasePage {
 
@@ -35,6 +36,7 @@ export class ProfileTabPage extends BasePage {
    * @param {AuthService} authService
    * @param {ProfileService} profileService
    * @param {FileService} fileService
+   * @param {PhotoService} photoService
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -43,7 +45,8 @@ export class ProfileTabPage extends BasePage {
               protected modalCtrl: ModalController,
               private authService: AuthService,
               private profileService: ProfileService,
-              private fileService: FileService) {
+              private fileService: FileService,
+              private photoService: PhotoService) {
     super(navCtrl, alertCtrl, loadingCtrl);
     this.menuCtrl.enable(false);
   }
@@ -75,16 +78,19 @@ export class ProfileTabPage extends BasePage {
     this.loading.present();
     const authUid = this.authService.getAuthUid();
 
+    // get Profile Data
     this.profileService.getProfileSubscription(authUid).then((data) => {
 
+      let photoId = data.photoId;
       let photoName = data.photoName;
       let photoURL = Profile.DEFAULT_PHOTOURL;
 
-      if (photoName !== undefined) {
+      if (photoName !== undefined && photoId !== undefined) {
         this.fileService.deleteProfileImage(authUid, photoName);
-        this.profileService.setProfilePhotoName(authUid, null);
+        // this.profileService.deleteProfilePhotoId(authUid);
+        // this.profileService.setProfilePhotoName(authUid, null);
         this.profileService.setProfilePhotoURL(authUid, photoURL);
-        this.loading.dismiss();
+        this.photoService.deleteProfilePhoto(authUid, photoId);
       } else {
         this.showAlert('Profilbild', 'Es ist kein Profilbild vorhanden.')
       }

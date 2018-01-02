@@ -5,6 +5,9 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { LoadingController, ToastController } from "ionic-angular";
+import { Profile } from "../models/profile";
+import { Subscription } from "rxjs/Subscription";
+import { Photo } from "../models/photo";
 
 @Injectable()
 export class FileService {
@@ -13,6 +16,20 @@ export class FileService {
   private fireStore = firebase.storage();
   private loading: any;
 
+  // Profile Service Attribute
+  private SubscriptionGetProfile: Subscription;
+
+  // Photo Service Attribute
+  private SubscriptionGetPhoto: Subscription;
+
+  /**
+   *
+   * @param {AngularFireAuth} afAuth
+   * @param {AngularFireDatabase} afDb
+   * @param {LoadingController} loadingCtrl
+   * @param {ToastController} toastCtrl
+   * @param {FileChooser} fileChooser
+   */
   constructor(private afAuth: AngularFireAuth,
               private afDb: AngularFireDatabase,
               private loadingCtrl: LoadingController,
@@ -57,11 +74,32 @@ export class FileService {
           let fileName = partsOfUrl.pop() || partsOfUrl.pop();
           let authUid = this.getAuthUid();
 
+          // if photoName already used, delete PhotoEntry from Database. File will be automatically overwritten.
+          this.getPhotoSubscription(authUid).then(async (data) => {
+            for (let ids of data) {
+              const photoId = ids.photoId;
+              const photoName = ids.photoName;
+              if (photoName === fileName) {
+                alert('Photo to delete: ' + photoName);
+                this.deleteProfilePhoto(authUid, photoId);
+              }
+            }
+            await this.unsubscribeGetPhotoSubscription();
+          });
+
+
           let imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
           let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
 
           imageStore.put(imgBlob).then((res) => {
-            this.setPhotoURLAndName(authUid, fileName);
+            this.getProfileSubscription(authUid).then((data) => {
+              let photoId = data.photoId;
+              let photoName = data.photoName;
+
+              this.setPhotoIdURLAndName(authUid, fileName, photoId, photoName);
+            });
+            this.unsubscribeGetProfileSubscription();
+
             this.profileImageUploadSuccessToast();
             this.loading.dismiss();
           }).catch((err) => {
@@ -73,10 +111,28 @@ export class FileService {
     });
   }
 
-  private setPhotoURLAndName(authUid: string, fileName: string) {
+  private setPhotoIdURLAndName(authUid: string, fileName: string, photoId: string, photoName: string) {
     this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).getDownloadURL().then((url) => {
+      if (photoId === undefined || photoName !== fileName) {
+        photoId = this.afDb.list(`/profiles/${authUid}`).push({}).key;
+      }
+
+      // Profile Services
+      this.afDb.object(`/profiles/${authUid}/photoId`).set(photoId);
       this.afDb.object(`/profiles/${authUid}/photoURL`).set(url);
       this.afDb.object(`/profiles/${authUid}/photoName`).set(fileName);
+
+      this.setListPhotoIdURLAndName(authUid, fileName, photoId);
+    });
+  }
+
+  private setListPhotoIdURLAndName(authUid: string, fileName: string, photoId: string) {
+    this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).getDownloadURL().then((url) => {
+
+      // Photo Services
+      this.afDb.object(`/photos/${authUid}/${photoId}/photoId`).set(photoId);
+      this.afDb.object(`/photos/${authUid}/${photoId}/photoURL`).set(url);
+      this.afDb.object(`/photos/${authUid}/${photoId}/photoName`).set(fileName);
     });
   }
 
@@ -84,13 +140,51 @@ export class FileService {
     return this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).delete() as Promise<void>;
   }
 
-  protected profileImageUploadSuccessToast() {
+  // @Injectable can't use other @Injectables classes. Following Methods are from other Services.
+
+  // Profile Services
+  // Profile Service Method.
+  private profileImageUploadSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Profilbild wurde erfolgreich hochgeladen.',
       showCloseButton: true,
       closeButtonText: 'Ok'
     });
     toast.present();
+  }
+
+  // Profile Service Method.
+  private getProfileSubscription(uid: string): Promise<Profile> {
+    return new Promise(resolve => {
+      this.SubscriptionGetProfile = this.afDb.object(`profiles/${uid}`).subscribe((data) => {
+        resolve(data);
+      });
+    });
+  }
+
+  // Profile Service Method.
+  private unsubscribeGetProfileSubscription() {
+    this.SubscriptionGetProfile.unsubscribe();
+  }
+
+  // Photo Services
+  // Photo Service Method.
+  private getPhotoSubscription(uid: string): Promise<Photo[]> {
+    return new Promise(resolve => {
+      this.SubscriptionGetPhoto = this.afDb.list(`photos/${uid}`).subscribe((data) => {
+        resolve(data);
+      });
+    });
+  }
+
+  // Photo Service Method.
+  private unsubscribeGetPhotoSubscription() {
+    this.SubscriptionGetPhoto.unsubscribe();
+  }
+
+  // Photo Service Method.
+  private deleteProfilePhoto(authUid: string, photoId: string): Promise<void> {
+    return this.afDb.object(`/photos/${authUid}/${photoId}`).remove() as Promise<void>;
   }
 
 }
