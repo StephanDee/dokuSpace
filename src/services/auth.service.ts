@@ -27,7 +27,7 @@ export class AuthService {
   public login(email: string, password: string): Promise<any> {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (user) => {
       // if (!user.emailVerified) {
-      //   await this.afAuth.auth.signOut();
+      // await this.logout();
       //   return Promise.reject('Bevor Sie sich einloggen, bestätigen Sie die Verifizierung in der Email.');
       // }
 
@@ -38,7 +38,7 @@ export class AuthService {
 
   public register(email: string, password: string): Promise<any> {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password).then(async (user) => {
-
+      await user.sendEmailVerification();
       // get uid to be able to check if registered user exists in database profile reference.
       return this.afDb.object(`/profiles/${user.uid}`);
     }) as Promise<any>;

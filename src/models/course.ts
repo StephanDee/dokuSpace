@@ -12,6 +12,7 @@ export class Course {
   public creatorUid: string;
 
   // Title Image
+  public titleImageId: string;
   public titleImageName: string;
   public titleImageUrl: string;
 

@@ -37,14 +37,18 @@ export class MyApp {
 
     // Authenticate if user is signed in or signed out
     authService.getAuthState().subscribe((auth) => {
+      // && auth.emailVerified
       if (auth) {
-        this.profileSubscriptionActive = true;
 
-        this.userProfileDataSubscription = this.profileService.getProfile(auth.uid).subscribe(user => {
+        this.profileSubscriptionActive = true;
+        this.userProfileDataSubscription = this.profileService.getProfile(auth.uid).subscribe((user) => {
           // if new User was created open TabsPage
           if (user.name === undefined) {
             this.rootPage = ProfileCreatePage;
           } else {
+            if (user.emailVerified === false) {
+              this.profileService.setProfileEmailVerified(auth.uid, true);
+            }
             this.sideMenuState = true;
             this.rootPage = TabsPage;
           }

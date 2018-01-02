@@ -23,64 +23,66 @@
     </ion-segment>
   </div>
 
-  <ion-card>
-    <ion-item>
-      <ion-avatar item-start>
-        <img src="assets/imgs/logo.png">
-      </ion-avatar>
-      <h2>Stephan Teacher</h2>
-    </ion-item>
-    <br>
+  <div [ngSwitch]="segment">
+    <ion-card *ngSwitchCase="'allcourses'">
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="assets/imgs/logo.png">
+        </ion-avatar>
+        <h2>Stephan Teacher</h2>
+      </ion-item>
+      <br>
 
-    <img src="assets/imgs/logolarge.jpg">
+      <img src="assets/imgs/logolarge.jpg">
 
-    <ion-card-content>
-      <h1>Cloud Computing</h1><br>
-      <p>In diesem Tutorial geht es um das Thema Cloud Computing am Bespiel einer E-Learning App.
-        HTML, CSS, JavaScript, TypeScript, Angular, Firebase...</p>
-    </ion-card-content>
+      <ion-card-content>
+        <h1>Cloud Computing</h1><br>
+        <p>In diesem Tutorial geht es um das Thema Cloud Computing am Bespiel einer E-Learning App.
+          HTML, CSS, JavaScript, TypeScript, Angular, Firebase...</p>
+      </ion-card-content>
 
-    <ion-item>
-      <button ion-button item-end clear small>
-        <ion-icon name="heart"></ion-icon>
-      </button>
-    </ion-item>
-  </ion-card>
-
-
-  <ion-card>
-    <ion-item>
-      <ion-avatar item-start>
-        <img src="assets/imgs/logo.png">
-      </ion-avatar>
-      <h2>Developer</h2>
-      <p>Dezember 21, 2017</p>
-    </ion-item>
-    <img src="assets/imgs/logolarge.jpg">
-    <ion-card-content>
-      <h1>Cloud Functions</h1><br>
-      <p>Funktionen in der Cloud ausführen lassen? Wir zeigen euch in diesem Kurs wie es funktioniert!</p>
-    </ion-card-content>
-    <ion-row>
-      <ion-col>
-        <button ion-button icon-start clear small>
-          <ion-icon name="thumbs-up"></ion-icon>
-          <div>24</div>
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-left on clear small>
-          <ion-icon name="text"></ion-icon>
-          <div>2</div>
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-end clear small color="light">
+      <ion-item>
+        <button ion-button item-end clear small>
           <ion-icon name="heart"></ion-icon>
         </button>
-      </ion-col>
-    </ion-row>
-  </ion-card>
+      </ion-item>
+    </ion-card>
+
+
+    <ion-card *ngSwitchCase="'mycourses'">
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="assets/imgs/logo.png">
+        </ion-avatar>
+        <h2>Developer</h2>
+        <p>Dezember 21, 2017</p>
+      </ion-item>
+      <img src="assets/imgs/logolarge.jpg">
+      <ion-card-content>
+        <h1>Cloud Functions</h1><br>
+        <p>Funktionen in der Cloud ausführen lassen? Wir zeigen euch in diesem Kurs wie es funktioniert!</p>
+      </ion-card-content>
+      <ion-row>
+        <ion-col>
+          <button ion-button icon-start clear small>
+            <ion-icon name="thumbs-up"></ion-icon>
+            <div>24</div>
+          </button>
+        </ion-col>
+        <ion-col>
+          <button ion-button icon-left on clear small>
+            <ion-icon name="text"></ion-icon>
+            <div>2</div>
+          </button>
+        </ion-col>
+        <ion-col>
+          <button ion-button icon-end clear small color="light">
+            <ion-icon name="heart"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </div>
 
 
 </ion-content>

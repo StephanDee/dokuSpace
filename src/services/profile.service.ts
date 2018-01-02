@@ -51,6 +51,10 @@ export class ProfileService {
     return this.afDb.object(`/profiles/${uid}/email`).set(userEmail) as Promise<void>;
   }
 
+  public setProfileEmailVerified(uid: string, userEmailVerified: boolean): Promise<void> {
+    return this.afDb.object(`profiles/${uid}/emailVerified`).set(userEmailVerified) as Promise<void>;
+  }
+
   public setProfilePhotoName(uid: string, userPhotoName: string): Promise<void> {
     return this.afDb.object(`/profiles/${uid}/photoName`).set(userPhotoName) as Promise<void>;
   }

@@ -74,7 +74,7 @@ export class FileService {
           let fileName = partsOfUrl.pop() || partsOfUrl.pop();
           let authUid = this.getAuthUid();
 
-          // if photoName already used, delete PhotoEntry from Database. File will be automatically overwritten.
+          // if photoName already used, delete PhotoEntry from Database. File will be automatically overwritten in Storage.
           this.getPhotoSubscription(authUid).then(async (data) => {
             for (let ids of data) {
               const photoId = ids.photoId;
@@ -86,7 +86,6 @@ export class FileService {
             }
             await this.unsubscribeGetPhotoSubscription();
           });
-
 
           let imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
           let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
@@ -129,10 +128,13 @@ export class FileService {
   private setListPhotoIdURLAndName(authUid: string, fileName: string, photoId: string) {
     this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).getDownloadURL().then((url) => {
 
+      const photo = new Photo();
+      photo.photoId = photoId;
+      photo.photoName = fileName;
+      photo.photoURL = url;
+
       // Photo Services
-      this.afDb.object(`/photos/${authUid}/${photoId}/photoId`).set(photoId);
-      this.afDb.object(`/photos/${authUid}/${photoId}/photoURL`).set(url);
-      this.afDb.object(`/photos/${authUid}/${photoId}/photoName`).set(fileName);
+      this.afDb.object(`/photos/${authUid}/${photoId}`).set(photo);
     });
   }
 

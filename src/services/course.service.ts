@@ -81,13 +81,14 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
   }
 
-  public updateCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, titleImageName: string, titleImageUrl: string): Promise<void> {
+  public updateCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, titleImageId: string, titleImageName: string, titleImageUrl: string): Promise<void> {
     const course = new Course();
     course.courseId = courseId;
     course.title = title;
     course.description = description;
     course.creatorName = creatorName;
     course.creatorUid = creatorUid;
+    course.titleImageId = titleImageId;
     course.titleImageName = titleImageName;
     course.titleImageUrl = titleImageUrl;
     return this.afDb.object(`/courses/${courseId}`).update(course) as Promise<void>;
