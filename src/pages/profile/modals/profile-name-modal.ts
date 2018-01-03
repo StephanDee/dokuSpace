@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { BasePage } from '../../base/base';
+import { CourseService } from '../../../services/course.service';
 
 /**
  * This class represents the login-page.
@@ -11,7 +12,7 @@ import { BasePage } from '../../base/base';
 @Component({
   selector: 'page-profilename-modal',
   templateUrl: './profile-name-modal.html',
-  providers: [AuthService, ProfileService]
+  providers: [AuthService, ProfileService, CourseService]
 })
 export class ProfileNameModalPage extends BasePage {
 
@@ -26,6 +27,7 @@ export class ProfileNameModalPage extends BasePage {
    * @param {FormBuilder} formBuilder
    * @param {AuthService} authService
    * @param {ProfileService} profileService
+   * @param {CourseService} courseService
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -33,7 +35,8 @@ export class ProfileNameModalPage extends BasePage {
               public viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
-              private profileService: ProfileService) {
+              private profileService: ProfileService,
+              private courseService: CourseService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -51,7 +54,7 @@ export class ProfileNameModalPage extends BasePage {
     });
   }
 
-  protected setNewProfileName() {
+  protected async setNewProfileName() {
     if (this.profileNameModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
@@ -59,14 +62,34 @@ export class ProfileNameModalPage extends BasePage {
     // get Auth Uid
     const authUid = this.authService.getAuthUid();
 
+    await this.profileService.getProfileSubscription(authUid).then(async (data) => {
+      const currentProfileName = data.name;
+
+      // update creatorName for courses, when user set a new Profile Name
+      await this.courseService.getCoursesSubscription().then(async (data) => {
+        for (let ids of data) {
+          const courseId = ids.courseId;
+          const creatorName = ids.creatorName;
+          if (creatorName === currentProfileName) {
+            this.courseService.setCourseName(courseId, this.profileNameModalForm.value.name);
+          }
+        }
+        await this.courseService.unsubscribeGetCoursesSubscription();
+      });
+
+    }).catch((err) => {
+      alert('Ein Fehler ist aufgetreten: ' + err);
+      console.log(err);
+    });
+
     // set profile name
-    this.profileService.setProfileName(authUid, this.profileNameModalForm.value.name)
+    await this.profileService.setProfileName(authUid, this.profileNameModalForm.value.name)
       .then(() => {
         this.dismiss();
       }).catch((err) => {
-      this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
-      console.error(err);
-    });
+        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+        console.error(err);
+      });
     this.loading.dismiss();
   }
 

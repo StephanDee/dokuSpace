@@ -37,7 +37,7 @@ export class MyApp {
 
     // Authenticate if user is signed in or signed out
     authService.getAuthState().subscribe((auth) => {
-      // && auth.emailVerified
+      // TODO: after all tests done -> && auth.emailVerified
       if (auth) {
 
         this.profileSubscriptionActive = true;

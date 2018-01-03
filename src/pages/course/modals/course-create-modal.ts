@@ -29,6 +29,7 @@ export class CourseCreateModalPage extends BasePage {
    * @param {AuthService} authService
    * @param {ProfileService} profileService
    * @param {CourseService} courseService
+   * @param {FileService} fileService
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -38,8 +39,7 @@ export class CourseCreateModalPage extends BasePage {
               private authService: AuthService,
               private profileService: ProfileService,
               private courseService: CourseService,
-              // private fileService: FileService
-              ) {
+              private fileService: FileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -67,16 +67,20 @@ export class CourseCreateModalPage extends BasePage {
 
     // get Auth Uid
     const authUid = this.authService.getAuthUid();
+    const courseId = this.courseService.getCourseId();
 
     // get Profile Data
-    this.profileService.getProfileSubscription(authUid).then((data) => {
+    this.profileService.getProfileSubscription(authUid).then(async (data) => {
       let name = data.name;
+      let photoURL = data.photoURL;
 
-      // create Course and set Values
-      this.courseService.createCourse(this.courseCreateModalForm.value.title,
+      // Choose Title Image and create Course
+      await this.fileService.chooseAndUploadCourseTitleImage(courseId,
+        this.courseCreateModalForm.value.title,
         this.courseCreateModalForm.value.description,
         name,
-        authUid).then(() => {
+        authUid,
+        photoURL).then(() => {
         this.dismiss();
       });
     }).catch((err) => {

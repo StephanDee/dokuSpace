@@ -24,21 +24,22 @@
   </div>
 
   <div [ngSwitch]="segment">
-    <ion-card *ngSwitchCase="'allcourses'">
+    <ion-list *ngSwitchCase="'allcourses'">
+      <!-- because it is an Observerble we need to pass the async-pipe -->
+    <ion-card *ngFor="let course of courseListData | async">
       <ion-item>
         <ion-avatar item-start>
-          <img src="assets/imgs/logo.png">
+          <img src="{{course.creatorPhotoURL}}">
         </ion-avatar>
-        <h2>Stephan Teacher</h2>
+        <h2>{{course.creatorName}}</h2>
       </ion-item>
       <br>
 
-      <img src="assets/imgs/logolarge.jpg">
+      <img src="{{course.titleImageUrl}}">
 
       <ion-card-content>
-        <h1>Cloud Computing</h1><br>
-        <p>In diesem Tutorial geht es um das Thema Cloud Computing am Bespiel einer E-Learning App.
-          HTML, CSS, JavaScript, TypeScript, Angular, Firebase...</p>
+        <h1>{{course.title}}</h1><br>
+        <p>{{course.description}}</p>
       </ion-card-content>
 
       <ion-item>
@@ -47,6 +48,7 @@
         </button>
       </ion-item>
     </ion-card>
+    </ion-list>
 
 
     <ion-card *ngSwitchCase="'mycourses'">

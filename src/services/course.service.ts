@@ -50,11 +50,11 @@ export class CourseService {
     this.getCourseSubSubscription.unsubscribe();
   }
 
-  public getCourses(): FirebaseListObservable<any> {
-    return this.afDb.list(`/courses/`) as FirebaseListObservable<any>;
+  public getCourses(): FirebaseListObservable<Course[]> {
+    return this.afDb.list(`/courses/`) as FirebaseListObservable<any[]>;
   }
 
-  public getCoursesSubscription(): Promise<any> {
+  public getCoursesSubscription(): Promise<Course[]> {
     return new Promise(resolve => {
       this.getCoursesSubSubscription = this.afDb.list(`/courses/`).subscribe((data) => {
         resolve(data);
@@ -66,28 +66,43 @@ export class CourseService {
     this.getCoursesSubSubscription.unsubscribe();
   }
 
-  public createCourse(title: string, description: string, creatorName: string, creatorUid: string): Promise<void> {
-    const key = this.afDb.list(`/courses`).push({}).key;
-    return this.setCourse(key, title, description, creatorName, creatorUid) as Promise<void>
+  public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
+    // const key = this.afDb.list(`/courses`).push({}).key;
+    return this.setCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL) as Promise<void>
   }
 
-  private setCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string): Promise<void> {
+  public getCourseId(): string {
+    return this.afDb.list(`/courses`).push({}).key as string;
+  }
+
+  private setCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
     const course = new Course();
     course.courseId = courseId;
     course.title = title;
     course.description = description;
     course.creatorName = creatorName;
     course.creatorUid = creatorUid;
+    course.creatorPhotoURL = creatorPhotoURL;
     return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
   }
 
-  public updateCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, titleImageId: string, titleImageName: string, titleImageUrl: string): Promise<void> {
+
+  public setCoursePhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
+    return this.afDb.object(`/courses/${courseId}/creatorPhotoURL`).set(creatorPhotoURL) as Promise<void>;
+  }
+
+  public setCourseName(courseId: string, creatorName: string): Promise<void> {
+    return this.afDb.object(`/courses/${courseId}/creatorName`).set(creatorName) as Promise<void>;
+  }
+
+  public updateCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, titleImageId: string, titleImageName: string, titleImageUrl: string): Promise<void> {
     const course = new Course();
     course.courseId = courseId;
     course.title = title;
     course.description = description;
     course.creatorName = creatorName;
     course.creatorUid = creatorUid;
+    course.creatorPhotoURL = creatorPhotoURL;
     course.titleImageId = titleImageId;
     course.titleImageName = titleImageName;
     course.titleImageUrl = titleImageUrl;
