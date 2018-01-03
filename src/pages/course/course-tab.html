@@ -26,7 +26,7 @@
   <div [ngSwitch]="segment">
     <ion-list *ngSwitchCase="'allcourses'">
       <!-- because it is an Observerble we need to pass the async-pipe -->
-    <ion-card *ngFor="let course of courseListData | async">
+    <ion-card *ngFor="let course of courseListData | async" (click)="openCourseContentListPage()">
       <ion-item>
         <ion-avatar item-start>
           <img src="{{course.creatorPhotoURL}}">
@@ -85,6 +85,5 @@
       </ion-row>
     </ion-card>
   </div>
-
 
 </ion-content>

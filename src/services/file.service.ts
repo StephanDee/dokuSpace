@@ -73,43 +73,59 @@ export class FileService {
           // get file name
           let partsOfUrl = nativePath.split('/');
           let fileName = partsOfUrl.pop() || partsOfUrl.pop();
-          let authUid = this.getAuthUid();
 
-          // if photoName already used, delete PhotoEntry from Database. File will be automatically overwritten in Storage.
-          this.getPhotoSubscription(authUid).then(async (data) => {
-            for (let ids of data) {
-              const photoId = ids.photoId;
-              const photoName = ids.photoName;
-              if (photoName === fileName) {
-                // alert('Photo to delete: ' + photoName);
-                this.deleteProfilePhoto(authUid, photoId);
+          // get file type
+          let getFileType = nativePath.split('.');
+          let fileType = getFileType.pop() || getFileType.pop();
+
+          if (fileType !== ('jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG')) {
+            this.loading.dismiss();
+            alert('Die Datei ist nicht vom Typ JPG, JPEG oder PNG. Profilbild wurde nicht erstellt. Versuchen Sie es erneuert.');
+          } else {
+            let authUid = this.getAuthUid();
+            let imgBlob;
+
+            // if photoName already used, delete PhotoEntry from Database. File will be automatically overwritten in Storage.
+            this.getPhotoSubscription(authUid).then(async (data) => {
+              for (let ids of data) {
+                const photoId = ids.photoId;
+                const photoName = ids.photoName;
+                if (photoName === fileName) {
+                  // alert('Photo to delete: ' + photoName);
+                  this.deleteProfilePhoto(authUid, photoId);
+                }
               }
-            }
-            await this.unsubscribeGetPhotoSubscription();
-          });
-
-          let imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
-          let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
-
-          imageStore.put(imgBlob).then((res) => {
-            this.getProfileSubscription(authUid).then(async (data) => {
-              let photoId = data.photoId;
-              let photoName = data.photoName;
-              let currentPhotoURL = data.photoURL;
-
-              this.setPhotoIdURLAndName(authUid, fileName, photoId, photoName, currentPhotoURL);
-            }).catch((err) => {
-              alert('Ein Fehler ist Aufgetreten: ' + err);
-              console.log(err);
+              await this.unsubscribeGetPhotoSubscription();
             });
-            this.unsubscribeGetProfileSubscription();
 
-            this.profileImageUploadSuccessToast();
-            this.loading.dismiss();
-          }).catch((err) => {
-            this.loading.dismiss();
-            alert('Upload Failed: ' + err);
-          });
+            if (fileType === ('jpg' || 'jpeg' || 'JPG' || 'JPEG')) {
+              imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
+            }
+            if (fileType === ('png' || 'PNG')) {
+              imgBlob = new Blob([event.target.result], {type: 'image/png'});
+            }
+            let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
+
+            imageStore.put(imgBlob).then((res) => {
+              this.getProfileSubscription(authUid).then(async (data) => {
+                let photoId = data.photoId;
+                let photoName = data.photoName;
+                let currentPhotoURL = data.photoURL;
+
+                this.setPhotoIdURLAndName(authUid, fileName, photoId, photoName, currentPhotoURL);
+              }).catch((err) => {
+                alert('Ein Fehler ist Aufgetreten: ' + err);
+                console.log(err);
+              });
+              this.unsubscribeGetProfileSubscription();
+
+              this.profileImageUploadSuccessToast();
+              this.loading.dismiss();
+            }).catch((err) => {
+              this.loading.dismiss();
+              alert('Upload Failed: ' + err);
+            });
+          }
         }
       });
     });
@@ -197,13 +213,21 @@ export class FileService {
           // get file type
           let getFileType = nativePath.split('.');
           let fileType = getFileType.pop() || getFileType.pop();
-          if (fileType !== ('jpg' || 'jpeg')) {
+
+          if (fileType !== ('jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG')) {
             this.loading.dismiss();
-            alert('Die Datei ist nicht vom Typ JPG oder JPEG. Kurs wurde nicht erstellt. Versuchen Sie es erneuert.');
+            alert('Die Datei ist nicht vom Typ JPG, JPEG oder PNG. Kurs wurde nicht erstellt. Versuchen Sie es erneuert.');
           } else {
             let authUid = this.getAuthUid();
+            let imgBlob;
 
-            let imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
+            if (fileType === ('jpg' || 'jpeg' || 'JPG' || 'JPEG')) {
+              imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
+            }
+            if (fileType === ('png' || 'PNG')) {
+              imgBlob = new Blob([event.target.result], {type: 'image/png'});
+            }
+
             let imageStore = this.fireStore.ref().child(`profiles/${authUid}/courses/${courseId}/${fileName}`);
 
             imageStore.put(imgBlob).then((res) => {

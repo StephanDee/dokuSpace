@@ -15,6 +15,7 @@
       <ion-label floating>Beschreibung</ion-label>
       <ion-textarea rows="8" type="text" formControlName="description"></ion-textarea>
     </ion-item>
+    <p padding-horizontal>{{courseCreateModalForm.get('description').value?.length}} / 255</p>
     <div class="error" *ngIf="courseCreateModalForm.get('description').hasError('pattern')" padding>
       Bitte geben Sie eine Beschreibung ein.
     </div>

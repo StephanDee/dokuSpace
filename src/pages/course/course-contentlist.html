@@ -1,0 +1,37 @@
+<ion-content>
+  <div padding-horizontal padding-top>
+    <ion-icon name="arrow-back" (click)="goToRootPage()"></ion-icon>
+  </div>
+  <ion-card>
+    <ion-item>
+      <ion-avatar item-start>
+        <img src="assets/imgs/logo.png">
+      </ion-avatar>
+      <h2>NameDesKurses</h2>
+    </ion-item>
+    <br>
+    <img src="assets/imgs/logolarge.jpg">
+    <div class="top-margin-2"></div>
+    <ion-card-content>
+      <h1>Titel</h1><br>
+      <p>Beschreibung</p>
+    </ion-card-content>
+  </ion-card>
+  <div padding>
+    <button ion-button block (click)="openEditCourseModal();">Bearbeiten</button>
+  </div>
+  <ion-list>
+    <ion-item (click)="openContentPage();">
+      <ion-avatar item-start>
+        <img src="assets/imgs/logo.png">
+      </ion-avatar>
+      <p>Content Titel</p>
+    </ion-item>
+    <ion-item (click)="openContentPage();">
+      <ion-avatar item-start>
+        <img src="assets/imgs/logo.png">
+      </ion-avatar>
+      <p>Content Titel 2</p>
+    </ion-item>
+  </ion-list>
+</ion-content>

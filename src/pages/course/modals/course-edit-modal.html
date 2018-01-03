@@ -1,0 +1,27 @@
+<ion-content padding>
+  <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
+  <form [formGroup]="courseEditModalForm">
+    <p>Ändern Sie den Kurs.</p>
+    <ion-item>
+      <ion-label floating>Title</ion-label>
+      <ion-input type="text" formControlName="title" maxlength="20"></ion-input>
+    </ion-item>
+    <p padding-horizontal>{{courseEditModalForm.get('title').value?.length}} / 20</p>
+    <div class="error" *ngIf="courseEditModalForm.get('title').hasError('pattern')" padding>
+      Bitte geben Sie einen Titel ein.
+    </div>
+
+    <ion-item>
+      <ion-label floating>Beschreibung</ion-label>
+      <ion-textarea rows="8" type="text" formControlName="description"></ion-textarea>
+    </ion-item>
+    <p padding-horizontal>{{courseEditModalForm.get('description').value?.length}} / 255</p>
+    <div class="error" *ngIf="courseEditModalForm.get('description').hasError('pattern')" padding>
+      Bitte geben Sie eine Beschreibung ein.
+    </div>
+
+  </form>
+  <div class="top-margin-2">
+    <button ion-button block [disabled]="courseEditModalForm.invalid" (click)="editCourse();">Erstellen</button>
+  </div>
+</ion-content>

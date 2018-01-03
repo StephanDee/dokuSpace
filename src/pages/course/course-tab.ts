@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { Course } from '../../models/course';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
+import { CourseContentListPage } from "./course-contentlist";
 
 @Component({
   selector: 'page-course-tab',
@@ -23,7 +24,7 @@ export class CourseTabPage extends BasePage {
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
               protected modalCtrl: ModalController,
-              private authService: AuthService,
+              // private authService: AuthService,
               private courseService: CourseService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
@@ -32,6 +33,10 @@ export class CourseTabPage extends BasePage {
     // let authUid = this.authService.getAuthUid();
     this.courseListData = this.courseService.getCourses();
     // this.myCourseListData = this.courseService.getCourses(authUid);
+  }
+
+  protected openCourseContentListPage () {
+    this.navCtrl.push(CourseContentListPage);
   }
 
   protected openCreateCourseModal() {

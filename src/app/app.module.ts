@@ -16,9 +16,12 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { ProfileTabPage } from '../pages/profile/profile-tab';
 import { CourseTabPage } from '../pages/course/course-tab';
 import { FavouriteTabPage } from '../pages/favourite/favourite-tab';
+import { CourseContentListPage } from '../pages/course/course-contentlist';
+import { ContentPage } from '../pages/content/content-page';
 import { ProfileNameModalPage } from '../pages/profile/modals/profile-name-modal';
 import { ProfileEmailModalPage } from '../pages/profile/modals/profile-email-modal';
-import { CourseCreateModalPage } from "../pages/course/modals/course-create-modal";
+import { CourseCreateModalPage } from '../pages/course/modals/course-create-modal';
+import { CourseEditModalPage } from '../pages/course/modals/course-edit-modal';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -37,9 +40,12 @@ import { File } from '@ionic-native/file';
     ProfileTabPage,
     CourseTabPage,
     FavouriteTabPage,
+    CourseContentListPage,
+    ContentPage,
     ProfileNameModalPage,
     ProfileEmailModalPage,
-    CourseCreateModalPage
+    CourseCreateModalPage,
+    CourseEditModalPage
   ],
   imports: [
     BrowserModule,
@@ -59,9 +65,12 @@ import { File } from '@ionic-native/file';
     ProfileTabPage,
     CourseTabPage,
     FavouriteTabPage,
+    CourseContentListPage,
+    ContentPage,
     ProfileNameModalPage,
     ProfileEmailModalPage,
-    CourseCreateModalPage
+    CourseCreateModalPage,
+    CourseEditModalPage
   ],
   providers: [
     StatusBar,
