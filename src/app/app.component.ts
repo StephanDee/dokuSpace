@@ -39,7 +39,6 @@ export class MyApp {
     authService.getAuthState().subscribe((auth) => {
       // TODO: after all tests done -> && auth.emailVerified
       if (auth) {
-
         this.profileSubscriptionActive = true;
         this.userProfileDataSubscription = this.profileService.getProfile(auth.uid).subscribe((user) => {
           // if new User was created open TabsPage

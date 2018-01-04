@@ -1,6 +1,6 @@
 <ion-content>
   <div padding-horizontal padding-top>
-    <ion-icon name="arrow-back" (click)="goToRootPage()"></ion-icon>
+    <ion-icon name="arrow-back" (click)="goToRootPage();"></ion-icon>
   </div>
   <ion-card>
     <ion-item>
@@ -17,9 +17,7 @@
       <p>Beschreibung</p>
     </ion-card-content>
   </ion-card>
-  <div padding>
-    <button ion-button block (click)="openEditCourseModal();">Bearbeiten</button>
-  </div>
+
   <ion-list>
     <ion-item (click)="openContentPage();">
       <ion-avatar item-start>

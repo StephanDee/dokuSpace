@@ -71,7 +71,7 @@ export class ProfileNameModalPage extends BasePage {
           const courseId = ids.courseId;
           const creatorName = ids.creatorName;
           if (creatorName === currentProfileName) {
-            this.courseService.setCourseName(courseId, this.profileNameModalForm.value.name);
+            this.courseService.setCourseCreatorName(courseId, this.profileNameModalForm.value.name);
           }
         }
         await this.courseService.unsubscribeGetCoursesSubscription();

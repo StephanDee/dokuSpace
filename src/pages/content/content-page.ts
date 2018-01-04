@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, ModalController, NavController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController } from 'ionic-angular';
 import { BasePage } from '../base/base';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { Course } from '../../models/course';
 import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
+import { CourseContentListPage } from "../course/course-contentlist";
 
 @Component({
   selector: 'page-content-page',
@@ -28,6 +29,10 @@ export class ContentPage extends BasePage {
   async ngOnInit() {
     let authUid = this.authService.getAuthUid();
     this.courseData = this.courseService.getCourse(authUid);
+  }
+
+  protected popToCourseContentListPage() {
+    this.navCtrl.popTo(CourseContentListPage);
   }
 
   protected openEditCourseModal() {

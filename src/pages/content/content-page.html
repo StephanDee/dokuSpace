@@ -1,6 +1,16 @@
 <ion-content>
   <div padding-horizontal padding-top>
-    <ion-icon name="arrow-back" (click)="goToRootPage()"></ion-icon>
+    <ion-icon name="arrow-back" (click)="popToCourseContentListPage();"></ion-icon>
   </div>
-  <p>Test</p>
+  <div padding>
+    <h2>Titel</h2>
+  </div>
+  <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline"
+         class="videoPlayer" style="width: 100%">
+    <source src="assets/video/test2.mp4" type="video/mp4"/>
+  </video>
+  <div padding>
+    <a>PDF Download Link</a>
+    <p>Beschreibung</p>
+  </div>
 </ion-content>

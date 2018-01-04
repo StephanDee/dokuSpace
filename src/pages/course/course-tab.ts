@@ -1,12 +1,19 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, ModalController, NavController } from 'ionic-angular';
+import {
+  ActionSheetController,
+  AlertController,
+  LoadingController, MenuController,
+  ModalController,
+  NavController
+} from 'ionic-angular';
 import { BasePage } from '../base/base';
 import { CourseCreateModalPage } from './modals/course-create-modal';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
 import { Course } from '../../models/course';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
-import { CourseContentListPage } from "./course-contentlist";
+import { CourseContentListPage } from './course-contentlist';
+import { CourseEditModalPage } from './modals/course-edit-modal';
 
 @Component({
   selector: 'page-course-tab',
@@ -18,15 +25,19 @@ export class CourseTabPage extends BasePage {
   // Attributes
   protected segment = 'allcourses';
   protected courseListData: FirebaseListObservable<Course[]>;
- //  protected myCourseListData: FirebaseListObservable<Course[]>;
+
+  //  protected myCourseListData: FirebaseListObservable<Course[]>;
 
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
+              protected menuCtrl: MenuController,
               protected modalCtrl: ModalController,
               // private authService: AuthService,
-              private courseService: CourseService) {
+              private courseService: CourseService,
+              private actionSheetCtrl: ActionSheetController) {
     super(navCtrl, alertCtrl, loadingCtrl);
+    menuCtrl.enable(false);
   }
 
   async ngOnInit() {
@@ -35,13 +46,47 @@ export class CourseTabPage extends BasePage {
     // this.myCourseListData = this.courseService.getCourses(authUid);
   }
 
-  protected openCourseContentListPage () {
-    this.navCtrl.push(CourseContentListPage);
+  selectCourseItem(course: Course) {
+    this.actionSheetCtrl.create({
+      title: `Titel: ${course.title}`,
+      buttons: [
+        {
+          text: 'Bearbeiten',
+          handler: () => {
+            // pass key to edit
+            this.openEditCourseModal(course);
+          }
+        },
+        {
+          text: 'Löschen',
+          role: 'destructive',
+          handler: () => {
+            // Delete current CourseItem
+            this.courseListData.remove(course.$key);
+          }
+        },
+        {
+          text: 'Abbrechen',
+          role: 'cancel',
+          handler: () => {
+          }
+        }
+      ]
+    }).present();
+  }
+
+  protected openCourseContentListPage(course: Course) {
+    this.navCtrl.push(CourseContentListPage, {courseId: course.$key});
   }
 
   protected openCreateCourseModal() {
-  let modal = this.modalCtrl.create(CourseCreateModalPage);
-  modal.present();
+    let modal = this.modalCtrl.create(CourseCreateModalPage);
+    modal.present();
+  }
+
+  protected openEditCourseModal(course: Course) {
+    let modal = this.modalCtrl.create(CourseEditModalPage, {courseId: course.$key});
+    modal.present();
   }
 
 }

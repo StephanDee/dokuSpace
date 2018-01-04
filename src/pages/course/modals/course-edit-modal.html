@@ -1,10 +1,18 @@
 <ion-content padding>
+
   <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
+  <p>Ändern Sie den Kurs.</p>
+
+  <button ion-button clear item-end (click)="chooseAndUploadNewTitleImage();">
+    <ion-icon name="create"></ion-icon>
+  </button>
+
+  <img src="{{(courseData | async)?.titleImageUrl}}">
+
   <form [formGroup]="courseEditModalForm">
-    <p>Ändern Sie den Kurs.</p>
     <ion-item>
       <ion-label floating>Title</ion-label>
-      <ion-input type="text" formControlName="title" maxlength="20"></ion-input>
+      <ion-input type="text" formControlName="title" maxlength="20" value="{{(courseData | async)?.title}}"></ion-input>
     </ion-item>
     <p padding-horizontal>{{courseEditModalForm.get('title').value?.length}} / 20</p>
     <div class="error" *ngIf="courseEditModalForm.get('title').hasError('pattern')" padding>
@@ -13,15 +21,18 @@
 
     <ion-item>
       <ion-label floating>Beschreibung</ion-label>
-      <ion-textarea rows="8" type="text" formControlName="description"></ion-textarea>
+      <ion-textarea rows="8" type="text" formControlName="description"
+                    value="{{(courseData | async)?.description}}"></ion-textarea>
     </ion-item>
     <p padding-horizontal>{{courseEditModalForm.get('description').value?.length}} / 255</p>
     <div class="error" *ngIf="courseEditModalForm.get('description').hasError('pattern')" padding>
       Bitte geben Sie eine Beschreibung ein.
     </div>
-
   </form>
+
   <div class="top-margin-2">
-    <button ion-button block [disabled]="courseEditModalForm.invalid" (click)="editCourse();">Erstellen</button>
+    <button ion-button block [disabled]="courseEditModalForm.invalid" (click)="editCourseTitleAndDescription();">
+      Ändern
+    </button>
   </div>
 </ion-content>

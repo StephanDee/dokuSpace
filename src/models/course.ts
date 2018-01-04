@@ -18,8 +18,17 @@ export class Course {
   public titleImageName: string;
   public titleImageUrl: string;
 
+  // For users who choose this course to their favourites.
+  // public favouriteId: string;
+  // public favouriteUserId: string;
+  // public favourite: boolean;
+
   // Company Key
   // public accountKey: string;
+
+  // optional Attributes (the ? defines that the Attribute is optional.)
+  // to get the DatabaseReference of .child(`/courses/${courseId}`);.
+  public $key?: string;
 
   /**
    *

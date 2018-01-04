@@ -25,6 +25,7 @@ export class FileService {
 
   // Course Service Attribute
   private SubscriptionGetCourses: Subscription;
+  private SubscriptionGetCourse: Subscription;
 
   /**
    *
@@ -113,9 +114,6 @@ export class FileService {
                 let currentPhotoURL = data.photoURL;
 
                 this.setPhotoIdURLAndName(authUid, fileName, photoId, photoName, currentPhotoURL);
-              }).catch((err) => {
-                alert('Ein Fehler ist Aufgetreten: ' + err);
-                console.log(err);
               });
               this.unsubscribeGetProfileSubscription();
 
@@ -150,9 +148,10 @@ export class FileService {
       });
 
       // Profile Services
-      await this.afDb.object(`/profiles/${authUid}/photoId`).set(photoId);
-      await this.afDb.object(`/profiles/${authUid}/photoURL`).set(url);
-      await this.afDb.object(`/profiles/${authUid}/photoName`).set(fileName);
+      await this.afDb.object(`/profiles/${authUid}/`).update({photoId, photoURL: url, photoName: fileName});
+      // await this.afDb.object(`/profiles/${authUid}/photoId`).set(photoId);
+      // await this.afDb.object(`/profiles/${authUid}/photoURL`).set(url);
+      // await this.afDb.object(`/profiles/${authUid}/photoName`).set(fileName);
 
       // Creates a new Photo
       const photo = new Photo();
@@ -232,7 +231,7 @@ export class FileService {
 
             imageStore.put(imgBlob).then((res) => {
 
-              this.setTitleImageIdURLAndName(authUid, fileName, courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
+              this.setCourseOrUpdateTitleImageIdURLAndName(authUid, fileName, courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
 
               this.profileImageUploadSuccessToast();
 
@@ -247,30 +246,42 @@ export class FileService {
     });
   }
 
-  private setTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
+  private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
-      const titleImageId = this.afDb.list(`/courses`).push({}).key;
-      const course = new Course();
-      course.courseId = courseId;
-      course.title = title;
-      course.description = description;
-      course.creatorName = creatorName;
-      course.creatorUid = creatorUid;
-      course.creatorPhotoURL = creatorPhotoURL;
-      course.titleImageId = titleImageId;
-      course.titleImageName = fileName;
-      course.titleImageUrl = url;
+      if (title !== null && title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+        const titleImageId = this.afDb.list(`/courses`).push({}).key;
+        const course = new Course();
+        course.courseId = courseId;
+        course.title = title;
+        course.description = description;
+        course.creatorName = creatorName;
+        course.creatorUid = creatorUid;
+        course.creatorPhotoURL = creatorPhotoURL;
+        course.titleImageId = titleImageId;
+        course.titleImageName = fileName;
+        course.titleImageUrl = url;
 
-      // Courses Services
-      await this.afDb.object(`/courses/${courseId}`).set(course);
+        // Courses Services
+        await this.afDb.object(`/courses/${courseId}`).set(course);
+      } else {
+
+        this.getCourseSubscription(courseId).then((data) => {
+          let currentTitleImageName = data.titleImageName;
+          this.deleteCourseTitleImage(authUid, courseId, currentTitleImageName);
+        });
+        await this.unsubscribeGetCourseSubscription();
+
+        // Courses Services
+        await this.afDb.object(`/courses/${courseId}/`).update({titleImageUrl: url, titleImageName: fileName});
+      }
     }).catch((err) => {
       alert('Ein Fehler ist aufgetregten: ' + err);
       console.log(err);
     });
   }
 
-  public deleteCourseTitleImage(authUid: string, fileName: any): Promise<void> {
-    return this.fireStore.ref(`courses/${authUid}/titleImage/${fileName}`).delete() as Promise<void>;
+  private deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
+    return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() as Promise<void>;
   }
 
   // End: File Upload for Course Title Image
@@ -331,6 +342,20 @@ export class FileService {
   // Course Service Method.
   private unsubscribeGetCoursesSubscription() {
     this.SubscriptionGetCourses.unsubscribe();
+  }
+
+  // Course Service Method.
+  public getCourseSubscription(courseId: string): Promise<Course> {
+    return new Promise(resolve => {
+      this.SubscriptionGetCourse = this.afDb.object(`/courses/${courseId}`).subscribe((data) => {
+        resolve(data);
+      });
+    });
+  }
+
+  // Course Service Method.
+  public unsubscribeGetCourseSubscription() {
+    this.SubscriptionGetCourse.unsubscribe();
   }
 
   // Course Service Method.

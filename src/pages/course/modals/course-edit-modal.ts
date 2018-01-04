@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, NavController, ViewController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../../services/auth.service';
-import { ProfileService } from '../../../services/profile.service';
 import { CourseService } from '../../../services/course.service';
 import { FileService } from '../../../services/file.service';
 import { BasePage } from '../../base/base';
+import { Course } from '../../../models/course';
+import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 
 /**
  * This class represents the Course Create Modal Page.
@@ -13,11 +13,13 @@ import { BasePage } from '../../base/base';
 @Component({
   selector: 'page-course-edit-modal',
   templateUrl: './course-edit-modal.html',
-  providers: [AuthService, ProfileService, CourseService, FileService]
+  providers: [CourseService, FileService]
 })
 export class CourseEditModalPage extends BasePage {
 
+  protected courseId: string;
   protected courseEditModalForm: FormGroup;
+  protected courseData: FirebaseObjectObservable<Course>;
 
   /**
    *
@@ -25,9 +27,8 @@ export class CourseEditModalPage extends BasePage {
    * @param {AlertController} alertCtrl
    * @param {LoadingController} loadingCtrl
    * @param {ViewController} viewCtrl
+   * @param {NavParams} navParams
    * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
    * @param {CourseService} courseService
    * @param {FileService} fileService
    */
@@ -35,9 +36,8 @@ export class CourseEditModalPage extends BasePage {
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
               public viewCtrl: ViewController,
+              protected navParams: NavParams,
               protected formBuilder: FormBuilder,
-              private authService: AuthService,
-              private profileService: ProfileService,
               private courseService: CourseService,
               private fileService: FileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
@@ -45,6 +45,9 @@ export class CourseEditModalPage extends BasePage {
 
   async ngOnInit() {
     this.createLoading('Kurs wird erstellt...');
+    this.courseId = this.navParams.get('courseId');
+    this.courseData = this.courseService.getCourse(this.courseId);
+
     this.initForm();
   }
 
@@ -58,38 +61,13 @@ export class CourseEditModalPage extends BasePage {
     });
   }
 
-  protected editCourse() {
-    // if (this.courseEditModalForm.invalid) {
-    //   this.showAlert('Kurs', 'Bitte Formularfelder richtig ausfüllen.');
-    // }
-    //
-    // this.loading.present();
-    //
-    // // get Auth Uid
-    // const authUid = this.authService.getAuthUid();
-    // const courseId = this.courseService.getCourseId();
-    //
-    // // get Profile Data
-    // this.profileService.getProfileSubscription(authUid).then(async (data) => {
-    //   let name = data.name;
-    //   let photoURL = data.photoURL;
-    //
-    //   // Choose Title Image and create Course
-    //   await this.fileService.chooseAndUploadCourseTitleImage(courseId,
-    //     this.courseEditModalForm.value.title,
-    //     this.courseEditModalForm.value.description,
-    //     name,
-    //     authUid,
-    //     photoURL).then(() => {
-    //     this.dismiss();
-    //   });
-    // }).catch((err) => {
-    //   this.loading.dismiss();
-    //   this.dismiss();
-    //   console.log(err);
-    // });
-    // this.loading.dismiss();
-    // this.profileService.unsubscribeGetProfileSubscription();
+  protected editCourseTitleAndDescription() {
+    this.courseService.updateCourseTitleAndDescription(this.courseId, this.courseEditModalForm.value.title, this.courseEditModalForm.value.description);
+    this.dismiss();
+  }
+
+  protected chooseAndUploadNewTitleImage() {
+    this.fileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null);
   }
 
   // close Modal View

@@ -25,29 +25,33 @@
 
   <div [ngSwitch]="segment">
     <ion-list *ngSwitchCase="'allcourses'">
-      <!-- because it is an Observerble we need to pass the async-pipe -->
-    <ion-card *ngFor="let course of courseListData | async" (click)="openCourseContentListPage()">
-      <ion-item>
-        <ion-avatar item-start>
-          <img src="{{course.creatorPhotoURL}}">
-        </ion-avatar>
-        <h2>{{course.creatorName}}</h2>
-      </ion-item>
-      <br>
+      <!-- Because it is an Observerble we need to pass the async-pipe -->
+      <ion-card *ngFor="let course of courseListData | async">
+        <ion-item>
+          <ion-avatar item-start>
+            <img src="{{course.creatorPhotoURL}}">
+          </ion-avatar>
+          <h2>{{course.creatorName}}</h2>
+        </ion-item>
+        <br>
 
-      <img src="{{course.titleImageUrl}}">
+        <img src="{{course.titleImageUrl}}" (click)="openCourseContentListPage(course);">
 
-      <ion-card-content>
-        <h1>{{course.title}}</h1><br>
-        <p>{{course.description}}</p>
-      </ion-card-content>
+        <ion-card-content>
+          <h1>{{course.title}}</h1><br>
+          <p>{{course.description}}</p>
+        </ion-card-content>
 
-      <ion-item>
-        <button ion-button item-end clear small>
-          <ion-icon name="heart"></ion-icon>
-        </button>
-      </ion-item>
-    </ion-card>
+        <ion-item>
+          <button ion-button item-right clear (click)="selectCourseItem(course);">
+            <ion-icon name="more"></ion-icon>
+          </button>
+          <button ion-button item-right clear>
+            <ion-icon name="heart"></ion-icon>
+          </button>
+        </ion-item>
+
+      </ion-card>
     </ion-list>
 
 

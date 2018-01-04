@@ -86,27 +86,16 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
   }
 
-
   public setCoursePhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
     return this.afDb.object(`/courses/${courseId}/creatorPhotoURL`).set(creatorPhotoURL) as Promise<void>;
   }
 
-  public setCourseName(courseId: string, creatorName: string): Promise<void> {
+  public setCourseCreatorName(courseId: string, creatorName: string): Promise<void> {
     return this.afDb.object(`/courses/${courseId}/creatorName`).set(creatorName) as Promise<void>;
   }
 
-  public updateCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, titleImageId: string, titleImageName: string, titleImageUrl: string): Promise<void> {
-    const course = new Course();
-    course.courseId = courseId;
-    course.title = title;
-    course.description = description;
-    course.creatorName = creatorName;
-    course.creatorUid = creatorUid;
-    course.creatorPhotoURL = creatorPhotoURL;
-    course.titleImageId = titleImageId;
-    course.titleImageName = titleImageName;
-    course.titleImageUrl = titleImageUrl;
-    return this.afDb.object(`/courses/${courseId}`).update(course) as Promise<void>;
+  public updateCourseTitleAndDescription(courseId: string, title: string, description: string): Promise<void> {
+    return this.afDb.object(`/courses/${courseId}/`).update({title, description}) as Promise<void>;
   }
 
 }
