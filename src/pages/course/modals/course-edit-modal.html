@@ -3,13 +3,16 @@
   <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
   <p>Ändern Sie den Kurs.</p>
 
-  <button ion-button clear item-end (click)="chooseAndUploadNewTitleImage();">
+  <p style="float: left">Titelbild bearbeiten:</p>
+  <button class="element-to-right" ion-button clear item-end (click)="chooseAndUploadNewTitleImage();">
     <ion-icon name="create"></ion-icon>
   </button>
 
   <img src="{{(courseData | async)?.titleImageUrl}}">
 
+  <div class="top-margin-2"></div>
   <form [formGroup]="courseEditModalForm">
+    <p padding-horizontal>Titel & Beschreibung bearbeiten:</p>
     <ion-item>
       <ion-label floating>Title</ion-label>
       <ion-input type="text" formControlName="title" maxlength="20" value="{{(courseData | async)?.title}}"></ion-input>
@@ -21,7 +24,7 @@
 
     <ion-item>
       <ion-label floating>Beschreibung</ion-label>
-      <ion-textarea rows="8" type="text" formControlName="description"
+      <ion-textarea rows="6" type="text" formControlName="description" maxlength="255"
                     value="{{(courseData | async)?.description}}"></ion-textarea>
     </ion-item>
     <p padding-horizontal>{{courseEditModalForm.get('description').value?.length}} / 255</p>

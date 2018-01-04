@@ -1,6 +1,5 @@
 // http://ionicframework.com/docs/theming/
 
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -24,12 +23,24 @@
 }
 
 .top-margin-3 {
-  margin: 48px;
+  margin-top: 48px;
+}
+
+.top-margin-4 {
+  margin-top: 72px;
 }
 
 .center {
   display: block;
   margin: auto;
+}
+
+.element-to-right {
+  float: right;
+}
+
+.item-blank-remover {
+  margin-bottom: -4px !important;
 }
 
 a:hover {

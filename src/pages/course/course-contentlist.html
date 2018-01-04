@@ -2,6 +2,8 @@
   <div padding-horizontal padding-top>
     <ion-icon name="arrow-back" (click)="goToRootPage();"></ion-icon>
   </div>
+
+  <!--
   <ion-card>
     <ion-item>
       <ion-avatar item-start>
@@ -17,6 +19,7 @@
       <p>Beschreibung</p>
     </ion-card-content>
   </ion-card>
+  -->
 
   <ion-list>
     <ion-item (click)="openContentPage();">
@@ -32,4 +35,11 @@
       <p>Content Titel 2</p>
     </ion-item>
   </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab color="danger">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
 </ion-content>

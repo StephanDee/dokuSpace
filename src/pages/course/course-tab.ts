@@ -48,7 +48,7 @@ export class CourseTabPage extends BasePage {
 
   selectCourseItem(course: Course) {
     this.actionSheetCtrl.create({
-      title: `Titel: ${course.title}`,
+      title: `Kurs: ${course.title}`,
       buttons: [
         {
           text: 'Bearbeiten',

@@ -195,7 +195,11 @@ export class FileService {
   }
 
   private uploadCourseTitleImage(nativePath: any, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
-    this.createLoading('Der Kurs wird hochgeladen hochgeladen...');
+    if (title !== null && title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+      this.createLoading('Der Kurs wird hochgeladen...');
+    } else {
+      this.createLoading('Titelbild wird hochgeladen...');
+    }
     (<any>window).resolveLocalFileSystemURL(nativePath, (res) => {
       res.file((resFile) => {
         this.loading.present();
@@ -233,7 +237,7 @@ export class FileService {
 
               this.setCourseOrUpdateTitleImageIdURLAndName(authUid, fileName, courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
 
-              this.profileImageUploadSuccessToast();
+              this.titleImageUploadSuccessToast();
 
               this.loading.dismiss();
             }).catch((err) => {
@@ -264,7 +268,6 @@ export class FileService {
         // Courses Services
         await this.afDb.object(`/courses/${courseId}`).set(course);
       } else {
-
         this.getCourseSubscription(courseId).then((data) => {
           let currentTitleImageName = data.titleImageName;
           this.deleteCourseTitleImage(authUid, courseId, currentTitleImageName);
@@ -282,6 +285,15 @@ export class FileService {
 
   private deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
     return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() as Promise<void>;
+  }
+
+  private titleImageUploadSuccessToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Titelbild wurde erfolgreich hochgeladen.',
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
   }
 
   // End: File Upload for Course Title Image

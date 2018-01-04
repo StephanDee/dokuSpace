@@ -24,38 +24,40 @@
 
   <img src="{{(profileData | async)?.photoURL}}">
 
-  <ion-card>
-    <ion-list>
-      <ion-item-sliding #slidingItemName>
-        <ion-item>
-          <ion-icon name="person" item-start></ion-icon>
-          <p>{{(profileData | async)?.name}}</p>
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button (click)="editProfileName(slidingItemName);">
-            <ion-icon name="create"></ion-icon>
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
-
-      <ion-item-sliding #slidingItemEmail>
-        <ion-item>
-          <ion-icon name="mail" item-start></ion-icon>
-          <p>{{(profileData | async)?.email}}</p>
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button (click)="editProfileEmail(slidingItemEmail);">
-            <ion-icon name="create"></ion-icon>
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
-
+  <div class="item-blank-remover"></div>
+  <ion-list>
+    <ion-item-sliding #slidingItemName>
       <ion-item>
-        <ion-icon name="school" item-start></ion-icon>
-        <p>{{(profileData | async)?.role}}</p>
+        <ion-icon name="person" item-start></ion-icon>
+        <p>{{(profileData | async)?.name}}</p>
       </ion-item>
-    </ion-list>
-  </ion-card>
+      <ion-item-options side="right">
+        <button ion-button small (click)="editProfileName(slidingItemName);">
+          <ion-icon name="create"></ion-icon>
+          Ändern
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+    <ion-item-sliding #slidingItemEmail>
+      <ion-item>
+        <ion-icon name="mail" item-start></ion-icon>
+        <p>{{(profileData | async)?.email}}</p>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button small (click)="editProfileEmail(slidingItemEmail);">
+          <ion-icon name="create"></ion-icon>
+          Ändern
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+    <ion-item>
+      <ion-icon name="school" item-start></ion-icon>
+      <p>{{(profileData | async)?.role}}</p>
+    </ion-item>
+  </ion-list>
+
 
 </ion-content>
 

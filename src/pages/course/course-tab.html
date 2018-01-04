@@ -1,11 +1,10 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar color="light">
     <ion-searchbar></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="openCreateCourseModal();">
       <ion-icon name="add"></ion-icon>
@@ -38,22 +37,20 @@
         <img src="{{course.titleImageUrl}}" (click)="openCourseContentListPage(course);">
 
         <ion-card-content>
-          <h1>{{course.title}}</h1><br>
+          <h2>{{course.title}}</h2><br>
           <p>{{course.description}}</p>
         </ion-card-content>
 
-        <ion-item>
-          <button ion-button item-right clear (click)="selectCourseItem(course);">
+        <div class="element-to-right">
+          <button ion-button clear color="primary" (click)="selectCourseItem(course);">
             <ion-icon name="more"></ion-icon>
           </button>
-          <button ion-button item-right clear>
+          <button ion-button clear color="light">
             <ion-icon name="heart"></ion-icon>
           </button>
-        </ion-item>
-
+        </div>
       </ion-card>
     </ion-list>
-
 
     <ion-card *ngSwitchCase="'mycourses'">
       <ion-item>
@@ -76,7 +73,7 @@
           </button>
         </ion-col>
         <ion-col>
-          <button ion-button icon-left on clear small>
+          <button ion-button icon-left clear small>
             <ion-icon name="text"></ion-icon>
             <div>2</div>
           </button>
@@ -89,5 +86,5 @@
       </ion-row>
     </ion-card>
   </div>
-
+  <div class="top-margin-4"></div>
 </ion-content>

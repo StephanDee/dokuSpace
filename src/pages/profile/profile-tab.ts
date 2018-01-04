@@ -55,15 +55,8 @@ export class ProfileTabPage extends BasePage {
   }
 
   async ngOnInit() {
-    this.createLoading('Profil wird geladen...');
-    this.getUserProfileData();
-  }
-
-  protected getUserProfileData() {
-    this.loading.present();
     const authUid = this.authService.getAuthUid();
     this.profileData = this.profileService.getProfile(authUid);
-    this.loading.dismiss();
   }
 
   protected userSignOut() {
