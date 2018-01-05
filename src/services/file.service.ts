@@ -274,7 +274,10 @@ export class FileService {
       } else {
         this.getCourseSubscription(courseId).then((data) => {
           let currentTitleImageName = data.titleImageName;
+
+          if(fileName !== currentTitleImageName) {
           this.deleteCourseTitleImage(authUid, courseId, currentTitleImageName);
+          }
         });
         await this.unsubscribeGetCourseSubscription();
 
@@ -382,7 +385,10 @@ export class FileService {
       } else {
         this.getContentSubscription(courseId, contentId).then((data) => {
           let currentVideoName = data.videoName;
-          this.deleteContentVideo(authUid, courseId, contentId, currentVideoName);
+
+          if(fileName !== currentVideoName) {
+            this.deleteContentVideo(authUid, courseId, contentId, currentVideoName);
+          }
         });
         await this.unsubscribeGetContentSubscription();
 
