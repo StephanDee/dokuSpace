@@ -9,6 +9,7 @@ import { Profile } from '../models/profile';
 import { Subscription } from 'rxjs/Subscription';
 import { Photo } from '../models/photo';
 import { Course } from '../models/course';
+import { Content } from "../models/content";
 
 @Injectable()
 export class FileService {
@@ -26,6 +27,9 @@ export class FileService {
   // Course Service Attribute
   private SubscriptionGetCourses: Subscription;
   private SubscriptionGetCourse: Subscription;
+
+  // Content Service Attribute
+  private SubscriptionGetContent: Subscription;
 
   /**
    *
@@ -195,7 +199,7 @@ export class FileService {
   }
 
   private uploadCourseTitleImage(nativePath: any, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
-    if (title !== null && title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+    if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
       this.createLoading('Der Kurs wird hochgeladen...');
     } else {
       this.createLoading('Titelbild wird hochgeladen...');
@@ -252,7 +256,7 @@ export class FileService {
 
   private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
-      if (title !== null && title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+      if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
         const titleImageId = this.afDb.list(`/courses`).push({}).key;
         const course = new Course();
         course.courseId = courseId;
@@ -297,6 +301,115 @@ export class FileService {
   }
 
   // End: File Upload for Course Title Image
+
+
+  // Start: File Upload for Content Video
+  public chooseAndUploadContentVideo(courseId: string, contentId: string, title: string, description: string): Promise<void> {
+    return this.fileChooser.open().then((url) => {
+      (<any>window).FilePath.resolveNativePath(url, (result) => {
+        let nativePath: any;
+        nativePath = result;
+        this.uploadContentVideo(nativePath, courseId, contentId, title, description);
+      });
+    }) as Promise<void>;
+  }
+
+  private uploadContentVideo(nativePath: any, courseId: string, contentId: string, title: string, description: string) {
+    if (title !== null && description !== null) {
+      this.createLoading('Content wird hochgeladen...');
+    } else {
+      this.createLoading('Video wird hochgeladen...');
+    }
+    (<any>window).resolveLocalFileSystemURL(nativePath, (res) => {
+      res.file((resFile) => {
+        this.loading.present();
+        // Initialize FileReader
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(resFile);
+
+        reader.onloadend = (event: any) => {
+
+          // get file name
+          let partsOfUrl = nativePath.split('/');
+          let fileName = partsOfUrl.pop() || partsOfUrl.pop();
+
+          // get file type
+          let getFileType = nativePath.split('.');
+          let fileType = getFileType.pop() || getFileType.pop();
+
+          if (fileType !== ('mp4' || 'MP4')) {
+            this.loading.dismiss();
+            alert('Die Datei ist nicht vom Typ mp4. Content wurde nicht erstellt. Versuchen Sie es erneuert.');
+          } else {
+            let authUid = this.getAuthUid();
+            let imgBlob;
+
+            imgBlob = new Blob([event.target.result], {type: 'video/mp4'});
+
+            let imageStore = this.fireStore.ref().child(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`);
+
+            imageStore.put(imgBlob).then((res) => {
+
+              this.setContentOrUpdateVideoIdURLAndName(authUid, fileName, courseId, contentId, title, description);
+
+              this.videoUploadSuccessToast();
+
+              this.loading.dismiss();
+            }).catch((err) => {
+              this.loading.dismiss();
+              alert('Upload Failed: ' + err);
+            });
+          }
+        }
+      });
+    });
+  }
+
+  private setContentOrUpdateVideoIdURLAndName(authUid: string, fileName: string, courseId: string, contentId: string, title: string, description: string) {
+    this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).getDownloadURL().then(async (url) => {
+      if (title !== null && description !== null) {
+        const videoId = this.afDb.list(`/contents`).push({}).key;
+        const content = new Content();
+        content.contentId = courseId;
+        content.title = title;
+        content.description = description;
+        content.videoId = videoId;
+        content.videoName = fileName;
+        content.videoUrl = url;
+
+        // Content Services
+        await this.afDb.object(`/contents/${courseId}/${contentId}`).set(content);
+      } else {
+        this.getContentSubscription(courseId, contentId).then((data) => {
+          let currentVideoName = data.videoName;
+          this.deleteContentVideo(authUid, courseId, contentId, currentVideoName);
+        });
+        await this.unsubscribeGetContentSubscription();
+
+        // Content Services
+        await this.afDb.object(`/contents/${courseId}/${contentId}/`).update({videoUrl: url, videoName: fileName});
+      }
+    }).catch((err) => {
+      alert('Ein Fehler ist aufgetregten: ' + err);
+      console.log(err);
+    });
+  }
+
+  private deleteContentVideo(authUid: string, courseId: string, contentId: string, fileName: any): Promise<void> {
+    return this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).delete() as Promise<void>;
+  }
+
+  private videoUploadSuccessToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Video wurde erfolgreich hochgeladen.',
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
+  }
+
+  // End: File Upload for Content Video
+
 
   // @Injectable can't use other @Injectables classes. Following Methods are from other Services.
 
@@ -373,6 +486,20 @@ export class FileService {
   // Course Service Method.
   private setProfilePhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
     return this.afDb.object(`/courses/${courseId}/creatorPhotoURL`).set(creatorPhotoURL) as Promise<void>;
+  }
+
+  // Course Services
+  // Course Service Method.
+  public getContentSubscription(courseId: string, contentId: string): Promise<Content> {
+    return new Promise(resolve => {
+      this.SubscriptionGetContent = this.afDb.object(`/contents/${courseId}/${contentId}`).subscribe((data) => {
+        resolve(data);
+      });
+    });
+  }
+
+  public unsubscribeGetContentSubscription() {
+    this.SubscriptionGetContent.unsubscribe();
   }
 
 }

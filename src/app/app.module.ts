@@ -22,6 +22,8 @@ import { ProfileNameModalPage } from '../pages/profile/modals/profile-name-modal
 import { ProfileEmailModalPage } from '../pages/profile/modals/profile-email-modal';
 import { CourseCreateModalPage } from '../pages/course/modals/course-create-modal';
 import { CourseEditModalPage } from '../pages/course/modals/course-edit-modal';
+import { ContentCreateModalPage } from '../pages/content/modals/content-create-modal';
+import { ContentEditModalPage } from '../pages/content/modals/content-edit-modal';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -45,7 +47,9 @@ import { File } from '@ionic-native/file';
     ProfileNameModalPage,
     ProfileEmailModalPage,
     CourseCreateModalPage,
-    CourseEditModalPage
+    CourseEditModalPage,
+    ContentCreateModalPage,
+    ContentEditModalPage
   ],
   imports: [
     BrowserModule,
@@ -70,7 +74,9 @@ import { File } from '@ionic-native/file';
     ProfileNameModalPage,
     ProfileEmailModalPage,
     CourseCreateModalPage,
-    CourseEditModalPage
+    CourseEditModalPage,
+    ContentCreateModalPage,
+    ContentEditModalPage
   ],
   providers: [
     StatusBar,

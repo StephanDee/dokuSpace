@@ -1,1 +1,44 @@
+<ion-content padding>
 
+  <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
+  <p>Ändern Sie den Content.</p>
+
+  <p class="element-to-left">Video bearbeiten:</p>
+  <button class="element-to-right" ion-button clear item-end (click)="chooseAndUploadNewVideo();">
+    <ion-icon name="create"></ion-icon>
+  </button>
+
+  <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline"
+         class="videoPlayer" style="width: 100%">
+    <source src="{{(contentData | async)?.videoUrl}}" type="video/mp4"/>
+  </video>
+
+  <div class="top-margin-2"></div>
+  <form [formGroup]="contentEditModalForm">
+    <p padding-horizontal>Titel & Beschreibung bearbeiten:</p>
+    <ion-item>
+      <ion-label floating>Title</ion-label>
+      <ion-input type="text" formControlName="title" maxlength="25" value="{{(contentData | async)?.title}}"></ion-input>
+    </ion-item>
+    <p padding-horizontal>{{contentEditModalForm.get('title').value?.length}} / 25</p>
+    <div class="error" *ngIf="contentEditModalForm.get('title').hasError('pattern')" padding>
+      Bitte geben Sie einen Titel ein.
+    </div>
+
+    <ion-item>
+      <ion-label floating>Beschreibung</ion-label>
+      <ion-textarea rows="6" type="text" formControlName="description" maxlength="255"
+                    value="{{(contentData | async)?.description}}"></ion-textarea>
+    </ion-item>
+    <p padding-horizontal>{{contentEditModalForm.get('description').value?.length}} / 255</p>
+    <div class="error" *ngIf="contentEditModalForm.get('description').hasError('pattern')" padding>
+      Bitte geben Sie eine Beschreibung ein.
+    </div>
+  </form>
+
+  <div class="top-margin-2">
+    <button ion-button block [disabled]="contentEditModalForm.invalid" (click)="editContentTitleAndDescription();">
+      Ändern
+    </button>
+  </div>
+</ion-content>

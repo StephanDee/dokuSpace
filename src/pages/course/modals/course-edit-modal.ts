@@ -56,7 +56,7 @@ export class CourseEditModalPage extends BasePage {
    */
   protected initForm() {
     this.courseEditModalForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.maxLength(20), Validators.pattern(CourseEditModalPage.REGEX_START_NOBLANK)]],
+      title: ['', [Validators.required, Validators.maxLength(25), Validators.pattern(CourseEditModalPage.REGEX_START_NOBLANK)]],
       description: ['', [Validators.required, Validators.maxLength(255), Validators.pattern(CourseEditModalPage.REGEX_START_NOBLANK)]]
     });
   }

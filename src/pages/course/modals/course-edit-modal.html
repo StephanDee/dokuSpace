@@ -3,7 +3,7 @@
   <ion-icon name="arrow-back" (click)="dismiss();"></ion-icon>
   <p>Ändern Sie den Kurs.</p>
 
-  <p style="float: left">Titelbild bearbeiten:</p>
+  <p class="element-to-left">Titelbild bearbeiten:</p>
   <button class="element-to-right" ion-button clear item-end (click)="chooseAndUploadNewTitleImage();">
     <ion-icon name="create"></ion-icon>
   </button>
@@ -15,9 +15,9 @@
     <p padding-horizontal>Titel & Beschreibung bearbeiten:</p>
     <ion-item>
       <ion-label floating>Title</ion-label>
-      <ion-input type="text" formControlName="title" maxlength="20" value="{{(courseData | async)?.title}}"></ion-input>
+      <ion-input type="text" formControlName="title" maxlength="25" value="{{(courseData | async)?.title}}"></ion-input>
     </ion-item>
-    <p padding-horizontal>{{courseEditModalForm.get('title').value?.length}} / 20</p>
+    <p padding-horizontal>{{courseEditModalForm.get('title').value?.length}} / 25</p>
     <div class="error" *ngIf="courseEditModalForm.get('title').hasError('pattern')" padding>
       Bitte geben Sie einen Titel ein.
     </div>

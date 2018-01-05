@@ -17,8 +17,9 @@
       <ion-input clearInput type="password" formControlName="password"></ion-input>
     </ion-item>
   </form>
-  <div class="top-margin-1"></div>
-  <a padding-horizontal (click)="openForgotPasswordDialog();">Passwort vergessen?</a>
+  <div class="top-margin-1" padding-bottom>
+  <a class="element-to-right" (click)="openForgotPasswordDialog();">Passwort vergessen?</a>
+  </div>
   <button ion-button class="top-margin-2" block [disabled]="loginForm.invalid" (click)="userSignIn();">Login</button>
   <button ion-button class="top-margin-2" clear block (click)="openSignUpPage();">Registrieren</button>
 </ion-content>
