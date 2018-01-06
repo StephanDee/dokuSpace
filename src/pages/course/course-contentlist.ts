@@ -4,7 +4,9 @@ import {
   NavParams
 } from 'ionic-angular';
 import { BasePage } from '../base/base';
+import { AuthService } from '../../services/auth.service';
 import { ContentService } from '../../services/content.service';
+import { FileService } from '../../services/file.service';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 import { ContentPage } from "../content/content-page";
 import { ContentEditModalPage } from '../content/modals/content-edit-modal';
@@ -14,7 +16,7 @@ import { Content } from '../../models/content';
 @Component({
   selector: 'page-course-contentlist',
   templateUrl: 'course-contentlist.html',
-  providers: [ContentService]
+  providers: [AuthService, ContentService, FileService]
 })
 export class CourseContentListPage extends BasePage {
 
@@ -28,7 +30,9 @@ export class CourseContentListPage extends BasePage {
               protected modalCtrl: ModalController,
               protected actionSheetCtrl: ActionSheetController,
               protected navParams: NavParams,
-              private contentService: ContentService) {
+              private authService: AuthService,
+              private contentService: ContentService,
+              private fileService: FileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -53,6 +57,11 @@ export class CourseContentListPage extends BasePage {
           role: 'destructive',
           handler: () => {
             // Delete current CourseItem
+            const authUid = this.authService.getAuthUid();
+
+            // storage
+            this.fileService.deleteContentVideo(authUid, this.courseId, content.$key, content.videoName);
+            // database
             this.contentListData.remove(content.$key);
           }
         },

@@ -42,7 +42,7 @@
           <p>{{course.description}}</p>
         </ion-card-content>
 
-        <div class="element-to-right">
+        <div class="element-to-right" *ngIf="authUid === course.creatorUid">
           <button ion-button clear color="primary" (click)="selectCourseItem(course);">
             <ion-icon name="more"></ion-icon>
           </button>
@@ -53,39 +53,41 @@
       </ion-card>
     </ion-list>
 
-    <ion-card *ngSwitchCase="'mycourses'">
-      <ion-item>
-        <ion-avatar item-start>
-          <img src="assets/imgs/logo.png">
-        </ion-avatar>
-        <h2>Developer</h2>
-        <p>Dezember 21, 2017</p>
-      </ion-item>
-      <img src="assets/imgs/logolarge.jpg">
-      <ion-card-content>
-        <h1>Cloud Functions</h1><br>
-        <p>Funktionen in der Cloud ausführen lassen? Wir zeigen euch in diesem Kurs wie es funktioniert!</p>
-      </ion-card-content>
-      <ion-row>
-        <ion-col>
-          <button ion-button icon-start clear small>
-            <ion-icon name="thumbs-up"></ion-icon>
-            <div>24</div>
+    <ion-list *ngSwitchCase="'mycourses'">
+      <!-- Because it is an Observerble we need to pass the async-pipe -->
+      <ion-card *ngFor="let myCourse of myCourseListData | async">
+        <!--
+        <div *ngIf="authUid === myCourse.creatorUid">
+          -->
+        <ion-item>
+          <ion-avatar item-start>
+            <img src="{{myCourse.creatorPhotoURL}}">
+          </ion-avatar>
+          <h2>{{myCourse.creatorName}}</h2>
+        </ion-item>
+        <br>
+
+        <img src="{{myCourse.titleImageUrl}}" (click)="openCourseContentListPage(myCourse);">
+
+        <ion-card-content>
+          <h2>{{myCourse.title}}</h2>
+          <div class="top-margin-1"></div>
+          <p>{{myCourse.description}}</p>
+        </ion-card-content>
+
+        <div class="element-to-right">
+          <button ion-button clear color="primary" (click)="selectCourseItem(myCourse);">
+            <ion-icon name="more"></ion-icon>
           </button>
-        </ion-col>
-        <ion-col>
-          <button ion-button icon-left clear small>
-            <ion-icon name="text"></ion-icon>
-            <div>2</div>
-          </button>
-        </ion-col>
-        <ion-col>
-          <button ion-button icon-end clear small color="light">
+          <button ion-button clear color="light">
             <ion-icon name="heart"></ion-icon>
           </button>
-        </ion-col>
-      </ion-row>
-    </ion-card>
+        </div>
+        <!--
+        </div>
+        -->
+      </ion-card>
+    </ion-list>
   </div>
   <div class="top-margin-4"></div>
 </ion-content>

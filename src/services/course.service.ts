@@ -54,6 +54,10 @@ export class CourseService {
     return this.afDb.list(`/courses/`) as FirebaseListObservable<any[]>;
   }
 
+  public getMyCourses(authUid: string): FirebaseListObservable<Course[]> {
+    return this.afDb.list(`/courses/`, {query: {orderByChild: 'creatorUid', equalTo: authUid} }) as FirebaseListObservable<any[]>;
+  }
+
   public getCoursesSubscription(): Promise<Course[]> {
     return new Promise(resolve => {
       this.getCoursesSubSubscription = this.afDb.list(`/courses/`).subscribe((data) => {

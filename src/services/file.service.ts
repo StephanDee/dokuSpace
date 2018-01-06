@@ -73,7 +73,7 @@ export class FileService {
         let reader = new FileReader();
         reader.readAsArrayBuffer(resFile);
 
-        reader.onloadend = (event: any) => {
+        reader.onload = (event: any) => {
 
           // get file name
           let partsOfUrl = nativePath.split('/');
@@ -125,7 +125,7 @@ export class FileService {
               this.loading.dismiss();
             }).catch((err) => {
               this.loading.dismiss();
-              alert('Upload Failed: ' + err);
+              alert('Upload Failed: ' + err.code + ' _: ' + err.message);
             });
           }
         }
@@ -167,7 +167,7 @@ export class FileService {
       this.afDb.object(`/photos/${authUid}/${photoId}`).set(photo);
 
     }).catch((err) => {
-      alert('Ein Fehler ist aufgetregten: ' + err);
+      alert('Ein Fehler ist aufgetregten: ' + err.code + ' _: ' + err.message);
       console.log(err);
     });
   }
@@ -211,7 +211,7 @@ export class FileService {
         let reader = new FileReader();
         reader.readAsArrayBuffer(resFile);
 
-        reader.onloadend = (event: any) => {
+        reader.onload = (event: any) => {
 
           // get file name
           let partsOfUrl = nativePath.split('/');
@@ -241,12 +241,16 @@ export class FileService {
 
               this.setCourseOrUpdateTitleImageIdURLAndName(authUid, fileName, courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
 
-              this.titleImageUploadSuccessToast();
+              if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+                this.createCourseUploadSuccessToast();
+              } else {
+                this.titleImageUploadSuccessToast();
+              }
 
               this.loading.dismiss();
             }).catch((err) => {
               this.loading.dismiss();
-              alert('Upload Failed: ' + err);
+              alert('Upload Failed: ' + err.code + ' _: ' + err.message);
             });
           }
         }
@@ -275,8 +279,8 @@ export class FileService {
         this.getCourseSubscription(courseId).then((data) => {
           let currentTitleImageName = data.titleImageName;
 
-          if(fileName !== currentTitleImageName) {
-          this.deleteCourseTitleImage(authUid, courseId, currentTitleImageName);
+          if (fileName !== currentTitleImageName) {
+            this.deleteCourseTitleImage(authUid, courseId, currentTitleImageName);
           }
         });
         await this.unsubscribeGetCourseSubscription();
@@ -285,13 +289,22 @@ export class FileService {
         await this.afDb.object(`/courses/${courseId}/`).update({titleImageUrl: url, titleImageName: fileName});
       }
     }).catch((err) => {
-      alert('Ein Fehler ist aufgetregten: ' + err);
+      alert('Ein Fehler ist aufgetregten: ' + err.code + ' _: ' + err.message);
       console.log(err);
     });
   }
 
-  private deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
+  public deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
     return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() as Promise<void>;
+  }
+
+  private createCourseUploadSuccessToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Kurs wurde erfolgreich hochgeladen.',
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
   }
 
   private titleImageUploadSuccessToast() {
@@ -330,7 +343,7 @@ export class FileService {
         let reader = new FileReader();
         reader.readAsArrayBuffer(resFile);
 
-        reader.onloadend = (event: any) => {
+        reader.onload = (event: any) => {
 
           // get file name
           let partsOfUrl = nativePath.split('/');
@@ -355,12 +368,16 @@ export class FileService {
 
               this.setContentOrUpdateVideoIdURLAndName(authUid, fileName, courseId, contentId, title, description);
 
-              this.videoUploadSuccessToast();
+              if (title !== null && description !== null) {
+                this.createContentUploadSuccessToast();
+              } else {
+                this.videoUploadSuccessToast();
+              }
 
               this.loading.dismiss();
             }).catch((err) => {
               this.loading.dismiss();
-              alert('Upload Failed: ' + err);
+              alert('Upload Failed: ' + err.code + ' _: ' + err.message);
             });
           }
         }
@@ -386,7 +403,7 @@ export class FileService {
         this.getContentSubscription(courseId, contentId).then((data) => {
           let currentVideoName = data.videoName;
 
-          if(fileName !== currentVideoName) {
+          if (fileName !== currentVideoName) {
             this.deleteContentVideo(authUid, courseId, contentId, currentVideoName);
           }
         });
@@ -396,13 +413,22 @@ export class FileService {
         await this.afDb.object(`/contents/${courseId}/${contentId}/`).update({videoUrl: url, videoName: fileName});
       }
     }).catch((err) => {
-      alert('Ein Fehler ist aufgetregten: ' + err);
+      alert('Ein Fehler ist aufgetregten: ' + err.code + ' _: ' + err.message);
       console.log(err);
     });
   }
 
-  private deleteContentVideo(authUid: string, courseId: string, contentId: string, fileName: any): Promise<void> {
+  public deleteContentVideo(authUid: string, courseId: string, contentId: string, fileName: any): Promise<void> {
     return this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).delete() as Promise<void>;
+  }
+
+  private createContentUploadSuccessToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Content wurde erfolgreich hochgeladen.',
+      showCloseButton: true,
+      closeButtonText: 'Ok'
+    });
+    toast.present();
   }
 
   private videoUploadSuccessToast() {
