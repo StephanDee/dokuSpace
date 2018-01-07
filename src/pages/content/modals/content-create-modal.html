@@ -6,21 +6,27 @@
       <ion-label floating>Title</ion-label>
       <ion-input type="text" formControlName="title" maxlength="25"></ion-input>
     </ion-item>
-    <p padding-horizontal>{{contentCreateModalForm.get('title').value?.length}} / 25</p>
+    <div class="element-to-right">
+      <p>{{contentCreateModalForm.get('title').value?.length}} / 25</p>
+    </div>
     <div class="error" *ngIf="contentCreateModalForm.get('title').hasError('pattern')" padding>
       Bitte geben Sie einen Titel ein.
     </div>
     <ion-item>
       <ion-label floating>Beschreibung</ion-label>
-      <ion-textarea rows="8" type="text" formControlName="description"></ion-textarea>
+      <ion-textarea rows="6" type="text" formControlName="description"></ion-textarea>
     </ion-item>
-    <p padding-horizontal>{{contentCreateModalForm.get('description').value?.length}} / 255</p>
+    <div class="element-to-right">
+      <p>{{contentCreateModalForm.get('description').value?.length}} / 255</p>
+    </div>
     <div class="error" *ngIf="contentCreateModalForm.get('description').hasError('pattern')" padding>
       Bitte geben Sie eine Beschreibung ein.
     </div>
   </form>
   <div class="top-margin-2">
     <p>Laden Sie nun das Video des Contents hoch. Beachten Sie dabei, dass nur mp4 Dateien akzeptiert werden.</p>
-    <button ion-button block [disabled]="contentCreateModalForm.invalid" (click)="CreateNewContent();">Hochladen & Erstellen</button>
+    <button ion-button block [disabled]="contentCreateModalForm.invalid" (click)="CreateNewContent();">Hochladen &
+      Erstellen
+    </button>
   </div>
 </ion-content>

@@ -42,8 +42,8 @@
           <p>{{course.description}}</p>
         </ion-card-content>
 
-        <div class="element-to-right" *ngIf="authUid === course.creatorUid">
-          <button ion-button clear color="primary" (click)="selectCourseItem(course);">
+        <div class="element-to-right">
+          <button ion-button clear color="primary" (click)="selectCourseItem(course);" *ngIf="authUid === course.creatorUid">
             <ion-icon name="more"></ion-icon>
           </button>
           <button ion-button clear color="light">
@@ -56,9 +56,6 @@
     <ion-list *ngSwitchCase="'mycourses'">
       <!-- Because it is an Observerble we need to pass the async-pipe -->
       <ion-card *ngFor="let myCourse of myCourseListData | async">
-        <!--
-        <div *ngIf="authUid === myCourse.creatorUid">
-          -->
         <ion-item>
           <ion-avatar item-start>
             <img src="{{myCourse.creatorPhotoURL}}">
@@ -83,9 +80,6 @@
             <ion-icon name="heart"></ion-icon>
           </button>
         </div>
-        <!--
-        </div>
-        -->
       </ion-card>
     </ion-list>
   </div>

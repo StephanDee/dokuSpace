@@ -10,6 +10,7 @@ import { BasePage } from '../base/base';
 import { CourseCreateModalPage } from './modals/course-create-modal';
 import { AuthService } from '../../services/auth.service';
 import { CourseService } from '../../services/course.service';
+import { ContentService } from '../../services/content.service';
 import { FileService } from '../../services/file.service';
 import { Course } from '../../models/course';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
@@ -19,7 +20,7 @@ import { CourseEditModalPage } from './modals/course-edit-modal';
 @Component({
   selector: 'page-course-tab',
   templateUrl: 'course-tab.html',
-  providers: [AuthService, CourseService, FileService]
+  providers: [AuthService, CourseService, ContentService, FileService]
 })
 export class CourseTabPage extends BasePage {
 
@@ -36,6 +37,7 @@ export class CourseTabPage extends BasePage {
               protected modalCtrl: ModalController,
               private authService: AuthService,
               private courseService: CourseService,
+              private contentService: ContentService,
               private fileService: FileService,
               private actionSheetCtrl: ActionSheetController) {
     super(navCtrl, alertCtrl, loadingCtrl);
@@ -62,16 +64,32 @@ export class CourseTabPage extends BasePage {
         {
           text: 'Löschen',
           role: 'destructive',
-          handler: () => {
-            // Delete current CourseItem
+          handler: async () => {
+            // Delete current CourseItem and its Contents
 
-            // storage
-            this.fileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
+            // course storage
+            await this.fileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
 
-            // TODO: delete all Contents with this courseKey.
+            // delete all contents of the course
+            await this.contentService.getContentsSubscription(course.$key).then(async (data) => {
+              for (let ids of data) {
+                const contentId = ids.contentId;
+                const videoName = ids.videoName;
 
-            // database
-            this.courseListData.remove(course.$key);
+                // content storage
+                await this.fileService.deleteContentVideo(this.authUid, course.$key, contentId, videoName);
+
+                // content database
+                await this.contentService.deleteContent(course.$key);
+              }
+              await this.contentService.unsubscribeGetContentsSubscription();
+            }).catch((err) => {
+              alert('Ein Fehler ist aufgetreten: ' + err.code + '_:' + err.message);
+              console.log(err);
+            });
+
+            // course database
+            await this.courseListData.remove(course.$key);
           }
         },
         {

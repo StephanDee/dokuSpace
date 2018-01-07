@@ -7,9 +7,14 @@
         <ion-icon name="person" item-start></ion-icon>
         Name
       </ion-label>
-      <ion-input type="text" maxlength="20" formControlName="name"></ion-input>
+      <ion-input type="text" maxlength="25" formControlName="name"></ion-input>
     </ion-item>
-    <p padding-horizontal>{{profileNameModalForm.get('name').value?.length}} / 20</p>
+    <div class="element-to-right">
+      <p>{{profileNameModalForm.get('name').value?.length}} / 25</p>
+    </div>
+    <div class="error" *ngIf="profileNameModalForm.get('name').hasError('pattern')" padding>
+      Bitte geben Sie einen Namen ein.
+    </div>
   </form>
   <div class="top-margin-2">
     <button ion-button block [disabled]="profileNameModalForm.invalid" (click)="setNewProfileName();">Ändern</button>

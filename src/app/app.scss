@@ -30,6 +30,10 @@
   margin-top: 72px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .center {
   display: block;
   margin: auto;
@@ -45,6 +49,24 @@
 
 .item-blank-remover {
   margin-bottom: -4px !important;
+}
+
+.circle {
+  background-color: #488aff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: center;
+}
+
+.circle-text {
+  color: #ffffff;
+  /** top, right, bottom, left  */
+  padding: 6px 10px 11px 13px;
+}
+
+.error {
+  color: #f53d3d;
 }
 
 a:hover {

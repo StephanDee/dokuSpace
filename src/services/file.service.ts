@@ -390,9 +390,10 @@ export class FileService {
       if (title !== null && description !== null) {
         const videoId = this.afDb.list(`/contents`).push({}).key;
         const content = new Content();
-        content.contentId = courseId;
+        content.contentId = contentId;
         content.title = title;
         content.description = description;
+        content.creatorUid = authUid;
         content.videoId = videoId;
         content.videoName = fileName;
         content.videoUrl = url;

@@ -21,6 +21,7 @@ import { Content } from '../../models/content';
 export class CourseContentListPage extends BasePage {
 
   // Attributes
+  protected authUid: string;
   protected courseId: string;
   protected contentListData: FirebaseListObservable<Content[]>;
 
@@ -37,6 +38,7 @@ export class CourseContentListPage extends BasePage {
   }
 
   async ngOnInit() {
+    this.authUid = this.authService.getAuthUid();
     this.courseId = this.navParams.get('courseId');
     this.contentListData = this.contentService.getContents(this.courseId);
   }
@@ -57,10 +59,9 @@ export class CourseContentListPage extends BasePage {
           role: 'destructive',
           handler: () => {
             // Delete current CourseItem
-            const authUid = this.authService.getAuthUid();
 
             // storage
-            this.fileService.deleteContentVideo(authUid, this.courseId, content.$key, content.videoName);
+            this.fileService.deleteContentVideo(this.authUid, this.courseId, content.$key, content.videoName);
             // database
             this.contentListData.remove(content.$key);
           }

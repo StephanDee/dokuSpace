@@ -1,15 +1,21 @@
 <ion-content padding>
   <form [formGroup]="profileForm">
-      <h1>Profil:</h1>
-      <p>Bitte füllen Sie das Formular aus, um ihr Profil fertigzustellen.</p>
+    <h1>Profil:</h1>
+    <p>Bitte füllen Sie das Formular aus, um ihr Profil fertigzustellen.</p>
     <ion-item>
       <ion-label floating>
         <ion-icon name="person" item-start></ion-icon>
-        Name</ion-label>
-      <ion-input type="text" maxlength="20" formControlName="name"></ion-input>
+        Name
+      </ion-label>
+      <ion-input type="text" maxlength="25" formControlName="name"></ion-input>
     </ion-item>
-    <p padding-horizontal>{{profileForm.get('name').value?.length}} / 20</p>
+    <div class="element-to-right">
+      <p>{{profileForm.get('name').value?.length}} / 25</p>
+    </div>
+    <div class="error" *ngIf="profileForm.get('name').hasError('pattern')" padding>
+      Bitte geben Sie einen Namen ein.
+    </div>
   </form>
   <div class="top-margin-2"></div>
-    <button ion-button block [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>
+  <button ion-button block [disabled]="profileForm.invalid" (click)="createProfile();">Profil erstellen</button>
 </ion-content>

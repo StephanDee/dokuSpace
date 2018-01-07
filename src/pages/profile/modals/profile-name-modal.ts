@@ -50,7 +50,7 @@ export class ProfileNameModalPage extends BasePage {
    */
   protected initForm() {
     this.profileNameModalForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20), Validators.pattern(ProfileNameModalPage.REGEX_NAME)]]
+      name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(25), Validators.pattern(ProfileNameModalPage.REGEX_START_NOBLANK)]]
     });
   }
 

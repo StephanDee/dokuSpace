@@ -85,4 +85,8 @@ export class ContentService {
     return this.afDb.object(`/contents/${courseId}/${contentId}/`).update({title, description}) as Promise<void>;
   }
 
+  public deleteContent(courseId: string): Promise<void> {
+    return this.afDb.object(`contents/${courseId}`).remove() as Promise<void>;
+  }
+
 }

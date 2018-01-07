@@ -8,8 +8,7 @@
     <ion-icon name="create"></ion-icon>
   </button>
 
-  <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline"
-         class="videoPlayer" style="width: 100%">
+  <video class="full-width" controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline">
     <source src="{{(contentData | async)?.videoUrl}}" type="video/mp4"/>
   </video>
 
@@ -18,9 +17,12 @@
     <p padding-horizontal>Titel & Beschreibung bearbeiten:</p>
     <ion-item>
       <ion-label floating>Title</ion-label>
-      <ion-input type="text" formControlName="title" maxlength="25" value="{{(contentData | async)?.title}}"></ion-input>
+      <ion-input type="text" formControlName="title" maxlength="25"
+                 value="{{(contentData | async)?.title}}"></ion-input>
     </ion-item>
-    <p padding-horizontal>{{contentEditModalForm.get('title').value?.length}} / 25</p>
+    <div class="element-to-right">
+      <p>{{contentEditModalForm.get('title').value?.length}} / 25</p>
+    </div>
     <div class="error" *ngIf="contentEditModalForm.get('title').hasError('pattern')" padding>
       Bitte geben Sie einen Titel ein.
     </div>
@@ -30,7 +32,9 @@
       <ion-textarea rows="6" type="text" formControlName="description" maxlength="255"
                     value="{{(contentData | async)?.description}}"></ion-textarea>
     </ion-item>
-    <p padding-horizontal>{{contentEditModalForm.get('description').value?.length}} / 255</p>
+    <div class="element-to-right">
+      <p>{{contentEditModalForm.get('description').value?.length}} / 255</p>
+    </div>
     <div class="error" *ngIf="contentEditModalForm.get('description').hasError('pattern')" padding>
       Bitte geben Sie eine Beschreibung ein.
     </div>

@@ -46,7 +46,7 @@ export class ProfileCreatePage extends BasePage {
    */
   protected initForm() {
     this.profileForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20), Validators.pattern(ProfileCreatePage.REGEX_NAME)]]
+      name: ['', [Validators.required, Validators.maxLength(25), Validators.pattern(ProfileCreatePage.REGEX_START_NOBLANK)]]
     });
   }
 

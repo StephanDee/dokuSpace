@@ -8,6 +8,8 @@ export class Content {
   public title: string;
   public description: string;
 
+  public creatorUid: string;
+
   // Video File
   public videoId: string;
   public videoName: string;
@@ -27,6 +29,7 @@ export class Content {
    * @param {string} contentId
    * @param {string} title
    * @param {string} description
+   * @param {string} creatorUid
    * @param {string} videoId
    * @param {string} videoName
    * @param {string} videoUrl
@@ -37,6 +40,7 @@ export class Content {
   public constructor(contentId: string = null,
                      title: string = null,
                      description: string = null,
+                     creatorUid: string = null,
                      videoId: string = null,
                      videoName: string = null,
                      videoUrl: string = null,
@@ -46,6 +50,7 @@ export class Content {
     this.contentId = contentId;
     this.title = title;
     this.description = description;
+    this.creatorUid = creatorUid;
     this.videoId = videoId;
     this.videoName = videoName;
     this.videoUrl = videoUrl;
