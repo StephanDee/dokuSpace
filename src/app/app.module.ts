@@ -24,6 +24,7 @@ import { CourseCreateModalPage } from '../pages/course/modals/course-create-moda
 import { CourseEditModalPage } from '../pages/course/modals/course-edit-modal';
 import { ContentCreateModalPage } from '../pages/content/modals/content-create-modal';
 import { ContentEditModalPage } from '../pages/content/modals/content-edit-modal';
+import { ProfileListPage } from '../pages/admin/profilelist/profilelist';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -49,7 +50,8 @@ import { File } from '@ionic-native/file';
     CourseCreateModalPage,
     CourseEditModalPage,
     ContentCreateModalPage,
-    ContentEditModalPage
+    ContentEditModalPage,
+    ProfileListPage
   ],
   imports: [
     BrowserModule,
@@ -76,7 +78,8 @@ import { File } from '@ionic-native/file';
     CourseCreateModalPage,
     CourseEditModalPage,
     ContentCreateModalPage,
-    ContentEditModalPage
+    ContentEditModalPage,
+    ProfileListPage
   ],
   providers: [
     StatusBar,

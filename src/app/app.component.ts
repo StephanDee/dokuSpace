@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { App, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../services/auth.service';
@@ -9,6 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { LoginPage } from '../pages/login/login';
 import { TabsPage } from '../pages/tabs/tabs';
 import { ProfileCreatePage } from '../pages/profile/profile-create';
+import { ProfileListPage } from "../pages/admin/profilelist/profilelist";
+import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
+import { Profile } from "../models/profile";
 
 @Component({
   templateUrl: 'app.html',
@@ -18,6 +21,7 @@ export class MyApp {
 
   public rootPage: any;
   public sideMenuState: boolean;
+  protected profileData: FirebaseObjectObservable<Profile>;
   private profileSubscriptionActive: boolean;
   protected userProfileDataSubscription: Subscription;
 
@@ -48,6 +52,7 @@ export class MyApp {
             if (user.emailVerified === false) {
               this.profileService.setProfileEmailVerified(auth.uid, true);
             }
+            this.profileData = this.profileService.getProfile(auth.uid);
             this.sideMenuState = true;
             this.rootPage = TabsPage;
           }
@@ -61,7 +66,6 @@ export class MyApp {
         this.rootPage = LoginPage;
       }
     });
-
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -70,7 +74,12 @@ export class MyApp {
     });
   }
 
+  protected openProfileList() {
+    this.rootPage = ProfileListPage;
+  }
+
   protected userSignOut() {
     this.authService.logout();
   }
+
 }

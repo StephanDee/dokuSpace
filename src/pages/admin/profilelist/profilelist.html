@@ -1,0 +1,12 @@
+<ion-content>
+  <ion-icon padding name="arrow-back" (click)="goBackToRootPage();"></ion-icon>
+  <ion-list>
+    <ion-list-header>Benutzer Accounts</ion-list-header>
+    <ion-item *ngFor="let profile of profileData | async" (click)="selectProfileItem(profile);">
+      <ion-avatar item-start>
+        <img src="{{profile.photoURL}}">
+      </ion-avatar>
+      <p>{{profile.name}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>

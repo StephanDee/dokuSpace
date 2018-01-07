@@ -28,6 +28,8 @@ export class Profile {
   // Company Key
   // public accountKey: string;
 
+  $key?: string;
+
   /**
    *
    * @param {string} name
