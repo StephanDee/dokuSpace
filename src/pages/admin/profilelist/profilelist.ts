@@ -61,10 +61,6 @@ export class ProfileListPage extends BasePage {
     }).present();
   }
 
-  protected goBackToRootPage() {
-    this.navCtrl.setRoot(MyApp);
-  }
-
   protected roleSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Rolle wurde erfolgreich geändert.',

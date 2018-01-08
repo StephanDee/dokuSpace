@@ -14,7 +14,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-fab right bottom>
+  <ion-fab right bottom *ngIf="creatorUid === authUid">
     <button ion-fab color="danger" (click)="openCreateContentModal()">
       <ion-icon name="add"></ion-icon>
     </button>

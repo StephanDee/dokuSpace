@@ -59,10 +59,6 @@ export class ProfileTabPage extends BasePage {
     this.profileData = this.profileService.getProfile(authUid);
   }
 
-  protected userSignOut() {
-    this.authService.logout();
-  }
-
   protected deleteProfilePhoto() {
     this.showConfirm('Profilbild löschen', 'Möchten Sie das Profilbild wirklich löschen?', this.cancelHandler, this.agreeHandler);
   }

@@ -70,7 +70,9 @@ export class ProfileNameModalPage extends BasePage {
         for (let ids of data) {
           const courseId = ids.courseId;
           const creatorName = ids.creatorName;
-          if (creatorName === currentProfileName) {
+          const creatorUid = ids.creatorUid;
+
+          if (creatorName === currentProfileName && authUid === creatorUid) {
             this.courseService.setCourseCreatorName(courseId, this.profileNameModalForm.value.name);
           }
         }
@@ -81,6 +83,7 @@ export class ProfileNameModalPage extends BasePage {
       alert('Ein Fehler ist aufgetreten: ' + err);
       console.log(err);
     });
+    await this.profileService.unsubscribeGetProfileSubscription();
 
     // set profile name
     await this.profileService.setProfileName(authUid, this.profileNameModalForm.value.name)

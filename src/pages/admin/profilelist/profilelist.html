@@ -1,5 +1,5 @@
 <ion-content>
-  <ion-icon padding name="arrow-back" (click)="goBackToRootPage();"></ion-icon>
+  <ion-icon padding name="menu" menuToggle></ion-icon>
   <ion-list>
     <ion-list-header>Benutzer Accounts</ion-list-header>
     <ion-item *ngFor="let profile of profileData | async" (click)="selectProfileItem(profile);">

@@ -22,6 +22,7 @@ export class CourseContentListPage extends BasePage {
 
   // Attributes
   protected authUid: string;
+  protected creatorUid: string;
   protected courseId: string;
   protected contentListData: FirebaseListObservable<Content[]>;
 
@@ -40,6 +41,7 @@ export class CourseContentListPage extends BasePage {
   async ngOnInit() {
     this.authUid = this.authService.getAuthUid();
     this.courseId = this.navParams.get('courseId');
+    this.creatorUid = this.navParams.get('creatorUid');
     this.contentListData = this.contentService.getContents(this.courseId);
   }
 

@@ -103,7 +103,7 @@ export class CourseTabPage extends BasePage {
   }
 
   protected openCourseContentListPage(course: Course) {
-    this.navCtrl.push(CourseContentListPage, {courseId: course.$key});
+    this.navCtrl.push(CourseContentListPage, {courseId: course.$key, creatorUid: course.creatorUid});
   }
 
   protected openCreateCourseModal() {

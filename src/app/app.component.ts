@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { App, Platform } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../services/auth.service';
@@ -20,10 +20,11 @@ import { Profile } from "../models/profile";
 export class MyApp {
 
   public rootPage: any;
+  public profileListPage: any = ProfileListPage;
   public sideMenuState: boolean;
   protected profileData: FirebaseObjectObservable<Profile>;
   private profileSubscriptionActive: boolean;
-  protected userProfileDataSubscription: Subscription;
+  private userProfileDataSubscription: Subscription;
 
   /**
    *
@@ -36,8 +37,8 @@ export class MyApp {
   constructor(public platform: Platform,
               public statusBar: StatusBar,
               public splashScreen: SplashScreen,
-              public authService: AuthService,
-              public profileService: ProfileService) {
+              private authService: AuthService,
+              private profileService: ProfileService) {
 
     // Authenticate if user is signed in or signed out
     authService.getAuthState().subscribe((auth) => {
@@ -75,7 +76,11 @@ export class MyApp {
   }
 
   protected openProfileList() {
-    this.rootPage = ProfileListPage;
+      this.rootPage = ProfileListPage;
+  }
+
+  protected goBackToRootPage() {
+    this.rootPage = MyApp;
   }
 
   protected userSignOut() {

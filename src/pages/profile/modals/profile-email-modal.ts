@@ -53,36 +53,53 @@ export class ProfileEmailModalPage extends BasePage {
     });
   }
 
-  protected setNewProfileEmail() {
+  protected async setNewProfileEmail() {
     if (this.profileEmailModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }
+    // get currentAuth
+    const currentAuth = this.authService.getAuthUid();
 
-    this.authService.login(this.profileEmailModalForm.value.currentEmail, this.profileEmailModalForm.value.password).then(() => {
+    // Check if Email === currentEmail else denied
+    await this.profileService.getProfileSubscription(currentAuth).then(async (data) => {
 
-      // Update Auth Email
-      this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
+      // get currentEmail
+      let email = data.email;
+      if (email !== this.profileEmailModalForm.value.currentEmail) {
+        this.showAlert('Verifikation Fehlgeschlagen', 'Bitte geben Sie ihre E Mail Adresse ein.');
+      } else {
+        await this.authService.login(this.profileEmailModalForm.value.currentEmail, this.profileEmailModalForm.value.password).then(async () => {
+          // get Auth Uid
+          const authUid = this.authService.getAuthUid();
 
-      this.loading.present();
+          if (currentAuth === authUid) {
+            // Update Auth Email
+            await this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
 
-      // get Auth Uid
-      const authUid = this.authService.getAuthUid();
+            this.loading.present();
 
-      // set Profile Email
-      this.profileService.setProfileEmail(authUid, this.profileEmailModalForm.value.email)
-        .then(() => {
-          this.dismiss();
-        }).catch((err) => {
-        this.loading.dismiss();
-        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
-        console.error(err);
-      });
-      this.loading.dismiss();
+            // set Profile Email
+            await this.profileService.setProfileEmail(authUid, this.profileEmailModalForm.value.email)
+              .then(() => {
+                this.dismiss();
+              });
+            this.loading.dismiss();
+          } else {
+            this.dismiss();
+            this.signOut();
+            this.showAlert('Verifikation Fehlgeschlagen', 'Bitte geben Sie nur ihre Daten zur Verifikation ein. Sie werden ausgeloggt.');
+          }
+        });
+      }
     }).catch((err) => {
-      this.loading.dismiss();
-      this.showAlert('Verifikation', 'Die Verifikation ist Fehlgeschlagen.');
+      this.showAlert('Verifikation Fehlgeschlagen', 'Das Passwort wurde falsch eingegeben, versuchen Sie es erneuert.');
       console.log(err);
     });
+    await this.profileService.unsubscribeGetProfileSubscription();
+  }
+
+  private signOut() {
+    this.authService.logout();
   }
 
   // close Modal View

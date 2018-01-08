@@ -9,6 +9,10 @@
     </ion-header>
     <ion-content>
       <ion-list>
+        <button ion-item (click)="userSignOut();">
+          <ion-icon name="power" item-start></ion-icon>
+          Ausloggen
+        </button>
         <div *ngIf="(profileData | async)?.superAdmin === true">
           <button ion-item menuClose>
             <ion-icon name="briefcase" item-start></ion-icon>
@@ -18,14 +22,13 @@
             <ion-icon name="contacts" item-start></ion-icon>
             Benutzer
           </button>
+          <button ion-item menuClose (click)="goBackToRootPage();" [disabled]="this.rootPage !== this.profileListPage">
+            <ion-icon name="arrow-back" item-start></ion-icon>
+            Zurück
+          </button>
         </div>
-        <button ion-item (click)="userSignOut();">
-          <ion-icon name="power" item-start></ion-icon>
-          Ausloggen
-        </button>
       </ion-list>
     </ion-content>
   </ion-menu>
   <ion-nav #content [root]="rootPage"></ion-nav>
 </div>
-
