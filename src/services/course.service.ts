@@ -72,14 +72,6 @@ export class CourseService {
 
   public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
     // const key = this.afDb.list(`/courses`).push({}).key;
-    return this.setCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL) as Promise<void>
-  }
-
-  public getCourseId(): string {
-    return this.afDb.list(`/courses`).push({}).key as string;
-  }
-
-  private setCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
     const course = new Course();
     course.courseId = courseId;
     course.title = title;
@@ -87,7 +79,12 @@ export class CourseService {
     course.creatorName = creatorName;
     course.creatorUid = creatorUid;
     course.creatorPhotoURL = creatorPhotoURL;
+
     return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
+  }
+
+  public getCourseId(): string {
+    return this.afDb.list(`/courses`).push({}).key as string;
   }
 
   public setCoursePhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {

@@ -44,6 +44,10 @@ export class AuthService {
     }) as Promise<any>;
   }
 
+  public getCurrentUser() {
+    return this.afAuth.auth.currentUser;
+  }
+
   public logout(): Promise<void> {
     return this.afAuth.auth.signOut() as Promise<void>;
   }

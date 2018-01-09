@@ -8,7 +8,6 @@ import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { Profile } from '../../../models/profile';
-import { MyApp } from '../../../app/app.component';
 
 @Component({
   selector: 'page-profilelist',
