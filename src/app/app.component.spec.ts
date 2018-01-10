@@ -6,12 +6,14 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { PlatformMock, StatusBarMock, SplashScreenMock } from '../../test-config/mocks-ionic';
 import { AuthService } from '../services/auth.service';
 import { ProfileService } from '../services/profile.service';
+import { CourseService } from '../services/course.service';
 import { Profile } from '../models/profile';
 import { MyApp } from './app.component';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { FIREBASE_CONFIG } from './app.firebase.config';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
+import { ContentService } from "../services/content.service";
 
 
 // xdescribe not to test, fdescribe to force test
@@ -100,11 +102,11 @@ xdescribe('My first Test', () => {
   });
 });
 
-describe('Firebase AuthService and ProfileService Test', () => {
+xdescribe('Client+Firebase AuthService and ProfileService Test', () => {
 
   beforeEach((() => {
 
-    setTimeout(function(){}, 500);
+    // setTimeout(function(){}, 500);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -120,12 +122,12 @@ describe('Firebase AuthService and ProfileService Test', () => {
     })
   }));
 
-  it('should add ProfileService.',
+  it('should have ProfileService.',
     inject([AuthService], (authService: AuthService) => {
       expect(authService).toBeTruthy();
     }));
 
-  it('should add ProfileService.',
+  it('should have ProfileService.',
     inject([ProfileService], (profileService: ProfileService) => {
       expect(profileService).toBeTruthy();
     }));
@@ -200,7 +202,7 @@ describe('Firebase AuthService and ProfileService Test', () => {
       });
       await profileService.unsubscribeGetProfileSubscription();
 
-      await profileService.setProfileName(authUid, null);
+      await profileService.deleteProfileName(authUid);
       await profileService.getProfileSubscription(authUid).then((data) => {
         let name = data.name;
         expect(name).not.toBeDefined();
@@ -210,11 +212,14 @@ describe('Firebase AuthService and ProfileService Test', () => {
       await authService.logout();
     }));
 
-  it('should set Email, EmailVerified (ProfileService).',
+  it('should set Email, EmailVerified, PhotoUrl (ProfileService).',
     inject([AuthService, ProfileService], async (authService: AuthService, profileService: ProfileService) => {
 
       let currentEmail = 't100@t100.t100';
       let newEmail = 't101@t101.t101';
+      let newPhotoURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/profiles/test.jpg';
+      // let nameSmallerThan1 = '';
+      // let nameHigherThan25 = 'aaaaaaaaaaaaaaaaaaaaa';
 
       // login test account
       await authService.login('t100@t100.t100', 't100t100');
@@ -222,31 +227,130 @@ describe('Firebase AuthService and ProfileService Test', () => {
       // get authUid
       let authUid = await authService.getAuthUid();
 
+      // name too small
+      // await expect(function() {
+      //   profileService.setProfileName(authUid, nameSmallerThan1)
+      // }).toThrow(new Error('Name muss mind. 1 und max. 25 Zeichen lang sein.'));
+
+      // name too long
+      // await expect(profileService.setProfileName(authUid, nameHigherThan25)).toThrow();
+
       await profileService.setProfileEmail(authUid, newEmail);
       await profileService.setProfileEmailVerified(authUid, true);
+      await profileService.setProfilePhotoURL(authUid, newPhotoURL);
 
       // Check database entry values of the User
       await profileService.getProfileSubscription(authUid).then((data) => {
         let email = data.email;
         let emailVerified = data.emailVerified;
+        let photoURL = data.photoURL;
         expect(email).toBe(newEmail);
         expect(emailVerified).toBeTruthy();
+        expect(photoURL).toBe(newPhotoURL);
       });
       await profileService.unsubscribeGetProfileSubscription();
 
       // set all back to default
       await profileService.setProfileEmail(authUid, currentEmail);
       await profileService.setProfileEmailVerified(authUid, false);
+      await profileService.setProfilePhotoURL(authUid, Profile.DEFAULT_PHOTOURL);
       // and check
       await profileService.getProfileSubscription(authUid).then((data) => {
         let email = data.email;
         let emailVerified = data.emailVerified;
+        let photoURL = data.photoURL;
         expect(email).toBe(currentEmail);
         expect(emailVerified).toBeFalsy();
+        expect(photoURL).toBe(Profile.DEFAULT_PHOTOURL);
       });
       await profileService.unsubscribeGetProfileSubscription();
 
       await authService.logout();
+    }));
+
+  afterEach(() => {
+    // do something after
+  });
+});
+
+describe('Client+Firebase CourseServiceTest', () => {
+
+  beforeEach(async(() => {
+
+    TestBed.configureTestingModule({
+      declarations: [
+        MyApp
+      ],
+      imports: [
+        IonicModule.forRoot(MyApp),
+        AngularFireModule.initializeApp(FIREBASE_CONFIG),
+        AngularFireAuthModule,
+        AngularFireDatabaseModule
+      ],
+      providers: [AuthService, CourseService]
+    })
+  }));
+
+  it('should have AuthService and CourseService.',
+    inject([AuthService, CourseService], (authService: AuthService, courseService: CourseService) => {
+      expect(authService).toBeTruthy();
+      expect(courseService).toBeTruthy();
+    }));
+
+  it('should create a new Course and delete it afterwards.',
+    inject([AuthService, CourseService], (authService: AuthService, courseService: CourseService) => {
+      expect(authService).toBeTruthy();
+      expect(courseService).toBeTruthy();
+    }));
+
+  it('should edit a new Course and delete it afterwards.',
+    inject([AuthService, CourseService], (authService: AuthService, courseService: CourseService) => {
+      expect(authService).toBeTruthy();
+      expect(courseService).toBeTruthy();
+    }));
+
+  afterEach(() => {
+    // do something after
+  });
+});
+
+xdescribe('Client+Firebase ContentServiceTest', () => {
+
+  beforeEach(async(() => {
+
+    TestBed.configureTestingModule({
+      declarations: [
+        MyApp
+      ],
+      imports: [
+        IonicModule.forRoot(MyApp),
+        AngularFireModule.initializeApp(FIREBASE_CONFIG),
+        AngularFireAuthModule,
+        AngularFireDatabaseModule
+      ],
+      providers: [AuthService, CourseService, ContentService]
+    })
+  }));
+
+  it('should have AuthService and ContentService.',
+    inject([AuthService, CourseService, ContentService], (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
+      expect(authService).toBeTruthy();
+      expect(courseService).toBeTruthy();
+      expect(contentService).toBeTruthy();
+    }));
+
+  it('should create a new Content and delete it afterwards.',
+    inject([AuthService, CourseService, ContentService], (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
+      expect(authService).toBeTruthy();
+      expect(courseService).toBeTruthy();
+      expect(contentService).toBeTruthy();
+    }));
+
+  it('should edit a new Content and delete it afterwards.',
+    inject([AuthService, CourseService, ContentService], (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
+      expect(authService).toBeTruthy();
+      expect(courseService).toBeTruthy();
+      expect(contentService).toBeTruthy();
     }));
 
   afterEach(() => {

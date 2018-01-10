@@ -153,9 +153,6 @@ export class FileService {
 
       // Profile Services
       await this.afDb.object(`/profiles/${authUid}/`).update({photoId, photoURL: url, photoName: fileName});
-      // await this.afDb.object(`/profiles/${authUid}/photoId`).set(photoId);
-      // await this.afDb.object(`/profiles/${authUid}/photoURL`).set(url);
-      // await this.afDb.object(`/profiles/${authUid}/photoName`).set(fileName);
 
       // Creates a new Photo
       const photo = new Photo();

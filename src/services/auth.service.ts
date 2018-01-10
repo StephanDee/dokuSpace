@@ -4,6 +4,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Observable } from 'rxjs/Observable';
 import { User } from 'firebase';
+import { BasePage } from '../pages/base/base';
 
 @Injectable()
 export class AuthService {
@@ -21,10 +22,20 @@ export class AuthService {
   }
 
   public updateAuthEmail(email: string): Promise<void> {
+    if (!email.match(BasePage.REGEX_EMAIL)) {
+      return Promise.reject(new Error('Es wurde keine E Mail Adresse eingeben.'));
+    }
     return this.afAuth.auth.currentUser.updateEmail(email) as Promise<void>;
   }
 
   public login(email: string, password: string): Promise<any> {
+    if (!email.match(BasePage.REGEX_EMAIL)) {
+      return Promise.reject(new Error('Es wurde keine E Mail Adresse eingeben.'));
+    }
+    if (password.length < 6) {
+      return Promise.reject(new Error('Das Passwort muss mind. 6 Zeichen enthalten.'));
+    }
+
     return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (user) => {
       // if (!user.emailVerified) {
       // await this.logout();
@@ -37,6 +48,13 @@ export class AuthService {
   }
 
   public register(email: string, password: string): Promise<any> {
+    if (!email.match(BasePage.REGEX_EMAIL)) {
+      return Promise.reject(new Error('Es wurde keine E Mail Adresse eingeben.'));
+    }
+    if (password.length < 6) {
+      return Promise.reject(new Error('Das Passwort muss mind. 6 Zeichen enthalten.'));
+    }
+
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password).then(async (user) => {
       await user.sendEmailVerification();
       // get uid to be able to check if registered user exists in database profile reference.
@@ -48,7 +66,7 @@ export class AuthService {
     return this.afAuth.auth.currentUser;
   }
 
-  public getAuthEmail(){
+  public getAuthEmail() {
     return this.afAuth.auth.currentUser.email;
   }
 
