@@ -9,11 +9,12 @@ import { ProfileService } from '../services/profile.service';
 import { CourseService } from '../services/course.service';
 import { Profile } from '../models/profile';
 import { MyApp } from './app.component';
+import { BasePage } from '../pages/base/base';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { FIREBASE_CONFIG } from './app.firebase.config';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
-import { ContentService } from "../services/content.service";
+import { ContentService } from '../services/content.service';
 
 
 // xdescribe not to test, fdescribe to force test
@@ -183,10 +184,20 @@ xdescribe('Client+Firebase AuthService and ProfileService Test', () => {
       await authService.logout();
     }));
 
-  it('should set ProfileName (AuthService, ProfileService).',
+  it('should set ProfileName + limitation Tests (ProfileService).',
     inject([AuthService, ProfileService], async (authService: AuthService, profileService: ProfileService) => {
 
+      // normal Test
       let userName = 'Teacher 100';
+
+      // min 1, max 25, limitation test
+      let minName = 'a';
+      let maxName = 'aaaaaaaaaaaaaaaaaaaaaaaaa';
+
+      // fail Tests
+      // let lowerMinName = '';
+      // let higherMaxName = 'aaaaaaaaaaaaaaaaaaaaa';
+      // let blankName = ' ';
 
       // login test account
       await authService.login('t100@t100.t100', 't100t100');
@@ -194,14 +205,40 @@ xdescribe('Client+Firebase AuthService and ProfileService Test', () => {
       // get authUid
       let authUid = await authService.getAuthUid();
 
+      // normal Test
       await profileService.setProfileName(authUid, userName);
       // Check database entry values of the User
       await profileService.getProfileSubscription(authUid).then((data) => {
         let name = data.name;
         expect(name).toBe(userName);
+        expect(name).toMatch(BasePage.REGEX_START_NOBLANK);
       });
       await profileService.unsubscribeGetProfileSubscription();
 
+      // min Test
+      await profileService.setProfileName(authUid, minName);
+      await profileService.getProfileSubscription(authUid).then((data) => {
+        let name = data.name;
+        expect(name).toBe(minName);
+        expect(name).toMatch(BasePage.REGEX_START_NOBLANK);
+      });
+      await profileService.unsubscribeGetProfileSubscription();
+
+      // max Test
+      await profileService.setProfileName(authUid, maxName);
+      await profileService.getProfileSubscription(authUid).then((data) => {
+        let name = data.name;
+        expect(name).toBe(maxName);
+        expect(name).toMatch(BasePage.REGEX_START_NOBLANK);
+      });
+      await profileService.unsubscribeGetProfileSubscription();
+
+      // lower min Test
+      // await expect(function() {
+      //   profileService.setProfileName(authUid, lowerMinName);
+      // }).toThrow(new Error('Name muss mind. 1 und max. 25 Zeichen lang sein.'));
+
+      // set back to Default
       await profileService.deleteProfileName(authUid);
       await profileService.getProfileSubscription(authUid).then((data) => {
         let name = data.name;
@@ -218,22 +255,12 @@ xdescribe('Client+Firebase AuthService and ProfileService Test', () => {
       let currentEmail = 't100@t100.t100';
       let newEmail = 't101@t101.t101';
       let newPhotoURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/profiles/test.jpg';
-      // let nameSmallerThan1 = '';
-      // let nameHigherThan25 = 'aaaaaaaaaaaaaaaaaaaaa';
 
       // login test account
       await authService.login('t100@t100.t100', 't100t100');
 
       // get authUid
       let authUid = await authService.getAuthUid();
-
-      // name too small
-      // await expect(function() {
-      //   profileService.setProfileName(authUid, nameSmallerThan1)
-      // }).toThrow(new Error('Name muss mind. 1 und max. 25 Zeichen lang sein.'));
-
-      // name too long
-      // await expect(profileService.setProfileName(authUid, nameHigherThan25)).toThrow();
 
       await profileService.setProfileEmail(authUid, newEmail);
       await profileService.setProfileEmailVerified(authUid, true);
@@ -297,16 +324,67 @@ describe('Client+Firebase CourseServiceTest', () => {
       expect(courseService).toBeTruthy();
     }));
 
-  it('should create a new Course and delete it afterwards.',
-    inject([AuthService, CourseService], (authService: AuthService, courseService: CourseService) => {
-      expect(authService).toBeTruthy();
-      expect(courseService).toBeTruthy();
-    }));
+  it('should create a new Course, edit and delete it afterwards.',
+    inject([AuthService, CourseService], async (authService: AuthService, courseService: CourseService) => {
 
-  it('should edit a new Course and delete it afterwards.',
-    inject([AuthService, CourseService], (authService: AuthService, courseService: CourseService) => {
-      expect(authService).toBeTruthy();
-      expect(courseService).toBeTruthy();
+      await authService.login('t103@t103.t103', 't103t103');
+
+      let authUid = await authService.getAuthUid();
+
+      // Dummy Inputs
+      let courseId = courseService.getCourseId();
+      let title = 'Jasmine + Karma';
+      let description = 'Learn how to use BDD Test Envirements.';
+      let creatorName = 'Teacher 103';
+      let creatorUid = authUid;
+      let creatorPhotoURL = Profile.DEFAULT_PHOTOURL;
+      let titleImageId = 'ThisIsATitleImageId';
+      let titleImageName = 'test.jpg';
+      let titleImageUrl = Profile.DEFAULT_PHOTOURL;
+
+      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL, titleImageId, titleImageName, titleImageUrl);
+
+      await courseService.getCourseSubscription(courseId).then((data) => {
+        let courseIdData = data.courseId;
+        let titleData = data.title;
+        let descriptionData = data.description;
+        let creatorNameData = data.creatorName;
+        let creatorUidData = data.creatorUid;
+        let creatorPhotoURLData = data.creatorPhotoURL;
+        let titleImageIdData = data.titleImageId;
+        let titleImageNameData = data.titleImageName;
+        let titleImageUrlData = data.titleImageUrl;
+        expect(courseIdData).toBe(courseId);
+        expect(titleData).toBe(title);
+        expect(descriptionData).toBe(description);
+        expect(creatorNameData).toBe(creatorName);
+        expect(creatorUidData).toBe(creatorUid);
+        expect(creatorPhotoURLData).toBe(creatorPhotoURL);
+        expect(titleImageIdData).toBe(titleImageId);
+        expect(titleImageNameData).toBe(titleImageName);
+        expect(titleImageUrlData).toBe(titleImageUrl);
+      });
+      await courseService.unsubscribeGetCourseSubscription();
+
+      // edit Data
+      let newTitle = 'Angular';
+      let newDescription = 'Learn how to work with Angular.';
+
+      // update Title and Description
+      await courseService.updateCourseTitleAndDescription(courseId, newTitle, newDescription);
+
+      // check new Title and Desription
+      await courseService.getCourseSubscription(courseId).then((data) => {
+        let titleData = data.title;
+        let descriptionData = data.description;
+        expect(titleData).toBe(newTitle);
+        expect(descriptionData).toBe(newDescription);
+      });
+
+      // delete course
+      await courseService.deleteCourse(courseId);
+
+      await authService.logout();
     }));
 
   afterEach(() => {

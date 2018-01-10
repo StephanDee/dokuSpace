@@ -53,8 +53,8 @@ export class ProfileService {
   }
 
   public setProfileName(uid: string, userName: string): Promise<void> {
-    if (userName.length < 1 || userName.length > 25) {
-      return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang sein.'));
+    if (userName.length < 1 || userName.length > 25 || !userName.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
     return this.afDb.object(`/profiles/${uid}/name`).set(userName) as Promise<void>;
   }
@@ -72,7 +72,7 @@ export class ProfileService {
 
   public setProfilePhotoURL(uid: string, userPhotoURL: string): Promise<void> {
     if (!userPhotoURL.includes(File.DEFAULT_FILE_URL)) {
-      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud gespeichert werden.'));
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
     return this.afDb.object(`/profiles/${uid}/photoURL`).set(userPhotoURL) as Promise<void>;
   }
