@@ -48,6 +48,10 @@ export class AuthService {
     return this.afAuth.auth.currentUser;
   }
 
+  public getAuthEmail(){
+    return this.afAuth.auth.currentUser.email;
+  }
+
   public logout(): Promise<void> {
     return this.afAuth.auth.signOut() as Promise<void>;
   }
