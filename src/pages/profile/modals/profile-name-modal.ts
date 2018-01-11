@@ -62,37 +62,30 @@ export class ProfileNameModalPage extends BasePage {
     // get Auth Uid
     const authUid = this.authService.getAuthUid();
 
-    await this.profileService.getProfileSubscription(authUid).then(async (data) => {
-      const currentProfileName = data.name;
-
-      // update creatorName for courses, when user set a new Profile Name
-      await this.courseService.getCoursesSubscription().then(async (data) => {
-        for (let ids of data) {
-          const courseId = ids.courseId;
-          const creatorName = ids.creatorName;
-          const creatorUid = ids.creatorUid;
-
-          if (creatorName === currentProfileName && authUid === creatorUid) {
-            this.courseService.setCourseCreatorName(courseId, this.profileNameModalForm.value.name);
-          }
-        }
-        await this.courseService.unsubscribeGetCoursesSubscription();
-      });
-
-    }).catch((err) => {
-      alert('Ein Fehler ist aufgetreten: ' + err);
-      console.log(err);
-    });
-    await this.profileService.unsubscribeGetProfileSubscription();
-
     // set profile name
     await this.profileService.setProfileName(authUid, this.profileNameModalForm.value.name)
       .then(() => {
         this.dismiss();
       }).catch((err) => {
-        this.showAlert('Profil', 'Ein Fehler ist aufgetreten.');
+        this.showAlert('Profil', 'Ein Fehler ist aufgetreten. ' + err.code + '_:' + err.message);
         console.error(err);
       });
+
+    // update creatorName for its courses, if user set a new Profile Name
+    await this.courseService.getCoursesSubscription().then(async (data) => {
+      for (let ids of data) {
+        const courseId = ids.courseId;
+        const creatorUid = ids.creatorUid;
+
+        if (authUid === creatorUid) {
+          this.courseService.setCourseCreatorName(courseId, this.profileNameModalForm.value.name);
+        }
+      }
+      await this.courseService.unsubscribeGetCoursesSubscription();
+    }).catch((err) => {
+      alert('Ein Fehler ist aufgetreten. ' + err.code + '_:' + err.message);
+      console.log(err);
+    });
     this.loading.dismiss();
   }
 
