@@ -1,57 +1,21 @@
 import {} from 'jasmine';
 import { async, TestBed, inject } from '@angular/core/testing';
-import { IonicModule, Platform } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { PlatformMock, StatusBarMock, SplashScreenMock } from '../../test-config/mocks-ionic';
+import { IonicModule } from 'ionic-angular';
 import { AuthService } from '../services/auth.service';
 import { ProfileService } from '../services/profile.service';
 import { CourseService } from '../services/course.service';
 import { Profile } from '../models/profile';
-import { MyApp } from './app.component';
+import { MyApp } from '../app/app.component';
 import { BasePage } from '../pages/base/base';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { FIREBASE_CONFIG } from './app.firebase.config';
+import { FIREBASE_CONFIG } from '../app/app.firebase.config';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { ContentService } from '../services/content.service';
 
-
 // xdescribe not to test, fdescribe to force test
-xdescribe('MyApp Component', () => {
-  let fixture;
-  let component;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MyApp],
-      imports: [
-        IonicModule.forRoot(MyApp),
-        AngularFireModule.initializeApp(FIREBASE_CONFIG),
-        AngularFireAuthModule,
-        AngularFireDatabaseModule
-      ],
-      providers: [
-        {provide: StatusBar, useClass: StatusBarMock},
-        {provide: SplashScreen, useClass: SplashScreenMock},
-        {provide: Platform, useClass: PlatformMock}
-      ]
-    })
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MyApp);
-    component = fixture.componentInstance;
-  });
-
-  it('should be created', () => {
-    expect(component instanceof MyApp).toBe(true);
-  });
-
-});
-
 // just to check how jasmine + karma unit testing works
-xdescribe('My first Test', () => {
+describe('My first Test', () => {
 
   let expected = '';
   let notExpected = '';
@@ -103,7 +67,7 @@ xdescribe('My first Test', () => {
   });
 });
 
-xdescribe('Client+Firebase AuthService and ProfileService Test', () => {
+describe('Client+Firebase AuthService and ProfileService Test', () => {
 
   beforeEach((() => {
 
@@ -332,7 +296,7 @@ describe('Client+Firebase CourseServiceTest', () => {
       let authUid = await authService.getAuthUid();
 
       // Dummy Inputs
-      let courseId = courseService.getCourseId();
+      let courseId = courseService.createCourseId();
       let title = 'Jasmine + Karma';
       let description = 'Learn how to use BDD Test Envirements.';
       let creatorName = 'Teacher 103';
@@ -392,7 +356,7 @@ describe('Client+Firebase CourseServiceTest', () => {
   });
 });
 
-xdescribe('Client+Firebase ContentServiceTest', () => {
+describe('Client+Firebase ContentServiceTest', () => {
 
   beforeEach(async(() => {
 
@@ -417,18 +381,76 @@ xdescribe('Client+Firebase ContentServiceTest', () => {
       expect(contentService).toBeTruthy();
     }));
 
-  it('should create a new Content and delete it afterwards.',
-    inject([AuthService, CourseService, ContentService], (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
-      expect(authService).toBeTruthy();
-      expect(courseService).toBeTruthy();
-      expect(contentService).toBeTruthy();
-    }));
+  it('should create a new Course, edit and delete it afterwards.',
+    inject([AuthService, CourseService, ContentService], async (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
 
-  it('should edit a new Content and delete it afterwards.',
-    inject([AuthService, CourseService, ContentService], (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
-      expect(authService).toBeTruthy();
-      expect(courseService).toBeTruthy();
-      expect(contentService).toBeTruthy();
+      await authService.login('t103@t103.t103', 't103t103');
+
+      let authUid = await authService.getAuthUid();
+
+      // Course Dummy Inputs
+      let courseId = courseService.createCourseId();
+      let title = 'Jasmine + Karma';
+      let description = 'Learn how to use BDD Test Envirements.';
+      let creatorName = 'Teacher 103';
+      let creatorUid = authUid;
+      let creatorPhotoURL = Profile.DEFAULT_PHOTOURL;
+      let titleImageId = 'ThisIsATitleImageId';
+      let titleImageName = 'test.jpg';
+      let titleImageUrl = Profile.DEFAULT_PHOTOURL;
+
+      // create course for content
+      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL, titleImageId, titleImageName, titleImageUrl);
+
+      // Content Dummy Inputs
+      let contentId = courseService.createCourseId();
+      let contentTitle = 'Jasmine + Karma';
+      let contentDescription = 'Learn how to use BDD Test Envirements.';
+      let videoName = 'test.mp4';
+      let videoUrl = Profile.DEFAULT_PHOTOURL;
+
+      // create content
+      await contentService.createContent(authUid, courseId, contentId, contentTitle, contentDescription, videoName, videoUrl);
+
+      await contentService.getContentSubscription(courseId, contentId).then((data) => {
+        let contentIdData = data.contentId;
+        let titleData = data.title;
+        let descriptionData = data.description;
+        let creatorUidData = data.creatorUid;
+        let videoIdData = data.videoId;
+        let videoNameData = data.videoName;
+        let videoUrlData = data.videoUrl;
+        expect(contentIdData).toBe(contentId);
+        expect(titleData).toBe(contentTitle);
+        expect(descriptionData).toBe(contentDescription);
+        expect(creatorUidData).toBe(creatorUid);
+        expect(videoIdData).not.toBe(undefined);
+        expect(videoNameData).toBe(videoName);
+        expect(videoUrlData).toBe(videoUrl);
+      });
+      await contentService.unsubscribeGetContentSubscription();
+
+      let newTitle = 'Angular';
+      let newDescription = 'Learn how to use Angular.';
+
+      // edit content
+      await contentService.updateContentTitleAndDescription(courseId, contentId, newTitle, newDescription);
+
+      await contentService.getContentSubscription(courseId, contentId).then( (data) => {
+        let titleData = data.title;
+        let descriptionData = data.description;
+        expect(titleData).toBe(newTitle);
+        expect(descriptionData).toBe(newDescription);
+      });
+      await contentService.unsubscribeGetContentSubscription();
+
+      // delete content
+      await contentService.deleteContent(courseId);
+
+      // delete course
+      await courseService.deleteCourse(courseId);
+
+      await authService.logout();
     }));
 
   afterEach(() => {

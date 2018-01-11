@@ -60,7 +60,7 @@ export class ProfileService {
   }
 
   public setProfileEmail(uid: string, userEmail: string): Promise<void> {
-    if(!userEmail.match(BasePage.REGEX_EMAIL)) {
+    if (!userEmail.match(BasePage.REGEX_EMAIL)) {
       return Promise.reject(new Error('Es wurde keine E Mail Adresse eingeben.'));
     }
     return this.afDb.object(`/profiles/${uid}/email`).set(userEmail) as Promise<void>;
@@ -86,6 +86,9 @@ export class ProfileService {
 
   // not used here. @injectable file.service.ts uses these methods.
   public setProfilePhotoName(uid: string, userPhotoName: string): Promise<void> {
+    if (!userPhotoName.includes('.jpg' || '.JPG' || '.jpeg' || '.JPEG' || '.png' || '.PNG')) {
+      return Promise.reject(new Error('Daten dürfen nur im jpg/jpeg oder png Format hochgeladen werden.'));
+    }
     return this.afDb.object(`/profiles/${uid}/photoName`).set(userPhotoName) as Promise<void>;
   }
 

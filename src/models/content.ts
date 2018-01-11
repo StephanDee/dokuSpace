@@ -16,9 +16,9 @@ export class Content {
   public videoUrl: string;
 
   // PDF File
-  public pdfId: string;
-  public pdfName: string;
-  public pdfUrl: string;
+  // public pdfId: string;
+  // public pdfName: string;
+  // public pdfUrl: string;
 
   // optional Attributes (the ? defines that the Attribute is optional.)
   // to get the DatabaseReference of .child(`/contents/${courseId}`);.
@@ -33,9 +33,6 @@ export class Content {
    * @param {string} videoId
    * @param {string} videoName
    * @param {string} videoUrl
-   * @param {string} pdfId
-   * @param {string} pdfName
-   * @param {string} pdfUrl
    */
   public constructor(contentId: string = null,
                      title: string = null,
@@ -43,10 +40,7 @@ export class Content {
                      creatorUid: string = null,
                      videoId: string = null,
                      videoName: string = null,
-                     videoUrl: string = null,
-                     pdfId: string = null,
-                     pdfName: string = null,
-                     pdfUrl: string = null) {
+                     videoUrl: string = null) {
     this.contentId = contentId;
     this.title = title;
     this.description = description;
@@ -54,9 +48,6 @@ export class Content {
     this.videoId = videoId;
     this.videoName = videoName;
     this.videoUrl = videoUrl;
-    this.pdfId = pdfId;
-    this.pdfName = pdfName;
-    this.pdfUrl = pdfUrl;
   }
 
 }

@@ -8,6 +8,8 @@ import {
 } from 'angularfire2/database-deprecated';
 import { Subscription } from 'rxjs/Subscription';
 import { Content } from '../models/content';
+import { BasePage } from "../pages/base/base";
+import { File } from "../models/file";
 
 @Injectable()
 export class ContentService {
@@ -72,16 +74,41 @@ export class ContentService {
     return this.afDb.list(`/contents`).push({}).key as string;
   }
 
-  public createContent(courseId: string, contentId: string, title: string, description: string): Promise<void> {
+  // used in file.service.ts
+  public createContent(authUid: string, courseId: string, contentId: string, title: string, description: string, videoName: string, videoUrl: string): Promise<void> {
+    if (courseId === null || contentId === null) {
+      return Promise.reject(new Error('KursId und Titelbild dürfen nicht null sein.'));
+    }
+    if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+    }
+    if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+    }
+    if (!videoName.includes('.mp4' || '.MP4')) {
+      return Promise.reject(new Error('Daten dürfen nur im mp4 Format hochgeladen werden.'));
+    }
+
+    const videoId = this.afDb.list(`/contents`).push({}).key;
     const content = new Content();
     content.contentId = contentId;
     content.title = title;
     content.description = description;
+    content.creatorUid = authUid;
+    content.videoId = videoId;
+    content.videoName = videoName;
+    content.videoUrl = videoUrl;
 
     return this.afDb.object(`/contents/${courseId}/${contentId}`).set(content) as Promise<void>
   }
 
   public updateContentTitleAndDescription(courseId: string, contentId: string, title: string, description: string): Promise<void> {
+    if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+    }
+    if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+    }
     return this.afDb.object(`/contents/${courseId}/${contentId}/`).update({title, description}) as Promise<void>;
   }
 

@@ -67,7 +67,7 @@ export class CourseCreateModalPage extends BasePage {
 
     // get Auth Uid
     const authUid = this.authService.getAuthUid();
-    const courseId = this.courseService.getCourseId();
+    const courseId = this.courseService.createCourseId();
 
     // get Profile Data
     this.profileService.getProfileSubscription(authUid).then(async (data) => {

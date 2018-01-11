@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Photo } from '../models/photo';
 import { Course } from '../models/course';
 import { Content } from "../models/content";
+import { File } from "../models/file";
+import { BasePage } from "../pages/base/base";
 
 @Injectable()
 export class FileService {
@@ -145,7 +147,7 @@ export class FileService {
           const courseId = ids.courseId;
           const creatorPhotoURL = ids.creatorPhotoURL;
           if (creatorPhotoURL === currentPhotoURL) {
-            this.setProfilePhotoURL(courseId, url);
+            this.setCreatorPhotoURL(courseId, url);
           }
         }
         await this.unsubscribeGetCoursesSubscription();
@@ -258,6 +260,23 @@ export class FileService {
   private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
       if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+        // validate Data
+        if (courseId === null) {
+          return Promise.reject(new Error('KursId dürfen nicht null sein.'));
+        }
+        if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+          return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+        }
+        if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+          return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+        }
+        if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
+          return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+        }
+        if (!creatorPhotoURL.match(File.DEFAULT_FILE_URL)) {
+          return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+        }
+
         const titleImageId = this.afDb.list(`/courses`).push({}).key;
         const course = new Course();
         course.courseId = courseId;
@@ -385,6 +404,17 @@ export class FileService {
   private setContentOrUpdateVideoIdURLAndName(authUid: string, fileName: string, courseId: string, contentId: string, title: string, description: string) {
     this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).getDownloadURL().then(async (url) => {
       if (title !== null && description !== null) {
+        // validate Data
+        if (courseId === null || contentId === null) {
+          return Promise.reject(new Error('KursId und ContentId dürfen nicht null sein.'));
+        }
+        if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+          return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+        }
+        if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+          return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+        }
+
         const videoId = this.afDb.list(`/contents`).push({}).key;
         const content = new Content();
         content.contentId = contentId;
@@ -514,7 +544,10 @@ export class FileService {
   }
 
   // Course Service Method.
-  private setProfilePhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
+  private setCreatorPhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
+    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
     return this.afDb.object(`/courses/${courseId}/creatorPhotoURL`).set(creatorPhotoURL) as Promise<void>;
   }
 

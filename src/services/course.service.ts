@@ -79,6 +79,9 @@ export class CourseService {
 
   // used in file.service.ts
   public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, titleImageId: string, titleImageName: string, titleImageUrl: string): Promise<void> {
+    if (courseId === null || titleImageId === null) {
+      return Promise.reject(new Error('KursId und Titelbild dürfen nicht null sein.'));
+    }
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
@@ -93,9 +96,6 @@ export class CourseService {
     }
     if (!titleImageName.includes('.jpg' || '.JPG' || '.jpeg' || '.JPEG' || '.png' || '.PNG')) {
       return Promise.reject(new Error('Daten dürfen nur im jpg/jpeg oder png Format hochgeladen werden.'));
-    }
-    if (courseId === null || titleImageId === null) {
-      return Promise.reject(new Error('KursId und Titelbild dürfen nicht null sein.'));
     }
     const course = new Course();
     course.courseId = courseId;
@@ -116,7 +116,7 @@ export class CourseService {
     return this.afDb.list(`courses/${courseId}`).remove() as Promise<void>;
   }
 
-  public getCourseId(): string {
+  public createCourseId(): string {
     return this.afDb.list(`/courses`).push({}).key as string;
   }
 
