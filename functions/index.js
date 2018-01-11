@@ -53,14 +53,19 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   const fileBucket = object.bucket;
   const bucket = gcs.bucket(fileBucket);
   const tempFilePath = `/tmp/${fileName}`;
+  const ref = admin.database().ref();
+  const file = bucket.file(filePath);
+  // this regex matches to the end of a string that contains a slash
+  // followed by zero or more or any character that is not a /slash
+  const thumbFilePath = filePath.replace(/(\/)?([^\/]*)$/, '$1thumb_$2');
 
   // IMPORTANT to stop infinite loops
-  if(fileName.startsWith('thumb_')) {
+  if (fileName.startsWith('thumb_')) {
     console.log('Already a Thumbnail.');
     return;
   }
 
-  if(!object.contentType.startsWith('image/')) {
+  if (!object.contentType.startsWith('image/')) {
     console.log('This is not an image.');
     return;
   }
@@ -81,15 +86,25 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   }).then(() => {
     // write image to storage
     console.log('Thumbnail created at', tempFilePath);
-    // this regex matches to the end of a string that contains a slash
-    // followed by zero or more or any character that is not a /slash
-    const thumbFilePath = filePath.replace(/(\/)?([^\/]*)$/,
-      '$1thumb_$2');
-
     return bucket.upload(tempFilePath, {
       destination: thumbFilePath
     });
+  }).then(() => {
+    const thumbFile = bucket.file(thumbFilePath);
+    const config = {
+      action: 'read',
+      expires: '01-01-2500' // should expire somewhere far in the future.
+    };
+    return Promise.all([
+      thumbFile.getSignedUrl(config),
+      file.getSignedUrl(config)
+    ]);
+  }).then(results => {
+    const thumbResult = results[0];
+    const originalResult = results[1];
+    const thumbFileUrl = thumbResult[0];
+    const fileUrl = originalResult[0];
+    return ref.child('thumbnails').push({path: fileUrl, thumbnail: thumbFileUrl, fileName: fileName});
   });
-
 
 });
