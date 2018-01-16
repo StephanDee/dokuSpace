@@ -67,7 +67,7 @@ export class CourseEditModalPage extends BasePage {
   }
 
   protected chooseAndUploadNewTitleImage() {
-    this.fileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null);
+    this.fileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null, null);
   }
 
   // close Modal View

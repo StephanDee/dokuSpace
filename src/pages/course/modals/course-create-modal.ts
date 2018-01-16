@@ -73,6 +73,7 @@ export class CourseCreateModalPage extends BasePage {
     this.profileService.getProfileSubscription(authUid).then(async (data) => {
       let name = data.name;
       let photoURL = data.photoURL;
+      let thumbPhotoURL = data.thumbPhotoURL;
 
       // Choose Title Image and create Course
       await this.fileService.chooseAndUploadCourseTitleImage(courseId,
@@ -80,7 +81,8 @@ export class CourseCreateModalPage extends BasePage {
         this.courseCreateModalForm.value.description,
         name,
         authUid,
-        photoURL).then(() => {
+        photoURL,
+        thumbPhotoURL).then(() => {
         this.dismiss();
       });
     }).catch((err) => {

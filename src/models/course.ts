@@ -12,11 +12,15 @@ export class Course {
   public creatorName: string;
   public creatorUid: string;
   public creatorPhotoURL: string;
+  public thumbCreatorPhotoURL: string;
 
   // Title Image
   public titleImageId: string;
   public titleImageName: string;
   public titleImageUrl: string;
+
+  // thumbnail
+  public thumbTitleImageUrl: string;
 
   // For users who choose this course to their favourites.
   // public favouriteId: string;
@@ -38,9 +42,11 @@ export class Course {
    * @param {string} creatorName
    * @param {string} creatorUid
    * @param {string} creatorPhotoURL
+   * @param {string} thumbCreatorPhotoURL
    * @param {string} titleImageId
    * @param {string} titleImageName
    * @param {string} titleImageUrl
+   * @param {string} thumbTitleImageUrl
    */
   public constructor(courseId: string = null,
                      title: string = null,
@@ -48,18 +54,22 @@ export class Course {
                      creatorName: string = null,
                      creatorUid: string = null,
                      creatorPhotoURL: string = null,
+                     thumbCreatorPhotoURL: string = null,
                      titleImageId: string = null,
                      titleImageName: string = null,
-                     titleImageUrl: string = null) {
+                     titleImageUrl: string = null,
+                     thumbTitleImageUrl: string = null) {
     this.courseId = courseId;
     this.title = title;
     this.description = description;
     this.creatorName = creatorName;
     this.creatorUid = creatorUid;
     this.creatorPhotoURL = creatorPhotoURL;
+    this.thumbCreatorPhotoURL = thumbCreatorPhotoURL;
     this.titleImageId = titleImageId;
     this.titleImageName = titleImageName;
     this.titleImageUrl = titleImageUrl;
+    this.thumbTitleImageUrl = thumbTitleImageUrl;
   }
 
 }

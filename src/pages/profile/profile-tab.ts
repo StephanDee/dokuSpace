@@ -75,8 +75,6 @@ export class ProfileTabPage extends BasePage {
 
       let photoId = data.photoId;
       let photoName = data.photoName;
-      let currentPhotoURL = data.photoURL;
-      let photoURL = Profile.DEFAULT_PHOTOURL;
 
       if (photoName !== undefined && photoId !== undefined) {
         this.fileService.deleteProfileImage(authUid, photoName);
@@ -85,9 +83,9 @@ export class ProfileTabPage extends BasePage {
         await this.courseService.getCoursesSubscription().then(async (data) => {
           for (let ids of data) {
             const courseId = ids.courseId;
-            const creatorPhotoURL = ids.creatorPhotoURL;
-            if (creatorPhotoURL === currentPhotoURL) {
-              this.courseService.setCoursePhotoURL(courseId, photoURL);
+            const creatorUid = ids.creatorUid;
+            if (authUid === creatorUid) {
+              this.courseService.updateCoursePhotoURLToDefault(courseId);
             }
           }
           await this.courseService.unsubscribeGetCoursesSubscription();
@@ -95,11 +93,14 @@ export class ProfileTabPage extends BasePage {
           console.log(err);
         });
 
-        // do not delete this data. if filename equals this data reuse ProfileUserId.
-        // this.profileService.deleteProfilePhotoId(authUid);
-        // this.profileService.setProfilePhotoName(authUid, null);
+        // delete photoId and photoName
+        this.profileService.deleteProfilePhotoId(authUid);
+        this.profileService.deleteProfilePhotoName(authUid);
 
-        this.profileService.setProfilePhotoURL(authUid, photoURL);
+        // update URL to Default
+        this.profileService.updateProfilePhotoURLToDefault(authUid);
+
+        // delete current photos entry
         this.photoService.deleteProfilePhoto(authUid, photoId);
       } else {
         this.showAlert('Profilbild', 'Es ist kein Profilbild vorhanden.')

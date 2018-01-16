@@ -114,14 +114,6 @@ export class FileService {
             let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
 
             imageStore.put(imgBlob).then((res) => {
-              this.getProfileSubscription(authUid).then(async (data) => {
-                let photoId = data.photoId;
-                let photoName = data.photoName;
-                let currentPhotoURL = data.photoURL;
-
-                this.setPhotoIdURLAndName(authUid, fileName, photoId, photoName, currentPhotoURL);
-              });
-              this.unsubscribeGetProfileSubscription();
 
               this.profileImageUploadSuccessToast();
               this.loading.dismiss();
@@ -135,44 +127,9 @@ export class FileService {
     });
   }
 
-  private setPhotoIdURLAndName(authUid: string, fileName: string, photoId: string, photoName: string, currentPhotoURL: string) {
-    this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).getDownloadURL().then(async (url) => {
-      if (photoId === undefined || photoName !== fileName) {
-        photoId = this.afDb.list(`/profiles/${authUid}`).push({}).key;
-      }
-
-      // update creatorPhotoURL for courses, when user updated photoURL
-      await this.getCoursesSubscription().then(async (data) => {
-        for (let ids of data) {
-          const courseId = ids.courseId;
-          const creatorPhotoURL = ids.creatorPhotoURL;
-          if (creatorPhotoURL === currentPhotoURL) {
-            this.setCreatorPhotoURL(courseId, url);
-          }
-        }
-        await this.unsubscribeGetCoursesSubscription();
-      });
-
-      // Profile Services
-      await this.afDb.object(`/profiles/${authUid}/`).update({photoId, photoURL: url, photoName: fileName});
-
-      // Creates a new Photo
-      const photo = new Photo();
-      photo.photoId = photoId;
-      photo.photoName = fileName;
-      photo.photoURL = url;
-
-      // Photo Services
-      this.afDb.object(`/photos/${authUid}/${photoId}`).set(photo);
-
-    }).catch((err) => {
-      alert('Ein Fehler ist aufgetregten: ' + err.code + ' _: ' + err.message);
-      console.log(err);
-    });
-  }
-
   public deleteProfileImage(authUid: string, fileName: any): Promise<void> {
-    return this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).delete() as Promise<void>;
+    return this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).delete() &&
+      this.fireStore.ref(`profiles/${authUid}/photo/thumb_${fileName}`).delete() as Promise<void>;
   }
 
   private profileImageUploadSuccessToast() {
@@ -187,18 +144,36 @@ export class FileService {
   // End: File Upload for Profile Image
 
   // Start: File Upload for Course Title Image
-  public chooseAndUploadCourseTitleImage(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
+  public chooseAndUploadCourseTitleImage(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
     return this.fileChooser.open().then((url) => {
       (<any>window).FilePath.resolveNativePath(url, (result) => {
         let nativePath: any;
         nativePath = result;
-        this.uploadCourseTitleImage(nativePath, courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
+        this.uploadCourseTitleImage(nativePath, courseId, title, description, creatorName, creatorUid, creatorPhotoURL, thumbCreatorPhotoURL);
       });
     }) as Promise<void>;
   }
 
-  private uploadCourseTitleImage(nativePath: any, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
-    if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+  private uploadCourseTitleImage(nativePath: any, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string) {
+    if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
+
+      // validate Data - only upload if Datas are correct
+      if (courseId === null) {
+        return Promise.reject(new Error('KursId dürfen nicht null sein.'));
+      }
+      if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+        return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+      }
+      if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+        return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+      }
+      if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
+        return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+      }
+      if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+        return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+      }
+
       this.createLoading('Der Kurs wird hochgeladen...');
     } else {
       this.createLoading('Titelbild wird hochgeladen...');
@@ -238,9 +213,9 @@ export class FileService {
 
             imageStore.put(imgBlob).then((res) => {
 
-              this.setCourseOrUpdateTitleImageIdURLAndName(authUid, fileName, courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
+              this.setCourseOrUpdateTitleImageIdURLAndName(authUid, fileName, courseId, title, description, creatorName, creatorUid, creatorPhotoURL, thumbCreatorPhotoURL);
 
-              if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
+              if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
                 this.createCourseUploadSuccessToast();
               } else {
                 this.titleImageUploadSuccessToast();
@@ -257,27 +232,10 @@ export class FileService {
     });
   }
 
-  private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string) {
+  private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string) {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
-      if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null) {
-        // validate Data
-        if (courseId === null) {
-          return Promise.reject(new Error('KursId dürfen nicht null sein.'));
-        }
-        if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
-          return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
-        }
-        if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
-          return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
-        }
-        if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
-          return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
-        }
-        if (!creatorPhotoURL.match(File.DEFAULT_FILE_URL)) {
-          return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
-        }
+      if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
 
-        const titleImageId = this.afDb.list(`/courses`).push({}).key;
         const course = new Course();
         course.courseId = courseId;
         course.title = title;
@@ -285,9 +243,7 @@ export class FileService {
         course.creatorName = creatorName;
         course.creatorUid = creatorUid;
         course.creatorPhotoURL = creatorPhotoURL;
-        course.titleImageId = titleImageId;
-        course.titleImageName = fileName;
-        course.titleImageUrl = url;
+        course.thumbCreatorPhotoURL = thumbCreatorPhotoURL;
 
         // Courses Services
         await this.afDb.object(`/courses/${courseId}`).set(course);
@@ -301,8 +257,6 @@ export class FileService {
         });
         await this.unsubscribeGetCourseSubscription();
 
-        // Courses Services
-        await this.afDb.object(`/courses/${courseId}/`).update({titleImageUrl: url, titleImageName: fileName});
       }
     }).catch((err) => {
       alert('Ein Fehler ist aufgetregten: ' + err.code + ' _: ' + err.message);
@@ -311,7 +265,8 @@ export class FileService {
   }
 
   public deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
-    return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() as Promise<void>;
+    return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() &&
+      this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/thumb_${fileName}`).delete() as Promise<void>;
   }
 
   private createCourseUploadSuccessToast() {
@@ -541,14 +496,6 @@ export class FileService {
   // Course Service Method.
   public unsubscribeGetCourseSubscription() {
     this.SubscriptionGetCourse.unsubscribe();
-  }
-
-  // Course Service Method.
-  private setCreatorPhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
-    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL)) {
-      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
-    }
-    return this.afDb.object(`/courses/${courseId}/creatorPhotoURL`).set(creatorPhotoURL) as Promise<void>;
   }
 
   // Course Services

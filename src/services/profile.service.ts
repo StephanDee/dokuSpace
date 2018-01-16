@@ -70,8 +70,18 @@ export class ProfileService {
     return this.afDb.object(`profiles/${uid}/emailVerified`).set(userEmailVerified) as Promise<void>;
   }
 
+  // created that method to be sure that only when photoURL is set to default photoURL === thumbPhotoURL
+  public updateProfilePhotoURLToDefault(uid: string): Promise<void> {
+    const photoURL = Profile.DEFAULT_PHOTOURL;
+
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
+    return this.afDb.object(`/profiles/${uid}`).update({photoURL: photoURL, thumbPhotoURL: photoURL}) as Promise<void>;
+  }
+
   public setProfilePhotoURL(uid: string, userPhotoURL: string): Promise<void> {
-    if (!userPhotoURL.includes(File.DEFAULT_FILE_URL)) {
+    if (!userPhotoURL.includes(File.DEFAULT_FILE_URL) && !userPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
     return this.afDb.object(`/profiles/${uid}/photoURL`).set(userPhotoURL) as Promise<void>;
@@ -94,6 +104,10 @@ export class ProfileService {
 
   public deleteProfilePhotoId(uid: string): Promise<void> {
     return this.afDb.object(`/profiles/${uid}/photoId`).remove() as Promise<void>;
+  }
+
+  public deleteProfilePhotoName(uid: string): Promise<void> {
+    return this.afDb.object(`/profiles/${uid}/photoName`).remove() as Promise<void>;
   }
 
   // app.component.spec.ts uses this test.

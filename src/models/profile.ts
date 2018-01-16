@@ -1,4 +1,3 @@
-
 /**
  * This class represents a profile of a user.
  */
@@ -23,6 +22,9 @@ export class Profile {
   public photoName: string;
   public photoURL: string;
 
+  // thumbnail
+  public thumbPhotoURL: string;
+
   // Company admin
   // public admin: boolean;
   // Company Key
@@ -40,6 +42,7 @@ export class Profile {
    * @param {string} photoId
    * @param {string} photoName
    * @param {string} photoURL
+   * @param {string} thumbPhotoURL
    */
   constructor(name: string = null,
               email: string = null,
@@ -48,7 +51,8 @@ export class Profile {
               role: string = null,
               photoId: string = null,
               photoName: string = null,
-              photoURL: string = null) {
+              photoURL: string = null,
+              thumbPhotoURL: string = null) {
     this.name = name;
     this.email = email;
     this.emailVerified = emailVerified;
@@ -57,6 +61,7 @@ export class Profile {
     this.photoId = photoId;
     this.photoName = photoName;
     this.photoURL = photoURL;
+    this.thumbPhotoURL = thumbPhotoURL;
   }
 
 }

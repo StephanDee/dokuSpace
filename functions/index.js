@@ -8,7 +8,7 @@ admin.initializeApp(functions.config().firebase);
 const ref = admin.database().ref();
 
 // storage modules
-const gcs = require('@google-cloud/storage')({keyFileName: 'dokuspace-67e76-firebase-adminsdk-6c17m-d90ed717c0.json'});
+const gcs = require('@google-cloud/storage')({keyFilename: 'dokuspace-67e76-firebase-adminsdk-6c17m-d90ed717c0.json'});
 // provides methods to execute external programms
 const spawn = require('child-process-promise').spawn;
 
@@ -30,6 +30,7 @@ exports.createProfile = functions.auth.user().onCreate(event => {
     email: email,
     emailVerified: emailVerified,
     photoURL: photoURL,
+    thumbPhotoURL: photoURL,
     superAdmin: superAdmin,
     role: role
   });
@@ -45,6 +46,40 @@ exports.deleteProfile = functions.auth.user().onDelete(event => {
   return profileRef.remove();
 });
 
+exports.updateCourseCreator = functions.database
+  .ref('/profiles/{uid}/photoURL')
+  .onUpdate(event => {
+    const uid = event.params.uid;
+    const photoURL = event.data.val();
+    console.log('das sind die Creator Infos: ', photoURL);
+    console.log('uid: ', uid);
+
+    // IMPORTANT to stop infinite loops
+    // if(creator.updated){
+    //   return;
+    // }
+    // creator.updated = true;
+
+    const ref = event.data.adminRef.root.child('/courses');
+    ref.once('value').then(function (snap) {
+      const values = snap.val();
+      console.log('Courses: ', values);
+
+      snap.forEach(function (childSnap) {
+        const key = childSnap.key;
+        const childData = childSnap.val();
+        const creatorUid = childData.creatorUid;
+        console.log('creatorUid: ', creatorUid);
+        if (uid === creatorUid) {
+          console.log('key: ', key);
+          console.log(creatorUid, ' matches.');
+        }
+      });
+
+    });
+
+  });
+
 exports.generateThumbnail = functions.storage.object().onChange(event => {
   // file data
   const object = event.data;
@@ -58,6 +93,9 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   // this regex matches to the end of a string that contains a slash
   // followed by zero or more or any character that is not a /slash
   const thumbFilePath = filePath.replace(/(\/)?([^\/]*)$/, '$1thumb_$2');
+
+  // data output
+  console.log('filePath: ', filePath);
 
   // IMPORTANT to stop infinite loops
   if (fileName.startsWith('thumb_')) {
@@ -82,7 +120,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     // resize the image
     console.log('Image downloaded locally to', tempFilePath);
     // executes the imagemagick convert cli
-    return spawn('convert', [tempFilePath, '-thumbnail', '200x200>', tempFilePath]);
+    return spawn('convert', [tempFilePath, '-thumbnail', '600x600>', tempFilePath]);
   }).then(() => {
     // write image to storage
     console.log('Thumbnail created at', tempFilePath);
@@ -90,21 +128,65 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
       destination: thumbFilePath
     });
   }).then(() => {
+    console.log('Database Configuration start.');
     const thumbFile = bucket.file(thumbFilePath);
     const config = {
       action: 'read',
       expires: '01-01-2500' // should expire somewhere far in the future.
     };
-    return Promise.all([
+    return Promise.all([ // returns an array of promisses
       thumbFile.getSignedUrl(config),
       file.getSignedUrl(config)
     ]);
   }).then(results => {
+    console.log('URL reference will be deployed to the database.');
     const thumbResult = results[0];
     const originalResult = results[1];
     const thumbFileUrl = thumbResult[0];
     const fileUrl = originalResult[0];
-    return ref.child('thumbnails').push({path: fileUrl, thumbnail: thumbFileUrl, fileName: fileName});
+
+    // get profileUid and courseId from filePath
+    const profileUid = filePath.split('/')[1];
+    const courseId = filePath.split('/')[3];
+
+    // get new id
+    const key = ref.push({}).key;
+
+    // profile photoURL -> profiles
+    if (filePath.includes('profiles/') && filePath.includes('/photo/')) {
+      return ref.child(`/profiles/${profileUid}`).update({
+          photoId: key,
+          photoURL: fileUrl,
+          thumbPhotoURL: thumbFileUrl,
+          photoName: fileName
+        }) &&
+        ref.child(`/photos/${profileUid}/${key}`).set({
+          photoId: key,
+          photoURL: fileUrl,
+          thumbPhotoURL: thumbFileUrl,
+          photoName: fileName
+        });
+    }
+
+    // course titleImageUrl -> courses
+    if (filePath.includes('profiles/') && filePath.includes('/courses/')) {
+      return ref.child(`/courses/${courseId}`).update({
+        titleImageId: key,
+        titleImageUrl: fileUrl,
+        thumbTitleImageUrl: thumbFileUrl,
+        titleImageName: fileName
+      });
+    }
+
+    // if content titleImageUrl -> content ONLY VIDEO
+    // return ref.child(`/content/${courseId}/${contentId}`).push({thumbPhotoURL: thumbFileUrl, thumbFileName: fileName});
+
+    // if filePath matches nothing
+    return ref.child(`/thumbnails/${profileUid}`).push({
+      OriginalFileUrl: fileUrl,
+      thumbnailFileUrl: thumbFileUrl,
+      fileName: fileName
+    });
   });
 
 });

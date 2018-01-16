@@ -244,7 +244,7 @@ describe('Client+Firebase AuthService and ProfileService Test', () => {
       // set all back to default
       await profileService.setProfileEmail(authUid, currentEmail);
       await profileService.setProfileEmailVerified(authUid, false);
-      await profileService.setProfilePhotoURL(authUid, Profile.DEFAULT_PHOTOURL);
+      await profileService.updateProfilePhotoURLToDefault(authUid);
       // and check
       await profileService.getProfileSubscription(authUid).then((data) => {
         let email = data.email;

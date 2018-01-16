@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Course } from '../models/course';
 import { File } from '../models/file';
 import { BasePage } from "../pages/base/base";
+import { Profile } from "../models/profile";
 
 @Injectable()
 export class CourseService {
@@ -91,7 +92,7 @@ export class CourseService {
     if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
-    if (!creatorPhotoURL.match(File.DEFAULT_FILE_URL) || !titleImageUrl.match(File.DEFAULT_FILE_URL)) {
+    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) || !titleImageUrl.includes(File.DEFAULT_FILE_URL)) {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
     if (!titleImageName.includes('.jpg' || '.JPG' || '.jpeg' || '.JPEG' || '.png' || '.PNG')) {
@@ -120,11 +121,14 @@ export class CourseService {
     return this.afDb.list(`/courses`).push({}).key as string;
   }
 
-  public setCoursePhotoURL(courseId: string, creatorPhotoURL: string): Promise<void> {
-    if (!creatorPhotoURL.match(File.DEFAULT_FILE_URL)) {
-      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+  // created that method to be sure that only when photoURL is set to default creatorPhotoURL === thumbCreatorPhotoURL
+  public updateCoursePhotoURLToDefault(courseId: string): Promise<void> {
+    const photoURL = Profile.DEFAULT_PHOTOURL;
+
+    if (courseId === null) {
+      return Promise.reject(new Error('CourseId darf nicht null sein.'));
     }
-    return this.afDb.object(`/courses/${courseId}/creatorPhotoURL`).set(creatorPhotoURL) as Promise<void>;
+    return this.afDb.object(`/courses/${courseId}`).update({creatorPhotoURL: photoURL, thumbCreatorPhotoURL: photoURL}) as Promise<void>;
   }
 
   public setCourseCreatorName(courseId: string, creatorName: string): Promise<void> {
@@ -142,6 +146,13 @@ export class CourseService {
       return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
     }
     return this.afDb.object(`/courses/${courseId}/`).update({title, description}) as Promise<void>;
+  }
+
+  public updateCreatorPhotoURL(courseId: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
+    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
+    return this.afDb.object(`/courses/${courseId}`).update({creatorPhotoURL: creatorPhotoURL, thumbCreatorPhotoURL: thumbCreatorPhotoURL}) as Promise<void>;
   }
 
 }

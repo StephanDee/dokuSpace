@@ -28,13 +28,13 @@
       <ion-card *ngFor="let course of courseListData | async">
         <ion-item>
           <ion-avatar item-start>
-            <img src="{{course.creatorPhotoURL}}">
+            <img src="{{course.thumbCreatorPhotoURL}}">
           </ion-avatar>
           <h2>{{course.creatorName}}</h2>
         </ion-item>
         <br>
 
-        <img src="{{course.titleImageUrl}}" (click)="openCourseContentListPage(course);">
+        <img src="{{course.thumbTitleImageUrl}}" (click)="openCourseContentListPage(course);">
 
         <ion-card-content>
           <h2>{{course.title}}</h2>
@@ -58,7 +58,7 @@
       <ion-card *ngFor="let myCourse of myCourseListData | async">
         <ion-item>
           <ion-avatar item-start>
-            <img src="{{myCourse.creatorPhotoURL}}">
+            <img src="{{myCourse.thumbCreatorPhotoURL}}">
           </ion-avatar>
           <h2>{{myCourse.creatorName}}</h2>
         </ion-item>
