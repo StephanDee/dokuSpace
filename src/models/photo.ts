@@ -1,6 +1,9 @@
 
 /**
  * This class represents a Photo of a user.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 export class Photo {
 

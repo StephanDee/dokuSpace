@@ -112,10 +112,12 @@ describe('Client+Firebase AuthService and ProfileService Test', () => {
         let email = data.email;
         let emailVerified = data.emailVerified;
         let photoURL = data.photoURL;
+        let thumbPhotoURL = data.thumbPhotoURL;
         let superAdmin = data.superAdmin;
         expect(email).toBe('t99@t99.t99');
         expect(emailVerified).toBeFalsy();
         expect(photoURL).toBe(Profile.DEFAULT_PHOTOURL);
+        expect(thumbPhotoURL).toBe(Profile.DEFAULT_PHOTOURL);
         expect(superAdmin).toBeFalsy();
       });
       await profileService.unsubscribeGetProfileSubscription();
@@ -203,7 +205,7 @@ describe('Client+Firebase AuthService and ProfileService Test', () => {
       // }).toThrow(new Error('Name muss mind. 1 und max. 25 Zeichen lang sein.'));
 
       // set back to Default
-      await profileService.deleteProfileName(authUid);
+      await profileService.deleteProfileNameTESTONLY(authUid);
       await profileService.getProfileSubscription(authUid).then((data) => {
         let name = data.name;
         expect(name).not.toBeDefined();
@@ -218,7 +220,7 @@ describe('Client+Firebase AuthService and ProfileService Test', () => {
 
       let currentEmail = 't100@t100.t100';
       let newEmail = 't101@t101.t101';
-      let newPhotoURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/profiles/test.jpg';
+      let newPhotoURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/test.JPG';
 
       // login test account
       await authService.login('t100@t100.t100', 't100t100');
@@ -302,11 +304,8 @@ describe('Client+Firebase CourseServiceTest', () => {
       let creatorName = 'Teacher 103';
       let creatorUid = authUid;
       let creatorPhotoURL = Profile.DEFAULT_PHOTOURL;
-      let titleImageId = 'ThisIsATitleImageId';
-      let titleImageName = 'test.jpg';
-      let titleImageUrl = Profile.DEFAULT_PHOTOURL;
 
-      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL, titleImageId, titleImageName, titleImageUrl);
+      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
 
       await courseService.getCourseSubscription(courseId).then((data) => {
         let courseIdData = data.courseId;
@@ -315,18 +314,12 @@ describe('Client+Firebase CourseServiceTest', () => {
         let creatorNameData = data.creatorName;
         let creatorUidData = data.creatorUid;
         let creatorPhotoURLData = data.creatorPhotoURL;
-        let titleImageIdData = data.titleImageId;
-        let titleImageNameData = data.titleImageName;
-        let titleImageUrlData = data.titleImageUrl;
         expect(courseIdData).toBe(courseId);
         expect(titleData).toBe(title);
         expect(descriptionData).toBe(description);
         expect(creatorNameData).toBe(creatorName);
         expect(creatorUidData).toBe(creatorUid);
         expect(creatorPhotoURLData).toBe(creatorPhotoURL);
-        expect(titleImageIdData).toBe(titleImageId);
-        expect(titleImageNameData).toBe(titleImageName);
-        expect(titleImageUrlData).toBe(titleImageUrl);
       });
       await courseService.unsubscribeGetCourseSubscription();
 
@@ -381,7 +374,7 @@ describe('Client+Firebase ContentServiceTest', () => {
       expect(contentService).toBeTruthy();
     }));
 
-  it('should create a new Course, edit and delete it afterwards.',
+  it('should create a new Course, then create a Content edit it and delete both afterwards.',
     inject([AuthService, CourseService, ContentService], async (authService: AuthService, courseService: CourseService, contentService: ContentService) => {
 
       await authService.login('t103@t103.t103', 't103t103');
@@ -395,12 +388,9 @@ describe('Client+Firebase ContentServiceTest', () => {
       let creatorName = 'Teacher 103';
       let creatorUid = authUid;
       let creatorPhotoURL = Profile.DEFAULT_PHOTOURL;
-      let titleImageId = 'ThisIsATitleImageId';
-      let titleImageName = 'test.jpg';
-      let titleImageUrl = Profile.DEFAULT_PHOTOURL;
 
       // create course for content
-      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL, titleImageId, titleImageName, titleImageUrl);
+      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
 
       // Content Dummy Inputs
       let contentId = courseService.createCourseId();

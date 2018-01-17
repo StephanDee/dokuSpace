@@ -1,5 +1,8 @@
 /**
  * This class represents a course.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 
 export class Course {

@@ -74,6 +74,20 @@ export class ContentService {
     return this.afDb.list(`/contents`).push({}).key as string;
   }
 
+  public updateContentTitleAndDescription(courseId: string, contentId: string, title: string, description: string): Promise<void> {
+    if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+    }
+    if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+    }
+    return this.afDb.object(`/contents/${courseId}/${contentId}/`).update({title, description}) as Promise<void>;
+  }
+
+  public deleteContent(courseId: string): Promise<void> {
+    return this.afDb.object(`contents/${courseId}`).remove() as Promise<void>;
+  }
+
   // used in file.service.ts
   public createContent(authUid: string, courseId: string, contentId: string, title: string, description: string, videoName: string, videoUrl: string): Promise<void> {
     if (courseId === null || contentId === null) {
@@ -100,20 +114,6 @@ export class ContentService {
     content.videoUrl = videoUrl;
 
     return this.afDb.object(`/contents/${courseId}/${contentId}`).set(content) as Promise<void>
-  }
-
-  public updateContentTitleAndDescription(courseId: string, contentId: string, title: string, description: string): Promise<void> {
-    if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
-      return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
-    }
-    if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
-      return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
-    }
-    return this.afDb.object(`/contents/${courseId}/${contentId}/`).update({title, description}) as Promise<void>;
-  }
-
-  public deleteContent(courseId: string): Promise<void> {
-    return this.afDb.object(`contents/${courseId}`).remove() as Promise<void>;
   }
 
 }

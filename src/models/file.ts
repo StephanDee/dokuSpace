@@ -1,6 +1,8 @@
-
 /**
  * This class represents a File.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 export class File {
 

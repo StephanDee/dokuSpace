@@ -1,17 +1,17 @@
 import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
-import * as firebase from "firebase";
+import * as firebase from 'firebase';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { FileChooser } from '@ionic-native/file-chooser';
-import { LoadingController, ToastController } from "ionic-angular";
+import { LoadingController, ToastController } from 'ionic-angular';
 import { Profile } from '../models/profile';
 import { Subscription } from 'rxjs/Subscription';
 import { Photo } from '../models/photo';
 import { Course } from '../models/course';
-import { Content } from "../models/content";
-import { File } from "../models/file";
-import { BasePage } from "../pages/base/base";
+import { Content } from '../models/content';
+import { File } from '../models/file';
+import { BasePage } from '../pages/base/base';
 
 @Injectable()
 export class FileService {
@@ -75,15 +75,13 @@ export class FileService {
         let reader = new FileReader();
         reader.readAsArrayBuffer(resFile);
 
-        reader.onload = (event: any) => {
+        reader.onload = async (event: any) => {
 
           // get file name
-          let partsOfUrl = nativePath.split('/');
-          let fileName = partsOfUrl.pop() || partsOfUrl.pop();
+          let fileName = nativePath.split('/').pop();
 
           // get file type
-          let getFileType = nativePath.split('.');
-          let fileType = getFileType.pop() || getFileType.pop();
+          let fileType = nativePath.split('.').pop();
 
           if (fileType !== ('jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG')) {
             this.loading.dismiss();
@@ -92,14 +90,20 @@ export class FileService {
             let authUid = this.getAuthUid();
             let imgBlob;
 
-            // if photoName already used, delete PhotoEntry from Database. File will be automatically overwritten in Storage.
-            this.getPhotoSubscription(authUid).then(async (data) => {
+            // if photoName already used, delete PhotoEntry from Database and File from Storage.
+            // File will be automatically overwritten in Storage, but the Cloud Function laggs executing
+            // if File already exist
+            await this.getPhotoSubscription(authUid).then(async (data) => {
               for (let ids of data) {
                 const photoId = ids.photoId;
                 const photoName = ids.photoName;
                 if (photoName === fileName) {
                   // alert('Photo to delete: ' + photoName);
                   this.deleteProfilePhoto(authUid, photoId);
+
+                  // should not be needed like in the other uploaders,
+                  // but somehow it reduces the lag of uploading the new File
+                  this.deleteProfileImage(authUid, fileName);
                 }
               }
               await this.unsubscribeGetPhotoSubscription();
@@ -113,7 +117,7 @@ export class FileService {
             }
             let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
 
-            imageStore.put(imgBlob).then((res) => {
+            await imageStore.put(imgBlob).then((res) => {
 
               this.profileImageUploadSuccessToast();
               this.loading.dismiss();
@@ -188,12 +192,10 @@ export class FileService {
         reader.onload = (event: any) => {
 
           // get file name
-          let partsOfUrl = nativePath.split('/');
-          let fileName = partsOfUrl.pop() || partsOfUrl.pop();
+          let fileName = nativePath.split('/').pop();
 
           // get file type
-          let getFileType = nativePath.split('.');
-          let fileType = getFileType.pop() || getFileType.pop();
+          let fileType = nativePath.split('.').pop();
 
           if (fileType !== ('jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG')) {
             this.loading.dismiss();
@@ -317,12 +319,10 @@ export class FileService {
         reader.onload = (event: any) => {
 
           // get file name
-          let partsOfUrl = nativePath.split('/');
-          let fileName = partsOfUrl.pop() || partsOfUrl.pop();
+          let fileName = nativePath.split('/').pop();
 
           // get file type
-          let getFileType = nativePath.split('.');
-          let fileType = getFileType.pop() || getFileType.pop();
+          let fileType = nativePath.split('.').pop();
 
           if (fileType !== ('mp4' || 'MP4')) {
             this.loading.dismiss();

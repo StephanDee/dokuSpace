@@ -1,3 +1,11 @@
+/**
+ * Cloud Functions. In here all Cloud Functions are deployed.
+ * The Code of the Cloud Functions will not be used on the Client-Side.
+ * It'll be deployed to the dokuSpace Firebase Cloud and triggers events from there.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 'use strict';
 // firebase modules
 const functions = require('firebase-functions');
@@ -12,6 +20,13 @@ const gcs = require('@google-cloud/storage')({keyFilename: 'dokuspace-67e76-fire
 // provides methods to execute external programms
 const spawn = require('child-process-promise').spawn;
 
+/**
+ * Triggers onCreate Authentication events.
+ * After Registration a new Profile Reference in the Database
+ * will be deployed for the authenticated User.
+ *
+ * @type {CloudFunction<UserRecord>}
+ */
 exports.createProfile = functions.auth.user().onCreate(event => {
   // user data
   const uid = event.data.uid;
@@ -36,6 +51,13 @@ exports.createProfile = functions.auth.user().onCreate(event => {
   });
 });
 
+/**
+ * Triggers onDelete Authentication events.
+ * After a Deletion of a User The Profile Reference
+ * in the Database will be deleted.
+ *
+ * @type {CloudFunction<UserRecord>}
+ */
 exports.deleteProfile = functions.auth.user().onDelete(event => {
   // user data
   const uid = event.data.uid;
@@ -46,40 +68,90 @@ exports.deleteProfile = functions.auth.user().onDelete(event => {
   return profileRef.remove();
 });
 
-exports.updateCourseCreator = functions.database
+/**
+ * Triggers onUpdate Database events.
+ * After the photoURL of a Profile is changed,
+ * this method checks all courses for the same
+ * creatorUid and updates the creatorPhotoURL.
+ * Otherwise it'll change nothing.
+ *
+ * @type {CloudFunction<DeltaSnapshot>}
+ */
+exports.updateCourseCreatorPhotoURL = functions.database
   .ref('/profiles/{uid}/photoURL')
   .onUpdate(event => {
     const uid = event.params.uid;
     const photoURL = event.data.val();
-    console.log('das sind die Creator Infos: ', photoURL);
-    console.log('uid: ', uid);
-
-    // IMPORTANT to stop infinite loops
-    // if(creator.updated){
-    //   return;
-    // }
-    // creator.updated = true;
 
     const ref = event.data.adminRef.root.child('/courses');
     ref.once('value').then(function (snap) {
-      const values = snap.val();
-      console.log('Courses: ', values);
+      // const values = snap.val();
+      // console.log('Courses: ', values);
 
-      snap.forEach(function (childSnap) {
-        const key = childSnap.key;
+      return snap.forEach(function (childSnap) {
+        const courseId = childSnap.key;
         const childData = childSnap.val();
         const creatorUid = childData.creatorUid;
-        console.log('creatorUid: ', creatorUid);
         if (uid === creatorUid) {
-          console.log('key: ', key);
-          console.log(creatorUid, ' matches.');
+          console.log('The creatorUid: ', creatorUid, ' matches.');
+          console.log('The Creator Photo of the courseId: ', courseId, ' will be updated.');
+
+          ref.child(`/${courseId}`).update({
+            creatorPhotoURL: photoURL
+          });
         }
       });
-
     });
-
   });
 
+/**
+ * Triggers onUpdate Database events.
+ * After the ThumbPhotoURL of a Profile is changed,
+ * this method checks all courses for the same
+ * creatorUid and updates the thumbCreatorPhotoURL.
+ * Otherwise it'll change nothing.
+ *
+ * @type {CloudFunction<DeltaSnapshot>}
+ */
+exports.updateCourseCreatorThumbPhotoURL = functions.database
+  .ref('/profiles/{uid}/thumbPhotoURL')
+  .onUpdate(event => {
+    const uid = event.params.uid;
+    const thumbPhotoURL = event.data.val();
+
+    const ref = event.data.adminRef.root.child('/courses');
+    ref.once('value').then(function (snap) {
+      // const values = snap.val();
+      // console.log('Courses: ', values);
+
+      return snap.forEach(function (childSnap) {
+        const courseId = childSnap.key;
+        const childData = childSnap.val();
+        const creatorUid = childData.creatorUid;
+
+        if (uid === creatorUid) {
+          console.log('The creatorUid: ', creatorUid, ' matches.');
+          console.log('The Creator Thumbnail of the courseId: ', courseId, ' will be updated.');
+
+          ref.child(`/${courseId}`).update({
+            thumbCreatorPhotoURL: thumbPhotoURL
+          });
+        }
+      });
+    });
+  });
+
+/**
+ * Triggers onChange Storage events.
+ * After a File is putted into the Storage,
+ * it'll check if it was a Deletion,
+ * not an Image and if a thumbnail of the File already exist.
+ * If so, it'll return nothing.
+ * Otherwise this method will return a converted Version of the File,
+ * and puts a Database Reference.
+ *
+ * @type {CloudFunction<ObjectMetadata>}
+ */
 exports.generateThumbnail = functions.storage.object().onChange(event => {
   // file data
   const object = event.data;
@@ -90,24 +162,27 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   const tempFilePath = `/tmp/${fileName}`;
   const ref = admin.database().ref();
   const file = bucket.file(filePath);
-  // this regex matches to the end of a string that contains a slash
+
+  // This REGEX matches to the end of a string that contains a slash
   // followed by zero or more or any character that is not a /slash
   const thumbFilePath = filePath.replace(/(\/)?([^\/]*)$/, '$1thumb_$2');
 
   // data output
   console.log('filePath: ', filePath);
 
-  // IMPORTANT to stop infinite loops
+  // IMPORTANT: check that thumbnails exist, to stop infinite loops
   if (fileName.startsWith('thumb_')) {
     console.log('Already a Thumbnail.');
     return;
   }
 
+  // only images will be converted
   if (!object.contentType.startsWith('image/')) {
     console.log('This is not an image.');
     return;
   }
 
+  // deletion events should be ignored
   if (object.resourceState === 'not_exists') {
     console.log('This is a deletion event.');
     return;
@@ -128,7 +203,8 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
       destination: thumbFilePath
     });
   }).then(() => {
-    console.log('Database Configuration start.');
+    // Thumbnail Configurations
+    console.log('Thumbnail Configuration start.');
     const thumbFile = bucket.file(thumbFilePath);
     const config = {
       action: 'read',
@@ -139,7 +215,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
       file.getSignedUrl(config)
     ]);
   }).then(results => {
-    console.log('URL reference will be deployed to the database.');
+    console.log('URL Reference will be deployed to the Database.');
     const thumbResult = results[0];
     const originalResult = results[1];
     const thumbFileUrl = thumbResult[0];
@@ -178,8 +254,15 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
       });
     }
 
-    // if content titleImageUrl -> content ONLY VIDEO
-    // return ref.child(`/content/${courseId}/${contentId}`).push({thumbPhotoURL: thumbFileUrl, thumbFileName: fileName});
+    // content videoUrl -> contents ONLY VIDEO
+    // if (filePath.includes('/profiles/') && filePath.includes('/contents/')) {
+    // return ref.child(`/content/${courseId}/${contentId}`).update({
+    // videoId: key,
+    // videoURL: fileUrl,
+    // thumbVideoURL: thumbFileUrl,
+    // videoName: fileName
+    // });
+    // }
 
     // if filePath matches nothing
     return ref.child(`/thumbnails/${profileUid}`).push({

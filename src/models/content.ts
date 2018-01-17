@@ -1,5 +1,8 @@
 /**
  * This class represents a content.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 export class Content {
 

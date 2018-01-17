@@ -78,47 +78,15 @@ export class CourseService {
     this.getCoursesSubSubscription.unsubscribe();
   }
 
-  // used in file.service.ts
-  public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, titleImageId: string, titleImageName: string, titleImageUrl: string): Promise<void> {
-    if (courseId === null || titleImageId === null) {
-      return Promise.reject(new Error('KursId und Titelbild dürfen nicht null sein.'));
-    }
-    if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
-      return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
-    }
-    if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
-      return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
-    }
+  public createCourseId(): string {
+    return this.afDb.list(`/courses`).push({}).key as string;
+  }
+
+  public setCourseCreatorName(courseId: string, creatorName: string): Promise<void> {
     if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
-    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) || !titleImageUrl.includes(File.DEFAULT_FILE_URL)) {
-      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
-    }
-    if (!titleImageName.includes('.jpg' || '.JPG' || '.jpeg' || '.JPEG' || '.png' || '.PNG')) {
-      return Promise.reject(new Error('Daten dürfen nur im jpg/jpeg oder png Format hochgeladen werden.'));
-    }
-    const course = new Course();
-    course.courseId = courseId;
-    course.title = title;
-    course.description = description;
-    course.creatorName = creatorName;
-    course.creatorUid = creatorUid;
-    course.creatorPhotoURL = creatorPhotoURL;
-    course.titleImageId = titleImageId;
-    course.titleImageName = titleImageName;
-    course.titleImageUrl = titleImageUrl;
-
-    return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
-  }
-
-  // used in test
-  public deleteCourse(courseId: string): Promise<void> {
-    return this.afDb.list(`courses/${courseId}`).remove() as Promise<void>;
-  }
-
-  public createCourseId(): string {
-    return this.afDb.list(`/courses`).push({}).key as string;
+    return this.afDb.object(`/courses/${courseId}/creatorName`).set(creatorName) as Promise<void>;
   }
 
   // created that method to be sure that only when photoURL is set to default creatorPhotoURL === thumbCreatorPhotoURL
@@ -131,13 +99,6 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}`).update({creatorPhotoURL: photoURL, thumbCreatorPhotoURL: photoURL}) as Promise<void>;
   }
 
-  public setCourseCreatorName(courseId: string, creatorName: string): Promise<void> {
-    if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
-      return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
-    }
-    return this.afDb.object(`/courses/${courseId}/creatorName`).set(creatorName) as Promise<void>;
-  }
-
   public updateCourseTitleAndDescription(courseId: string, title: string, description: string): Promise<void> {
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
@@ -148,6 +109,40 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}/`).update({title, description}) as Promise<void>;
   }
 
+  // used in test
+  public deleteCourse(courseId: string): Promise<void> {
+    return this.afDb.list(`courses/${courseId}`).remove() as Promise<void>;
+  }
+
+  // used in file.service.ts
+  public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
+    if (courseId === null) {
+      return Promise.reject(new Error('KursId darf nicht null sein.'));
+    }
+    if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+    }
+    if (description.length < 1 || description.length > 255 || !description.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Beschreibung muss mind. 1 und max. 255 Zeichen lang und nicht leer sein.'));
+    }
+    if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
+      return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
+    }
+    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
+    const course = new Course();
+    course.courseId = courseId;
+    course.title = title;
+    course.description = description;
+    course.creatorName = creatorName;
+    course.creatorUid = creatorUid;
+    course.creatorPhotoURL = creatorPhotoURL;
+
+    return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
+  }
+
+  // not needed anymore, outsourced to Cloud Functions
   public updateCreatorPhotoURL(courseId: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
     if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));

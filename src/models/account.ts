@@ -1,5 +1,8 @@
 /**
  * This class represents a company account.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 export class Account {
 

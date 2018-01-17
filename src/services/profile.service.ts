@@ -70,23 +70,6 @@ export class ProfileService {
     return this.afDb.object(`profiles/${uid}/emailVerified`).set(userEmailVerified) as Promise<void>;
   }
 
-  // created that method to be sure that only when photoURL is set to default photoURL === thumbPhotoURL
-  public updateProfilePhotoURLToDefault(uid: string): Promise<void> {
-    const photoURL = Profile.DEFAULT_PHOTOURL;
-
-    if (uid === null) {
-      return Promise.reject(new Error('User ID darf nicht null sein.'));
-    }
-    return this.afDb.object(`/profiles/${uid}`).update({photoURL: photoURL, thumbPhotoURL: photoURL}) as Promise<void>;
-  }
-
-  public setProfilePhotoURL(uid: string, userPhotoURL: string): Promise<void> {
-    if (!userPhotoURL.includes(File.DEFAULT_FILE_URL) && !userPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
-      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
-    }
-    return this.afDb.object(`/profiles/${uid}/photoURL`).set(userPhotoURL) as Promise<void>;
-  }
-
   public setProfileRole(uid: string, userRole: string): Promise<void> {
     if (userRole !== Profile.ROLE_STUDENT && userRole !== Profile.ROLE_TEACHER) {
       return Promise.reject(new Error('Es gibt nur die Rolle Student und Teacher.'));
@@ -102,6 +85,16 @@ export class ProfileService {
     return this.afDb.object(`/profiles/${uid}/photoName`).set(userPhotoName) as Promise<void>;
   }
 
+  // created that method to be sure that only when photoURL is set to default photoURL === thumbPhotoURL
+  public updateProfilePhotoURLToDefault(uid: string): Promise<void> {
+    const photoURL = Profile.DEFAULT_PHOTOURL;
+
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
+    return this.afDb.object(`/profiles/${uid}`).update({photoURL: photoURL, thumbPhotoURL: photoURL}) as Promise<void>;
+  }
+
   public deleteProfilePhotoId(uid: string): Promise<void> {
     return this.afDb.object(`/profiles/${uid}/photoId`).remove() as Promise<void>;
   }
@@ -110,8 +103,16 @@ export class ProfileService {
     return this.afDb.object(`/profiles/${uid}/photoName`).remove() as Promise<void>;
   }
 
-  // app.component.spec.ts uses this test.
-  public deleteProfileName(uid: string): Promise<void> {
+  // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
+  public setProfilePhotoURL(uid: string, userPhotoURL: string): Promise<void> {
+    if (!userPhotoURL.includes(File.DEFAULT_FILE_URL) && !userPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
+    return this.afDb.object(`/profiles/${uid}/photoURL`).set(userPhotoURL) as Promise<void>;
+  }
+
+  // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
+  public deleteProfileNameTESTONLY(uid: string): Promise<void> {
     return this.afDb.object(`/profiles/${uid}/name`).set(null) as Promise<void>;
   }
 
