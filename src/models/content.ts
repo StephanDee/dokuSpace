@@ -1,5 +1,5 @@
 /**
- * This class represents a content.
+ * This class represents a Content of a Course.
  *
  * @author Stephan Dünkel
  * @copyright dokuSpace 2018
@@ -28,14 +28,15 @@ export class Content {
   public $key?: string;
 
   /**
+   * The Constructor of Contents.
    *
-   * @param {string} contentId
-   * @param {string} title
-   * @param {string} description
-   * @param {string} creatorUid
-   * @param {string} videoId
-   * @param {string} videoName
-   * @param {string} videoUrl
+   * @param {string} contentId The Content ID, unique Reference
+   * @param {string} title The Content Title
+   * @param {string} description The Content Description
+   * @param {string} creatorUid The Content CreatorUid, unique Reference of the Creator
+   * @param {string} videoId The Content Video ID, unique Reference to the VideoFile
+   * @param {string} videoName The Content Video Name, File Name
+   * @param {string} videoUrl The Content Video Url, Reference to the File
    */
   public constructor(contentId: string = null,
                      title: string = null,

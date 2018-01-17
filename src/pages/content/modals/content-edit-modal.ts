@@ -8,7 +8,10 @@ import { BasePage } from '../../base/base';
 import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 
 /**
- * This class represents the Course Create Modal Page.
+ * This class represents the Course Edit Modal Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-content-edit-modal',
@@ -17,26 +20,28 @@ import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 })
 export class ContentEditModalPage extends BasePage {
 
+  // Attributes
   protected courseId: string;
   protected contentId: string;
   protected contentEditModalForm: FormGroup;
   protected contentData: FirebaseObjectObservable<Content>;
 
   /**
+   * The Constructor of the Content Edit Modal Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {ViewController} viewCtrl
-   * @param {NavParams} navParams
-   * @param {FormBuilder} formBuilder
-   * @param {ContentService} contentService
-   * @param {FileService} fileService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ViewController} viewCtrl The View Controller, for this Modal Page
+   * @param {NavParams} navParams The Navigation Controller, provides Parameter from other Pages
+   * @param {FormBuilder} formBuilder, The Form Builder, used to create validation
+   * @param {ContentService} contentService The Content Service, provides Methods for Contents
+   * @param {FileService} fileService The File Service, provides Methods for Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
-              public viewCtrl: ViewController,
+              protected viewCtrl: ViewController,
               protected navParams: NavParams,
               protected formBuilder: FormBuilder,
               private contentService: ContentService,
@@ -44,7 +49,11 @@ export class ContentEditModalPage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads Parameter from the previous Page and Contents to display on the HTML.
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Content wird bearbeitet...');
     this.courseId = this.navParams.get('courseId');
     this.contentId = this.navParams.get('contentId');
@@ -54,7 +63,7 @@ export class ContentEditModalPage extends BasePage {
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.contentEditModalForm = this.formBuilder.group({
@@ -63,16 +72,24 @@ export class ContentEditModalPage extends BasePage {
     });
   }
 
+  /**
+   * Edit Title and Description.
+   */
   protected editContentTitleAndDescription() {
     this.contentService.updateContentTitleAndDescription(this.courseId, this.contentId, this.contentEditModalForm.value.title, this.contentEditModalForm.value.description);
     this.dismiss();
   }
 
+  /**
+   * Choose and Upload new Video.
+   */
   protected chooseAndUploadNewVideo() {
     this.fileService.chooseAndUploadContentVideo(this.courseId, this.contentId, null, null);
   }
 
-  // close Modal View
+  /**
+   * close Mdal View
+   */
   protected dismiss() {
     this.viewCtrl.dismiss();
   }

@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController } from 'ionic-angular';
 
 /**
- * This class represents the basepage of all pages.
+ * This class represents the Base Page of all Pages.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-base',
@@ -18,7 +21,11 @@ export class BasePage implements OnInit {
   public loading: any;
 
   /**
-   * Contructor of basepage.
+   * The Constructor of Base Page.
+   *
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -28,21 +35,32 @@ export class BasePage implements OnInit {
   /**
    * OnInit.
    */
-  ngOnInit() {
+  ngOnInit() {}
 
-  }
-
-  // For secondary Pages
+  /**
+   * Return to Root Page for secondary Pages.
+   */
   protected goToRootPage() {
     this.navCtrl.popToRoot();
   }
 
+  /**
+   * Creates a Loading Screen.
+   *
+   * @param {string} text The Text in the Loading Screen
+   */
   protected createLoading(text: string) {
     this.loading = this.loadingCtrl.create({
       content: text
     });
   }
 
+  /**
+   * Creates an Alert.
+   *
+   * @param {string} title The Title of the Alert
+   * @param {string} message The Message of the Alert
+   */
   protected showAlert(title: string, message: string) {
     let alert = this.alertCtrl.create({
       title: title,
@@ -52,6 +70,14 @@ export class BasePage implements OnInit {
     alert.present();
   }
 
+  /**
+   * Creates a Confirmation Screen.
+   *
+   * @param {string} title The Title of the Cofirmation
+   * @param {string} message The Message of the Confirmation
+   * @param cancelHandler The Cancel Handler, activated if Cancel was pushed
+   * @param agreeHandler The Agree Handler, activated if Agree was pushed
+   */
   protected showConfirm(title: string, message: string, cancelHandler, agreeHandler) {
     let confirm = this.alertCtrl.create({
       title: title,

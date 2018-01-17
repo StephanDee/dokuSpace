@@ -10,6 +10,13 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { FIREBASE_CONFIG } from '../app/app.firebase.config';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 
+/**
+ * app.component Test Spec.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
+
 // xdescribe not to test, fdescribe to force test
 describe('MyApp Component', () => {
   let fixture;

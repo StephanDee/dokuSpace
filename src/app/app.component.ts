@@ -9,30 +9,40 @@ import { Subscription } from 'rxjs/Subscription';
 import { LoginPage } from '../pages/login/login';
 import { TabsPage } from '../pages/tabs/tabs';
 import { ProfileCreatePage } from '../pages/profile/profile-create';
-import { ProfileListPage } from "../pages/admin/profilelist/profilelist";
-import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
-import { Profile } from "../models/profile";
+import { ProfileListPage } from '../pages/admin/profilelist/profilelist';
+import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
+import { Profile } from '../models/profile';
 
+/**
+ * This class represents the Initial Page of the App.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 @Component({
   templateUrl: 'app.html',
   providers: [AuthService, ProfileService]
 })
 export class MyApp {
 
+  // Attributes
   public rootPage: any;
   public profileListPage: any = ProfileListPage;
   public sideMenuState: boolean;
-  protected profileData: FirebaseObjectObservable<Profile>;
   private profileSubscriptionActive: boolean;
+
+  protected profileData: FirebaseObjectObservable<Profile>;
   private userProfileDataSubscription: Subscription;
 
   /**
+   * The Constructor of MyApp.
+   * Initializes the App and roots to the first Page.
    *
-   * @param {Platform} platform
-   * @param {StatusBar} statusBar
-   * @param {SplashScreen} splashScreen
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
+   * @param {Platform} platform The Platform of the App
+   * @param {StatusBar} statusBar The StatusBar of the App
+   * @param {SplashScreen} splashScreen The SplashScreen of the APp
+   * @param {AuthService} authService The Auth Service, provides Methods for Authentication
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    */
   constructor(public platform: Platform,
               public statusBar: StatusBar,
@@ -75,14 +85,23 @@ export class MyApp {
     });
   }
 
+  /**
+   * Opens the ProfileListPage if the User is a SuperAdmin.
+   */
   protected openProfileList() {
-      this.rootPage = ProfileListPage;
+    this.rootPage = ProfileListPage;
   }
 
+  /**
+   * Return to the Root Page.
+   */
   protected goBackToRootPage() {
     this.rootPage = MyApp;
   }
 
+  /**
+   * Logout.
+   */
   protected userSignOut() {
     this.authService.logout();
   }

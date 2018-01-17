@@ -18,6 +18,12 @@ import { FileService } from '../../services/file.service';
 import { PhotoService } from '../../services/photo.service';
 import { CourseService } from '../../services/course.service';
 
+/**
+ * This class represents the Profile Tab Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 @Component({
   selector: 'page-profile-tab',
   templateUrl: 'profile-tab.html',
@@ -25,20 +31,22 @@ import { CourseService } from '../../services/course.service';
 })
 export class ProfileTabPage extends BasePage {
 
+  // Attributes
   protected profileData: FirebaseObjectObservable<Profile>;
 
   /**
+   * The Constructor of Profile Tab Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {MenuController} menuCtrl
-   * @param {ModalController} modalCtrl
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
-   * @param {FileService} fileService
-   * @param {PhotoService} photoService
-   * @param {CourseService} courseService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {MenuController} menuCtrl The MenuController, to enable SideMenu from the MyApp class
+   * @param {ModalController} modalCtrl The Modal Controller for the Modal Pages
+   * @param {AuthService} authService The Auth Service, provides Methods for the Authenticated User
+   * @param {ProfileService} profileService The Profile Service, provides Methods for the Profiles
+   * @param {FileService} fileService The File Service, provides Methods for the Files
+   * @param {PhotoService} photoService The Photo Service, provides Methods for the Photos
+   * @param {CourseService} courseService The Course Service, provides Methods for the Courses
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -54,11 +62,17 @@ export class ProfileTabPage extends BasePage {
     this.menuCtrl.enable(false);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Profile to display on the HTML.
+   */
+  ngOnInit() {
     const authUid = this.authService.getAuthUid();
     this.profileData = this.profileService.getProfile(authUid);
   }
 
+  /**
+   * Deletes a Profile Photo.
+   */
   protected deleteProfilePhoto() {
     this.showConfirm('Profilbild löschen', 'Möchten Sie das Profilbild wirklich löschen?', this.cancelHandler, this.agreeHandler);
   }
@@ -113,26 +127,45 @@ export class ProfileTabPage extends BasePage {
     this.profileService.unsubscribeGetProfileSubscription();
   };
 
+  /**
+   * Choose and Upload a Profile Photo.
+   */
   protected chooseAndUploadProfilePhoto() {
     this.fileService.chooseAndUploadProfileImage();
   }
 
+  /**
+   * Opens Edit Profile Name Modal Page.
+   *
+   * @param {ItemSliding} slidingItemName
+   */
   protected editProfileName(slidingItemName: ItemSliding) {
     slidingItemName.close();
     let modal = this.modalCtrl.create(ProfileNameModalPage);
     modal.present();
   }
 
+  /**
+   * Opens Edit Profile Email Modal Page.
+   *
+   * @param {ItemSliding} slidingItemEmail
+   */
   protected editProfileEmail(slidingItemEmail: ItemSliding) {
     slidingItemEmail.close();
     let modal = this.modalCtrl.create(ProfileEmailModalPage);
     modal.present();
   }
 
+  /**
+   *
+   */
   ionViewDidEnter() {
     this.menuCtrl.enable(true);
   }
 
+  /**
+   *
+   */
   ionViewDidLeave() {
     this.menuCtrl.enable(false);
   }

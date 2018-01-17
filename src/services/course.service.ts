@@ -1,5 +1,3 @@
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
 import {
   AngularFireDatabase,
@@ -9,23 +7,35 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import { Course } from '../models/course';
 import { File } from '../models/file';
-import { BasePage } from "../pages/base/base";
-import { Profile } from "../models/profile";
+import { BasePage } from '../pages/base/base';
+import { Profile } from '../models/profile';
 
+/**
+ * This class represents the Course Service.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 @Injectable()
 export class CourseService {
 
+  // Attributes
   private getCourseSubSubscription: Subscription;
   private getCoursesSubSubscription: Subscription;
 
+  /**
+   * The Constructor of Course Service.
+   *
+   * @param {AngularFireDatabase} afDb The AngularFire Database
+   */
   constructor(private afDb: AngularFireDatabase) {
   }
 
   /**
    * Get Course to display Course information.
    *
-   * @param {string} courseId The Course ID.
-   * @returns {FirebaseObjectObservable<Course>} The FirebaseObjectObservable of a Course.
+   * @param {string} courseId The Course ID
+   * @returns {FirebaseObjectObservable<Course>}
    */
   public getCourse(courseId: string): FirebaseObjectObservable<Course> {
     return this.afDb.object(`/courses/${courseId}`) as FirebaseObjectObservable<Course>;
@@ -35,8 +45,8 @@ export class CourseService {
    * Get Course Subscription to get access to Course data to work with.
    * Do not forget to unsubscribe with unsubscribeGetCourseSubscription() method.
    *
-   * @param {string} courseId The Course ID.
-   * @returns {Promise<Course>} The promised Course.
+   * @param {string} courseId The Course ID
+   * @returns {Promise<Course>}
    */
   public getCourseSubscription(courseId: string): Promise<Course> {
     return new Promise(resolve => {
@@ -47,16 +57,27 @@ export class CourseService {
   }
 
   /**
-   * This method unsubscribe the getCourseSubscription(key).
+   * This method unsubscribe the getCourseSubscription().
    */
   public unsubscribeGetCourseSubscription() {
     this.getCourseSubSubscription.unsubscribe();
   }
 
+  /**
+   * Get Courses to display Course information.
+   *
+   * @returns {FirebaseListObservable<Course[]>}
+   */
   public getCourses(): FirebaseListObservable<Course[]> {
     return this.afDb.list(`/courses/`) as FirebaseListObservable<any[]>;
   }
 
+  /**
+   * Get My Courses to display Course information.
+   *
+   * @param {string} authUid The authenticated User ID
+   * @returns {FirebaseListObservable<Course[]>}
+   */
   public getMyCourses(authUid: string): FirebaseListObservable<Course[]> {
     return this.afDb.list(`/courses/`, {
       query: {
@@ -66,6 +87,12 @@ export class CourseService {
     }) as FirebaseListObservable<any[]>;
   }
 
+  /**
+   * Get Courses Subscription to get access to Course data to work with.
+   * Do not forget to unsubscribe with unsubscribeGetCourseSubscription() method.
+   *
+   * @returns {Promise<Course[]>}
+   */
   public getCoursesSubscription(): Promise<Course[]> {
     return new Promise(resolve => {
       this.getCoursesSubSubscription = this.afDb.list(`/courses/`).subscribe((data) => {
@@ -74,14 +101,29 @@ export class CourseService {
     });
   }
 
+  /**
+   * This method unsubscribe the getCoursesSubscription().
+   */
   public unsubscribeGetCoursesSubscription() {
     this.getCoursesSubSubscription.unsubscribe();
   }
 
+  /**
+   * Creates a Course ID.
+   *
+   * @returns {string}
+   */
   public createCourseId(): string {
     return this.afDb.list(`/courses`).push({}).key as string;
   }
 
+  /**
+   * Set Course Creator Name.
+   *
+   * @param {string} courseId The Course ID
+   * @param {string} creatorName The Creator Name
+   * @returns {Promise<void>}
+   */
   public setCourseCreatorName(courseId: string, creatorName: string): Promise<void> {
     if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
@@ -89,16 +131,33 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}/creatorName`).set(creatorName) as Promise<void>;
   }
 
-  // created that method to be sure that only when photoURL is set to default creatorPhotoURL === thumbCreatorPhotoURL
+  /**
+   * Update Course Photo Url to Default.
+   * Only used when photoURL is set to default -> creatorPhotoURL === thumbCreatorPhotoURL.
+   *
+   * @param {string} courseId The Course ID
+   * @returns {Promise<void>}
+   */
   public updateCoursePhotoURLToDefault(courseId: string): Promise<void> {
     const photoURL = Profile.DEFAULT_PHOTOURL;
 
     if (courseId === null) {
       return Promise.reject(new Error('CourseId darf nicht null sein.'));
     }
-    return this.afDb.object(`/courses/${courseId}`).update({creatorPhotoURL: photoURL, thumbCreatorPhotoURL: photoURL}) as Promise<void>;
+    return this.afDb.object(`/courses/${courseId}`).update({
+      creatorPhotoURL: photoURL,
+      thumbCreatorPhotoURL: photoURL
+    }) as Promise<void>;
   }
 
+  /**
+   * Update Course Title And Description.
+   *
+   * @param {string} courseId The Course ID
+   * @param {string} title The Course Title
+   * @param {string} description The Course Decription
+   * @returns {Promise<void>}
+   */
   public updateCourseTitleAndDescription(courseId: string, title: string, description: string): Promise<void> {
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
@@ -109,12 +168,18 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}/`).update({title, description}) as Promise<void>;
   }
 
-  // used in test
-  public deleteCourse(courseId: string): Promise<void> {
-    return this.afDb.list(`courses/${courseId}`).remove() as Promise<void>;
-  }
-
   // used in file.service.ts
+  /**
+   * Create Course.
+   *
+   * @param {string} courseId The Course ID
+   * @param {string} title The Course Title
+   * @param {string} description The Description
+   * @param {string} creatorName The Creator Name
+   * @param {string} creatorUid The CreatorUid
+   * @param {string} creatorPhotoURL The Creator Photo Url
+   * @returns {Promise<void>}
+   */
   public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
     if (courseId === null) {
       return Promise.reject(new Error('KursId darf nicht null sein.'));
@@ -142,12 +207,20 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
   }
 
+  // only used in test spec
+  public deleteCourse(courseId: string): Promise<void> {
+    return this.afDb.list(`courses/${courseId}`).remove() as Promise<void>;
+  }
+
   // not needed anymore, outsourced to Cloud Functions
-  public updateCreatorPhotoURL(courseId: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
+  private updateCreatorPhotoURL(courseId: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
     if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
-    return this.afDb.object(`/courses/${courseId}`).update({creatorPhotoURL: creatorPhotoURL, thumbCreatorPhotoURL: thumbCreatorPhotoURL}) as Promise<void>;
+    return this.afDb.object(`/courses/${courseId}`).update({
+      creatorPhotoURL: creatorPhotoURL,
+      thumbCreatorPhotoURL: thumbCreatorPhotoURL
+    }) as Promise<void>;
   }
 
 }

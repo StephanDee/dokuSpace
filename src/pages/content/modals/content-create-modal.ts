@@ -7,6 +7,9 @@ import { BasePage } from '../../base/base'
 
 /**
  * This class represents the Course Create Modal Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-content-create-modal',
@@ -19,20 +22,21 @@ export class ContentCreateModalPage extends BasePage {
   protected contentCreateModalForm: FormGroup;
 
   /**
+   * The Constructor of the Content Create Modal Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {ViewController} viewCtrl
-   * @param {NavParams} navParams
-   * @param {FormBuilder} formBuilder
-   * @param {ContentService} contentService
-   * @param {FileService} fileService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ViewController} viewCtrl The View Controller, for this Modal Page
+   * @param {NavParams} navParams The Navigation Controller, provides Parameter from other Pages
+   * @param {FormBuilder} formBuilder, The Form Builder, used to create validation
+   * @param {ContentService} contentService The Content Service, provides Methods for Contents
+   * @param {FileService} fileService The File Service, provides Methods for Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
-              public viewCtrl: ViewController,
+              protected viewCtrl: ViewController,
               protected navParams: NavParams,
               protected formBuilder: FormBuilder,
               private contentService: ContentService,
@@ -40,14 +44,19 @@ export class ContentCreateModalPage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads Parameter from the previous Page.
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Content wird erstellt...');
     this.courseId = this.navParams.get('courseId');
+
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.contentCreateModalForm = this.formBuilder.group({
@@ -56,6 +65,11 @@ export class ContentCreateModalPage extends BasePage {
     });
   }
 
+  /**
+   * Creates a new Content and leaves the Modal Page.
+   *
+   * @constructor
+   */
   protected CreateNewContent() {
     if (this.contentCreateModalForm.invalid) {
       this.showAlert('Content', 'Bitte Formularfelder richtig ausfüllen.');
@@ -77,7 +91,9 @@ export class ContentCreateModalPage extends BasePage {
     this.dismiss();
   }
 
-  // close Modal View
+  /**
+   * close Modal View
+   */
   protected dismiss() {
     this.viewCtrl.dismiss();
   }

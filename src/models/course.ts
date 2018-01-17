@@ -1,5 +1,5 @@
 /**
- * This class represents a course.
+ * This class represents a Course.
  *
  * @author Stephan Dünkel
  * @copyright dokuSpace 2018
@@ -38,18 +38,19 @@ export class Course {
   public $key?: string;
 
   /**
+   * The Constructor of Courses.
    *
-   * @param {string} courseId
-   * @param {string} title
-   * @param {string} description
-   * @param {string} creatorName
-   * @param {string} creatorUid
-   * @param {string} creatorPhotoURL
-   * @param {string} thumbCreatorPhotoURL
-   * @param {string} titleImageId
-   * @param {string} titleImageName
-   * @param {string} titleImageUrl
-   * @param {string} thumbTitleImageUrl
+   * @param {string} courseId The Course ID, unique Reference
+   * @param {string} title The Course Title
+   * @param {string} description The Course Description
+   * @param {string} creatorName The Course Creator Name
+   * @param {string} creatorUid The Course CreatorUid, unique Reference
+   * @param {string} creatorPhotoURL The Course Creator Photo URL, Reference to the File
+   * @param {string} thumbCreatorPhotoURL The Course Thumbnail Photo URL, Reference to the thumbnail File
+   * @param {string} titleImageId The Course Title Image ID, unique Reference of the File
+   * @param {string} titleImageName The Course Title Image Name, File Name
+   * @param {string} titleImageUrl The Course Title Image URL, Reference to the File
+   * @param {string} thumbTitleImageUrl The Course Thumbnail Title Image URL, Regerence to the Thumbnail File
    */
   public constructor(courseId: string = null,
                      title: string = null,

@@ -12,6 +12,10 @@ export class File {
   // Default File URL from Cloud Function admin SDK
   public static readonly DEFAULT_FILE_URL = 'https://storage.googleapis.com/dokuspace-67e76.appspot.com/';
 
-  constructor() {}
+  /**
+   * The Constructor of Files.
+   */
+  constructor() {
+  }
 
 }

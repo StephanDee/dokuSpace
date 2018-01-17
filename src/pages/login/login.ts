@@ -6,7 +6,10 @@ import { SignUpPage } from '../signup/signup';
 import { BasePage } from '../base/base';
 
 /**
- * This class represents the login-page.
+ * This class represents the Login Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-login',
@@ -19,11 +22,11 @@ export class LoginPage extends BasePage {
 
   /**
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {LoadingController} loadingCtrl
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {FormBuilder} formBuilder The Form Builder, for Form Validation
+   * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -33,13 +36,16 @@ export class LoginPage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads The Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Authentifizierung...');
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.loginForm = this.formBuilder.group({
@@ -48,6 +54,11 @@ export class LoginPage extends BasePage {
     });
   }
 
+  /**
+   * User Login.
+   *
+   * @returns {Promise<void>}
+   */
   protected async userSignIn() {
     if (this.loginForm.invalid) {
       this.showAlert('Login', 'Bitte Formularfelder richtig ausfüllen.');
@@ -68,10 +79,16 @@ export class LoginPage extends BasePage {
     }
   }
 
+  /**
+   * Open Sign Up Page.
+   */
   protected openSignUpPage() {
     this.navCtrl.push(SignUpPage);
   }
 
+  /**
+   * Open Forget Password Dialog.
+   */
   protected openForgotPasswordDialog() {
     this.showAlert('Passwort vergessen?', 'Überprüfen Sie ihre Eingabe auf Korrektheit.');
   }

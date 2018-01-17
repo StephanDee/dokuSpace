@@ -9,6 +9,9 @@ import { BasePage } from '../../base/base';
 
 /**
  * This class represents the Course Create Modal Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-course-create-modal',
@@ -17,24 +20,26 @@ import { BasePage } from '../../base/base';
 })
 export class CourseCreateModalPage extends BasePage {
 
+  // Attributes
   protected courseCreateModalForm: FormGroup;
 
   /**
+   * The Constructor of CourseCreateModalPage.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {ViewController} viewCtrl
-   * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
-   * @param {CourseService} courseService
-   * @param {FileService} fileService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ViewController} viewCtrl The ViewController, for this Modal Page
+   * @param {FormBuilder} formBuilder The Form Builder, used for validation
+   * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
+   * @param {CourseService} courseService The Course Service, provides Methods for Courses
+   * @param {FileService} fileService The File Service, provides Methods for Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
-              public viewCtrl: ViewController,
+              protected viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
               private profileService: ProfileService,
@@ -43,13 +48,16 @@ export class CourseCreateModalPage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Kurs wird erstellt...');
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.courseCreateModalForm = this.formBuilder.group({
@@ -58,6 +66,11 @@ export class CourseCreateModalPage extends BasePage {
     });
   }
 
+  /**
+   * Creates a New Course.
+   *
+   * @constructor
+   */
   protected CreateNewCourse() {
     if (this.courseCreateModalForm.invalid) {
       this.showAlert('Kurs', 'Bitte Formularfelder richtig ausfüllen.');
@@ -94,7 +107,9 @@ export class CourseCreateModalPage extends BasePage {
     this.profileService.unsubscribeGetProfileSubscription();
   }
 
-  // close Modal View
+  /**
+   * Close Modal View
+   */
   protected dismiss() {
     this.viewCtrl.dismiss();
   }

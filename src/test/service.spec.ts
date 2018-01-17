@@ -13,6 +13,13 @@ import { FIREBASE_CONFIG } from '../app/app.firebase.config';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { ContentService } from '../services/content.service';
 
+/**
+ * service Test Spec.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
+
 // xdescribe not to test, fdescribe to force test
 // just to check how jasmine + karma unit testing works
 describe('My first Test', () => {

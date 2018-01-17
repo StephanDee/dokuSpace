@@ -6,7 +6,10 @@ import { ProfileService } from '../../../services/profile.service';
 import { BasePage } from '../../base/base';
 
 /**
- * This class represents the login-page.
+ * This class represents the Profile Email Modal Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-profile-email-modal',
@@ -18,32 +21,36 @@ export class ProfileEmailModalPage extends BasePage {
   protected profileEmailModalForm: FormGroup;
 
   /**
+   * The Constructor of Profile Email Modal Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {ViewController} viewCtrl
-   * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ViewController} viewCtrl The ViewController, for this Modal Page
+   * @param {FormBuilder} formBuilder The Form Builder for Form Validation
+   * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
-              public viewCtrl: ViewController,
+              protected viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
               private profileService: ProfileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Änderungen werden vorgenommen...');
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.profileEmailModalForm = this.formBuilder.group({
@@ -53,6 +60,11 @@ export class ProfileEmailModalPage extends BasePage {
     });
   }
 
+  /**
+   * Set new Profile Email.
+   *
+   * @returns {Promise<void>}
+   */
   protected async setNewProfileEmail() {
     if (this.profileEmailModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
@@ -98,11 +110,16 @@ export class ProfileEmailModalPage extends BasePage {
     await this.profileService.unsubscribeGetProfileSubscription();
   }
 
+  /**
+   * Logout.
+   */
   private signOut() {
     this.authService.logout();
   }
 
-  // close Modal View
+  /**
+   * Close Modal View.
+   */
   protected dismiss() {
     this.viewCtrl.dismiss();
   }

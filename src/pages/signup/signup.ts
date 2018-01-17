@@ -5,7 +5,10 @@ import { AlertController, LoadingController, NavController, ToastController } fr
 import { AuthService } from '../../services/auth.service';
 
 /**
- * This class represents the signup-page.
+ * This class represents the Sign Up Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-signup',
@@ -14,33 +17,38 @@ import { AuthService } from '../../services/auth.service';
 })
 export class SignUpPage extends BasePage {
 
+  // Attributes
   protected signUpForm: FormGroup;
 
   /**
+   * The Constructor of Sign Up Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {ToastController} toastCtrl
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ToastController} toastCtrl The Toast Controller
+   * @param {FormBuilder} formBuilder The Form Builder, for Form Validation
+   * @param {AuthService} authService The Auth Controller, provides Methods for the authenticated User
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
+              private toastCtrl: ToastController,
               protected formBuilder: FormBuilder,
-              private authService: AuthService,
-              private toastCtrl: ToastController) {
+              private authService: AuthService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Profil wird erstellt...');
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.signUpForm = this.formBuilder.group({
@@ -49,6 +57,11 @@ export class SignUpPage extends BasePage {
     });
   }
 
+  /**
+   * Sign Up.
+   *
+   * @returns {Promise<void>}
+   */
   protected async signUp() {
     if (this.signUpForm.invalid) {
       this.showAlert('Registrieren', 'Bitte Formularfelder richtig ausfüllen.');
@@ -66,6 +79,9 @@ export class SignUpPage extends BasePage {
     }
   }
 
+  /**
+   * Success Toast, Profile was successfully created.
+   */
   protected signUpSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Profil wurde erfolgreich erstellt.',

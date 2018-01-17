@@ -17,6 +17,12 @@ import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 import { CourseContentListPage } from './course-contentlist';
 import { CourseEditModalPage } from './modals/course-edit-modal';
 
+/**
+ * This class represents the Course Tab Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 @Component({
   selector: 'page-course-tab',
   templateUrl: 'course-tab.html',
@@ -30,6 +36,20 @@ export class CourseTabPage extends BasePage {
   protected courseListData: FirebaseListObservable<Course[]>;
   protected myCourseListData: FirebaseListObservable<Course[]>;
 
+  /**
+   * The Constructor of the Course Tab.
+   *
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {MenuController} menuCtrl The Menu Controller, to disable SideMenu of the MyApp Class
+   * @param {ModalController} modalCtrl The Modal Controller, for Modal Pages
+   * @param {AuthService} authService The Auth Service, provides Methods for Contents
+   * @param {CourseService} courseService The Course Service, provides Methods for Courses
+   * @param {ContentService} contentService The Content Service, provides Methods for Contents
+   * @param {FileService} fileService The File Service, provides Methods for Files
+   * @param {ActionSheetController} actionSheetCtrl
+   */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
@@ -44,13 +64,22 @@ export class CourseTabPage extends BasePage {
     menuCtrl.enable(false);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads The Course List.
+   */
+  ngOnInit() {
     this.authUid = this.authService.getAuthUid();
     this.courseListData = this.courseService.getCourses();
     this.myCourseListData = this.courseService.getMyCourses(this.authUid);
   }
 
-  selectCourseItem(course: Course) {
+  /**
+   * Selects the selected CourseItem and open an Action Sheet with 3 options.
+   * Edit, Delete, Cancel.
+   *
+   * @param {Course} course The selected Course
+   */
+  protected selectCourseItem(course: Course) {
     this.actionSheetCtrl.create({
       title: `Kurs: ${course.title}`,
       buttons: [
@@ -102,15 +131,28 @@ export class CourseTabPage extends BasePage {
     }).present();
   }
 
+  /**
+   * Opens the Course Content List Page.
+   *
+   * @param {Course} course The selected Course
+   */
   protected openCourseContentListPage(course: Course) {
     this.navCtrl.push(CourseContentListPage, {courseId: course.$key, creatorUid: course.creatorUid});
   }
 
+  /**
+   * Opens the Create Course Modal Page.
+   */
   protected openCreateCourseModal() {
     let modal = this.modalCtrl.create(CourseCreateModalPage);
     modal.present();
   }
 
+  /**
+   * Opens the Edit Course Modal Page.
+   *
+   * @param {Course} course The selected Course
+   */
   protected openEditCourseModal(course: Course) {
     let modal = this.modalCtrl.create(CourseEditModalPage, {courseId: course.$key});
     modal.present();

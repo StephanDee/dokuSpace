@@ -7,7 +7,11 @@ import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 
 /**
- * This class represents the profile-create-page.
+ * This class represents the Profile Create Page.
+ * Will be displayed, if a new Profile was created.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-profile-create',
@@ -16,16 +20,18 @@ import { ProfileService } from '../../services/profile.service';
 })
 export class ProfileCreatePage extends BasePage {
 
+  // Attributes
   protected profileForm: FormGroup;
 
   /**
+   * The Constructor of Profile Create Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {FormBuilder} formBuilder The Form Builder for Form Validation
+   * @param {AuthService} authService The Auth Service, provides Methods for authenticated Users
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -36,13 +42,16 @@ export class ProfileCreatePage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Daten werden synchronisiert...');
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.profileForm = this.formBuilder.group({
@@ -50,7 +59,10 @@ export class ProfileCreatePage extends BasePage {
     });
   }
 
-  protected createProfile() {
+  /**
+   * Creates extra Profile Inputs.
+   */
+  protected createExtraProfileInputs() {
     if (this.profileForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
     }

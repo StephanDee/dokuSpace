@@ -33,6 +33,13 @@ import { FileChooser } from '@ionic-native/file-chooser';
 import { FilePath } from '@ionic-native/file-path';
 import { File } from '@ionic-native/file';
 
+/**
+ * This is the Module of the App.
+ * In here all Pages, Modules, Providers must be initialized for usage.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 @NgModule({
   declarations: [
     MyApp,

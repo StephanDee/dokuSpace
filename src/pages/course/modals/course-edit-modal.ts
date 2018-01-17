@@ -9,6 +9,9 @@ import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 
 /**
  * This class represents the Course Create Modal Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-course-edit-modal',
@@ -17,25 +20,27 @@ import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 })
 export class CourseEditModalPage extends BasePage {
 
+  // Attributes
   protected courseId: string;
   protected courseEditModalForm: FormGroup;
   protected courseData: FirebaseObjectObservable<Course>;
 
   /**
+   * The Constructor of the Course Edit Modal Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {ViewController} viewCtrl
-   * @param {NavParams} navParams
-   * @param {FormBuilder} formBuilder
-   * @param {CourseService} courseService
-   * @param {FileService} fileService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ViewController} viewCtrl The View Controller, used for this Modal Page
+   * @param {NavParams} navParams The Navigation Parameter, from the previous Page
+   * @param {FormBuilder} formBuilder The Form Builder, for Form Validation
+   * @param {CourseService} courseService The Course Service, provides Methods for Courses
+   * @param {FileService} fileService The File Service, provides Methods for Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
-              public viewCtrl: ViewController,
+              protected viewCtrl: ViewController,
               protected navParams: NavParams,
               protected formBuilder: FormBuilder,
               private courseService: CourseService,
@@ -43,7 +48,11 @@ export class CourseEditModalPage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Parameter from previous Page and Course, to display on the HTML.
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Kurs wird erstellt...');
     this.courseId = this.navParams.get('courseId');
     this.courseData = this.courseService.getCourse(this.courseId);
@@ -52,7 +61,7 @@ export class CourseEditModalPage extends BasePage {
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.courseEditModalForm = this.formBuilder.group({
@@ -61,16 +70,24 @@ export class CourseEditModalPage extends BasePage {
     });
   }
 
+  /**
+   * Edit Course Title And Description.
+   */
   protected editCourseTitleAndDescription() {
     this.courseService.updateCourseTitleAndDescription(this.courseId, this.courseEditModalForm.value.title, this.courseEditModalForm.value.description);
     this.dismiss();
   }
 
+  /**
+   * Choose and Upload new Title Image.
+   */
   protected chooseAndUploadNewTitleImage() {
     this.fileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null, null);
   }
 
-  // close Modal View
+  /**
+   * Close Modal View.
+   */
   protected dismiss() {
     this.viewCtrl.dismiss();
   }

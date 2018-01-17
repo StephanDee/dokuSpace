@@ -1,5 +1,5 @@
 /**
- * This class represents a profile of a user.
+ * This class represents a Profile of a User.
  *
  * @author Stephan Dünkel
  * @copyright dokuSpace 2018

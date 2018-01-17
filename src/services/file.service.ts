@@ -1,4 +1,3 @@
-import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -13,6 +12,12 @@ import { Content } from '../models/content';
 import { File } from '../models/file';
 import { BasePage } from '../pages/base/base';
 
+/**
+ * This class represents the File Service.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
+ */
 @Injectable()
 export class FileService {
 
@@ -20,26 +25,29 @@ export class FileService {
   private fireStore = firebase.storage();
   private loading: any;
 
-  // Profile Service Attribute
+  // @Injectable can't use other @Injectables classes. Following Attributes are from other Services.
+
+  // Profile Service Attributes
   private SubscriptionGetProfile: Subscription;
 
-  // Photo Service Attribute
+  // Photo Service Attributes
   private SubscriptionGetPhoto: Subscription;
 
-  // Course Service Attribute
+  // Course Service Attributes
   private SubscriptionGetCourses: Subscription;
   private SubscriptionGetCourse: Subscription;
 
-  // Content Service Attribute
+  // Content Service Attributes
   private SubscriptionGetContent: Subscription;
 
   /**
+   * The Constructor of File Service.
    *
-   * @param {AngularFireAuth} afAuth
-   * @param {AngularFireDatabase} afDb
-   * @param {LoadingController} loadingCtrl
-   * @param {ToastController} toastCtrl
-   * @param {FileChooser} fileChooser
+   * @param {AngularFireAuth} afAuth The AngularFire Authentication
+   * @param {AngularFireDatabase} afDb The AngularFire Database
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ToastController} toastCtrl The Toast Controller
+   * @param {FileChooser} fileChooser The File Chooser, imported ionic Module
    */
   constructor(private afAuth: AngularFireAuth,
               private afDb: AngularFireDatabase,
@@ -48,6 +56,11 @@ export class FileService {
               private fileChooser: FileChooser) {
   }
 
+  /**
+   * Creates the Loading Screen.
+   *
+   * @param {string} text The Text in the Loading Screen.
+   */
   private createLoading(text: string) {
     this.loading = this.loadingCtrl.create({
       content: text
@@ -55,6 +68,11 @@ export class FileService {
   }
 
   // Start: File Upload for Profile Image
+  /**
+   * Open the FileChooser to select a File for Uploading.
+   *
+   * @returns {Promise<void>}
+   */
   public chooseAndUploadProfileImage(): Promise<void> {
     return this.fileChooser.open().then((url) => {
       (<any>window).FilePath.resolveNativePath(url, (result) => {
@@ -65,6 +83,11 @@ export class FileService {
     }) as Promise<void>;
   }
 
+  /**
+   * Will upload the File to the Firebase Cloud Storage.
+   *
+   * @param nativePath The Navite Path of the File
+   */
   private uploadProfileImage(nativePath: any) {
     this.createLoading('Das Profilbild wird hochgeladen...');
     this.loading.present();
@@ -131,11 +154,21 @@ export class FileService {
     });
   }
 
+  /**
+   * Delete Profile Image.
+   *
+   * @param {string} authUid The authenticated User ID
+   * @param fileName The FileName
+   * @returns {Promise<void>}
+   */
   public deleteProfileImage(authUid: string, fileName: any): Promise<void> {
     return this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).delete() &&
       this.fireStore.ref(`profiles/${authUid}/photo/thumb_${fileName}`).delete() as Promise<void>;
   }
 
+  /**
+   * Success Toast, The Profile Image was Uploaded successfully.
+   */
   private profileImageUploadSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Profilbild wurde erfolgreich hochgeladen.',
@@ -148,6 +181,18 @@ export class FileService {
   // End: File Upload for Profile Image
 
   // Start: File Upload for Course Title Image
+  /**
+   * Open the FileChooser to select a File for Uploading.
+   *
+   * @param {string} courseId The Course ID
+   * @param {string} title The Title
+   * @param {string} description The Description
+   * @param {string} creatorName The Creator Name
+   * @param {string} creatorUid The Creator User ID
+   * @param {string} creatorPhotoURL The Creator Photo Url
+   * @param {string} thumbCreatorPhotoURL The Thumbnail Creator Photo Url
+   * @returns {Promise<void>}
+   */
   public chooseAndUploadCourseTitleImage(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
     return this.fileChooser.open().then((url) => {
       (<any>window).FilePath.resolveNativePath(url, (result) => {
@@ -158,6 +203,19 @@ export class FileService {
     }) as Promise<void>;
   }
 
+  /**
+   * Will upload the File to the Firebase Cloud Storage.
+   *
+   * @param nativePath The Native Path of the File
+   * @param {string} courseId The Course ID
+   * @param {string} title The Course Title
+   * @param {string} description The Course Description
+   * @param {string} creatorName The Course Creator Name
+   * @param {string} creatorUid The Course Creator User ID
+   * @param {string} creatorPhotoURL The Course Creator Photo Url
+   * @param {string} thumbCreatorPhotoURL The Course Thumbnail Creator Photo Url
+   * @returns {Promise<never>}
+   */
   private uploadCourseTitleImage(nativePath: any, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string) {
     if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
 
@@ -234,6 +292,19 @@ export class FileService {
     });
   }
 
+  /**
+   * Set Course or update Title Image ID, Url and Name.
+   *
+   * @param {string} authUid The authenticated User ID
+   * @param {string} fileName The File Name
+   * @param {string} courseId The Course ID
+   * @param {string} title The Course Title
+   * @param {string} description The Course Description
+   * @param {string} creatorName The Course Creator Name
+   * @param {string} creatorUid The Course Creator User ID
+   * @param {string} creatorPhotoURL The Course Creator Photo Url
+   * @param {string} thumbCreatorPhotoURL The Course Thumbnail Creator Photo Url
+   */
   private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string) {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
       if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
@@ -266,11 +337,22 @@ export class FileService {
     });
   }
 
+  /**
+   * Delete Course Title Image.
+   *
+   * @param {string} authUid The authenticated User ID
+   * @param {string} courseId The Course ID
+   * @param fileName The File Name
+   * @returns {Promise<void>}
+   */
   public deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
     return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() &&
       this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/thumb_${fileName}`).delete() as Promise<void>;
   }
 
+  /**
+   * Success Toast, Course created successfully.
+   */
   private createCourseUploadSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Kurs wurde erfolgreich hochgeladen.',
@@ -280,6 +362,9 @@ export class FileService {
     toast.present();
   }
 
+  /**
+   * Success Toast, Title Image Uploaded successfully.
+   */
   private titleImageUploadSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Titelbild wurde erfolgreich hochgeladen.',
@@ -293,6 +378,15 @@ export class FileService {
 
 
   // Start: File Upload for Content Video
+  /**
+   * Open the FileChooser to select a File for Uploading.
+   *
+   * @param {string} courseId The Course ID
+   * @param {string} contentId The Content ID
+   * @param {string} title The Content Title
+   * @param {string} description The Content Description
+   * @returns {Promise<void>}
+   */
   public chooseAndUploadContentVideo(courseId: string, contentId: string, title: string, description: string): Promise<void> {
     return this.fileChooser.open().then((url) => {
       (<any>window).FilePath.resolveNativePath(url, (result) => {
@@ -303,6 +397,15 @@ export class FileService {
     }) as Promise<void>;
   }
 
+  /**
+   * Will upload the file to the Firebase Cloud Storage.
+   *
+   * @param nativePath The Native Path of the File
+   * @param {string} courseId The Course ID
+   * @param {string} contentId The Content ID
+   * @param {string} title The Content Title
+   * @param {string} description The Content Description
+   */
   private uploadContentVideo(nativePath: any, courseId: string, contentId: string, title: string, description: string) {
     if (title !== null && description !== null) {
       this.createLoading('Content wird hochgeladen...');
@@ -356,6 +459,16 @@ export class FileService {
     });
   }
 
+  /**
+   * Set Content Or Update Video ID, Url and Name.
+   *
+   * @param {string} authUid The authenticated User ID
+   * @param {string} fileName The FileName
+   * @param {string} courseId The Course ID
+   * @param {string} contentId The Content ID
+   * @param {string} title The Content Title
+   * @param {string} description The Content Description
+   */
   private setContentOrUpdateVideoIdURLAndName(authUid: string, fileName: string, courseId: string, contentId: string, title: string, description: string) {
     this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).getDownloadURL().then(async (url) => {
       if (title !== null && description !== null) {
@@ -401,10 +514,22 @@ export class FileService {
     });
   }
 
+  /**
+   * Delete Content Video.
+   *
+   * @param {string} authUid The authenticated User ID
+   * @param {string} courseId The Course ID
+   * @param {string} contentId The Content ID
+   * @param fileName The File Name
+   * @returns {Promise<void>}
+   */
   public deleteContentVideo(authUid: string, courseId: string, contentId: string, fileName: any): Promise<void> {
     return this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).delete() as Promise<void>;
   }
 
+  /**
+   * Success Toast, the Content created successfully.
+   */
   private createContentUploadSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Content wurde erfolgreich hochgeladen.',
@@ -414,6 +539,9 @@ export class FileService {
     toast.present();
   }
 
+  /**
+   * Success Toast, the Video uploaded successfully.
+   */
   private videoUploadSuccessToast() {
     let toast = this.toastCtrl.create({
       message: 'Video wurde erfolgreich hochgeladen.',
@@ -498,8 +626,8 @@ export class FileService {
     this.SubscriptionGetCourse.unsubscribe();
   }
 
-  // Course Services
-  // Course Service Method.
+  // Content Services
+  // Content Service Method.
   public getContentSubscription(courseId: string, contentId: string): Promise<Content> {
     return new Promise(resolve => {
       this.SubscriptionGetContent = this.afDb.object(`/contents/${courseId}/${contentId}`).subscribe((data) => {
@@ -508,6 +636,7 @@ export class FileService {
     });
   }
 
+  // Content Service Method.
   public unsubscribeGetContentSubscription() {
     this.SubscriptionGetContent.unsubscribe();
   }

@@ -7,7 +7,10 @@ import { BasePage } from '../../base/base';
 import { CourseService } from '../../../services/course.service';
 
 /**
- * This class represents the login-page.
+ * This class represents the Profile Name Modal Page.
+ *
+ * @author Stephan Dünkel
+ * @copyright dokuSpace 2018
  */
 @Component({
   selector: 'page-profilename-modal',
@@ -19,20 +22,21 @@ export class ProfileNameModalPage extends BasePage {
   protected profileNameModalForm: FormGroup;
 
   /**
+   * The Constructor of Profile Name Modal Page.
    *
-   * @param {NavController} navCtrl
-   * @param {AlertController} alertCtrl
-   * @param {LoadingController} loadingCtrl
-   * @param {ViewController} viewCtrl
-   * @param {FormBuilder} formBuilder
-   * @param {AuthService} authService
-   * @param {ProfileService} profileService
-   * @param {CourseService} courseService
+   * @param {NavController} navCtrl The Navigation Controller
+   * @param {AlertController} alertCtrl The Alert Controller
+   * @param {LoadingController} loadingCtrl The Loading Controller
+   * @param {ViewController} viewCtrl The View Controller, used for this Modal
+   * @param {FormBuilder} formBuilder The Form Builder for Form Validation
+   * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
+   * @param {CourseService} courseService The Course Service, provides Methods for Courses
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               public loadingCtrl: LoadingController,
-              public viewCtrl: ViewController,
+              protected viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
               private profileService: ProfileService,
@@ -40,13 +44,16 @@ export class ProfileNameModalPage extends BasePage {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
-  async ngOnInit() {
+  /**
+   * Loads the Form Validation.
+   */
+  ngOnInit() {
     this.createLoading('Änderungen werden vorgenommen...');
     this.initForm();
   }
 
   /**
-   * Initialize the form.
+   * Initialize the Form Validation.
    */
   protected initForm() {
     this.profileNameModalForm = this.formBuilder.group({
@@ -54,6 +61,11 @@ export class ProfileNameModalPage extends BasePage {
     });
   }
 
+  /**
+   * Set New Profile Name.
+   *
+   * @returns {Promise<void>}
+   */
   protected async setNewProfileName() {
     if (this.profileNameModalForm.invalid) {
       this.showAlert('Profil', 'Bitte Formularfelder richtig ausfüllen.');
@@ -89,7 +101,9 @@ export class ProfileNameModalPage extends BasePage {
     this.loading.dismiss();
   }
 
-  // Close Modal View
+  /**
+   * Close Modal View
+   */
   protected dismiss() {
     this.viewCtrl.dismiss();
   }
