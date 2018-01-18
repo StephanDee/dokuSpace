@@ -9,11 +9,13 @@ import {
 import { BasePage } from '../base/base';
 import { CourseCreateModalPage } from './modals/course-create-modal';
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 import { CourseService } from '../../services/course.service';
 import { ContentService } from '../../services/content.service';
 import { FileService } from '../../services/file.service';
+import { Profile } from '../../models/profile';
 import { Course } from '../../models/course';
-import { FirebaseListObservable } from 'angularfire2/database-deprecated';
+import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { CourseContentListPage } from './course-contentlist';
 import { CourseEditModalPage } from './modals/course-edit-modal';
 
@@ -26,13 +28,14 @@ import { CourseEditModalPage } from './modals/course-edit-modal';
 @Component({
   selector: 'page-course-tab',
   templateUrl: 'course-tab.html',
-  providers: [AuthService, CourseService, ContentService, FileService]
+  providers: [AuthService, ProfileService, CourseService, ContentService, FileService]
 })
 export class CourseTabPage extends BasePage {
 
   // Attributes
   protected authUid: string;
   protected segment = 'allcourses';
+  protected profileData: FirebaseObjectObservable<Profile>;
   protected courseListData: FirebaseListObservable<Course[]>;
   protected myCourseListData: FirebaseListObservable<Course[]>;
 
@@ -45,6 +48,7 @@ export class CourseTabPage extends BasePage {
    * @param {MenuController} menuCtrl The Menu Controller, to disable SideMenu of the MyApp Class
    * @param {ModalController} modalCtrl The Modal Controller, for Modal Pages
    * @param {AuthService} authService The Auth Service, provides Methods for Contents
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
    * @param {FileService} fileService The File Service, provides Methods for Files
@@ -56,6 +60,7 @@ export class CourseTabPage extends BasePage {
               protected menuCtrl: MenuController,
               protected modalCtrl: ModalController,
               private authService: AuthService,
+              private profileService: ProfileService,
               private courseService: CourseService,
               private contentService: ContentService,
               private fileService: FileService,
@@ -69,6 +74,7 @@ export class CourseTabPage extends BasePage {
    */
   ngOnInit() {
     this.authUid = this.authService.getAuthUid();
+    this.profileData = this.profileService.getProfile(this.authUid);
     this.courseListData = this.courseService.getCourses();
     this.myCourseListData = this.courseService.getMyCourses(this.authUid);
   }

@@ -4,7 +4,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { LoadingController, ToastController } from 'ionic-angular';
-import { Profile } from '../models/profile';
 import { Subscription } from 'rxjs/Subscription';
 import { Photo } from '../models/photo';
 import { Course } from '../models/course';
@@ -214,7 +213,6 @@ export class FileService {
    * @param {string} creatorUid The Course Creator User ID
    * @param {string} creatorPhotoURL The Course Creator Photo Url
    * @param {string} thumbCreatorPhotoURL The Course Thumbnail Creator Photo Url
-   * @returns {Promise<never>}
    */
   private uploadCourseTitleImage(nativePath: any, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string) {
     if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
@@ -309,6 +307,9 @@ export class FileService {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
       if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
 
+        // Without Cloud Functions
+        //const titleImageId = this.afDb.list(`/courses`).push({}).key;
+
         const course = new Course();
         course.courseId = courseId;
         course.title = title;
@@ -317,6 +318,10 @@ export class FileService {
         course.creatorUid = creatorUid;
         course.creatorPhotoURL = creatorPhotoURL;
         course.thumbCreatorPhotoURL = thumbCreatorPhotoURL;
+        // course.titleImageId = titleImageId;
+        // course.titleImageUrl = url;
+        // course.titleImageName = fileName;
+        // course.thumbTitleImageUrl = url;
 
         // Courses Services
         await this.afDb.object(`/courses/${courseId}`).set(course);
@@ -564,18 +569,18 @@ export class FileService {
 
   // Profile Services
   // Profile Service Method.
-  private getProfileSubscription(uid: string): Promise<Profile> {
-    return new Promise(resolve => {
-      this.SubscriptionGetProfile = this.afDb.object(`profiles/${uid}`).subscribe((data) => {
-        resolve(data);
-      });
-    });
-  }
+  // private getProfileSubscription(uid: string): Promise<Profile> {
+  //   return new Promise(resolve => {
+  //     this.SubscriptionGetProfile = this.afDb.object(`profiles/${uid}`).subscribe((data) => {
+  //       resolve(data);
+  //     });
+  //   });
+  // }
 
   // Profile Service Method.
-  private unsubscribeGetProfileSubscription() {
-    this.SubscriptionGetProfile.unsubscribe();
-  }
+  // private unsubscribeGetProfileSubscription() {
+  //   this.SubscriptionGetProfile.unsubscribe();
+  // }
 
   // Photo Services
   // Photo Service Method.
@@ -599,18 +604,18 @@ export class FileService {
 
   // Course Services
   // Course Service Method.
-  private getCoursesSubscription(): Promise<Course[]> {
-    return new Promise(resolve => {
-      this.SubscriptionGetCourses = this.afDb.list(`/courses/`).subscribe((data) => {
-        resolve(data);
-      });
-    });
-  }
+  // private getCoursesSubscription(): Promise<Course[]> {
+  //   return new Promise(resolve => {
+  //     this.SubscriptionGetCourses = this.afDb.list(`/courses/`).subscribe((data) => {
+  //       resolve(data);
+  //     });
+  //   });
+  // }
 
   // Course Service Method.
-  private unsubscribeGetCoursesSubscription() {
-    this.SubscriptionGetCourses.unsubscribe();
-  }
+  // private unsubscribeGetCoursesSubscription() {
+  //   this.SubscriptionGetCourses.unsubscribe();
+  // }
 
   // Course Service Method.
   public getCourseSubscription(courseId: string): Promise<Course> {

@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-fab right bottom>
+  <ion-fab right bottom *ngIf="(profileData | async)?.role === 'Teacher'">
     <button ion-fab color="danger" (click)="openCreateCourseModal();">
       <ion-icon name="add"></ion-icon>
     </button>
@@ -34,7 +34,10 @@
         </ion-item>
         <br>
 
-        <img src="{{course.thumbTitleImageUrl}}" (click)="openCourseContentListPage(course);">
+        <img src="{{course.thumbTitleImageUrl}}"
+             alt="Image not found"
+             onerror="this.onerror = null; this.src='assets/imgs/imagenotfound600x340.jpg';"
+             (click)="openCourseContentListPage(course);">
 
         <ion-card-content>
           <h2>{{course.title}}</h2>
@@ -64,7 +67,10 @@
         </ion-item>
         <br>
 
-        <img src="{{myCourse.thumbTitleImageUrl}}" (click)="openCourseContentListPage(myCourse);">
+        <img src="{{myCourse.thumbTitleImageUrl}}"
+             alt="Image not found"
+             onerror="this.onerror = null; this.src='assets/imgs/imagenotfound600x340.jpg';"
+             (click)="openCourseContentListPage(myCourse);">
 
         <ion-card-content>
           <h2>{{myCourse.title}}</h2>

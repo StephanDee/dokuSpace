@@ -195,7 +195,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     // resize the image
     console.log('Image downloaded locally to', tempFilePath);
     // executes the imagemagick convert cli
-    return spawn('convert', [tempFilePath, '-thumbnail', '600x600>', tempFilePath]);
+    return spawn('convert', [tempFilePath, '-thumbnail', '600x340>', tempFilePath]);
   }).then(() => {
     // write image to storage
     console.log('Thumbnail created at', tempFilePath);
@@ -246,6 +246,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
 
     // course titleImageUrl -> courses
     if (filePath.includes('profiles/') && filePath.includes('/courses/')) {
+      console.log('Return TitleImage Info from Courses.');
       return ref.child(`/courses/${courseId}`).update({
         titleImageId: key,
         titleImageUrl: fileUrl,
@@ -266,7 +267,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
 
     // if filePath matches nothing
     return ref.child(`/thumbnails/${profileUid}`).push({
-      OriginalFileUrl: fileUrl,
+      originalFileUrl: fileUrl,
       thumbnailFileUrl: thumbFileUrl,
       fileName: fileName
     });
