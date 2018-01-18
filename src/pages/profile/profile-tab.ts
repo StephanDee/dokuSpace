@@ -157,14 +157,14 @@ export class ProfileTabPage extends BasePage {
   }
 
   /**
-   *
+   * View Entered.
    */
   ionViewDidEnter() {
     this.menuCtrl.enable(true);
   }
 
   /**
-   *
+   * View left.
    */
   ionViewDidLeave() {
     this.menuCtrl.enable(false);

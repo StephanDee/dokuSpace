@@ -14,6 +14,7 @@ export class Account {
   public logoId: string;
   public logoName: string;
   public logoUrl: string;
+  public thumbLogoUrl: string;
 
   /**
    * The Constructor of Accounts.
@@ -23,12 +24,14 @@ export class Account {
    * @param {string} logoId The Account Logo ID, the unique Reference of the Logo File
    * @param {string} logoName The Account Logo Name, File Name
    * @param {string} logoUrl The Account Logo Url, Reference to the Logo File
+   * @param {string} thumbLogoUrl The Account Thumbnail Logo Url, Reference to the Thumbnail Logo File
    */
   public constructor(key: string = null,
                      name: string = null,
                      logoId: string = null,
                      logoName: string = null,
-                     logoUrl: string = null) {
+                     logoUrl: string = null,
+                     thumbLogoUrl: string = null) {
     this.key = key;
     this.name = name;
     this.logoId = logoId;

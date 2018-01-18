@@ -618,7 +618,7 @@ export class FileService {
   // }
 
   // Course Service Method.
-  public getCourseSubscription(courseId: string): Promise<Course> {
+  private getCourseSubscription(courseId: string): Promise<Course> {
     return new Promise(resolve => {
       this.SubscriptionGetCourse = this.afDb.object(`/courses/${courseId}`).subscribe((data) => {
         resolve(data);
@@ -627,13 +627,13 @@ export class FileService {
   }
 
   // Course Service Method.
-  public unsubscribeGetCourseSubscription() {
+  private unsubscribeGetCourseSubscription() {
     this.SubscriptionGetCourse.unsubscribe();
   }
 
   // Content Services
   // Content Service Method.
-  public getContentSubscription(courseId: string, contentId: string): Promise<Content> {
+  private getContentSubscription(courseId: string, contentId: string): Promise<Content> {
     return new Promise(resolve => {
       this.SubscriptionGetContent = this.afDb.object(`/contents/${courseId}/${contentId}`).subscribe((data) => {
         resolve(data);
@@ -642,7 +642,7 @@ export class FileService {
   }
 
   // Content Service Method.
-  public unsubscribeGetContentSubscription() {
+  private unsubscribeGetContentSubscription() {
     this.SubscriptionGetContent.unsubscribe();
   }
 
