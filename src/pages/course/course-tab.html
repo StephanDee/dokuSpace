@@ -16,7 +16,7 @@
       <ion-segment-button value="allcourses">
         Alle Kurse
       </ion-segment-button>
-      <ion-segment-button value="mycourses">
+      <ion-segment-button value="mycourses" *ngIf="(profileData | async)?.role === 'Teacher'">
         Meine Kurse
       </ion-segment-button>
     </ion-segment>

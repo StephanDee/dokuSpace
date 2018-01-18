@@ -27,13 +27,13 @@ export class FileService {
   // @Injectable can't use other @Injectables classes. Following Attributes are from other Services.
 
   // Profile Service Attributes
-  private SubscriptionGetProfile: Subscription;
+  // private SubscriptionGetProfile: Subscription;
 
   // Photo Service Attributes
   private SubscriptionGetPhoto: Subscription;
 
   // Course Service Attributes
-  private SubscriptionGetCourses: Subscription;
+  // private SubscriptionGetCourses: Subscription;
   private SubscriptionGetCourse: Subscription;
 
   // Content Service Attributes
