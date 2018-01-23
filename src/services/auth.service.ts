@@ -46,7 +46,7 @@ export class AuthService {
   /**
    * Update the Email Address of the authenticated User.
    *
-   * @param {string} email The Email
+   * @param {string} email The Email Address
    * @returns {Promise<void>}
    */
   public updateAuthEmail(email: string): Promise<void> {
