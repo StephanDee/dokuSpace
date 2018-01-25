@@ -160,7 +160,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   const fileBucket = object.bucket;
   const bucket = gcs.bucket(fileBucket);
   const tempFilePath = `/tmp/${fileName}`;
-  const ref = admin.database().ref();
+  const ref = admin.database().ref(); // not needed
   const file = bucket.file(filePath);
 
   // This REGEX matches to the end of a string that contains a slash
