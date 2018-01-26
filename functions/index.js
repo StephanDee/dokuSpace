@@ -145,7 +145,7 @@ exports.updateCourseCreatorThumbPhotoURL = functions.database
  * Triggers onChange Storage events.
  * After a File is putted into the Storage,
  * it'll check if it was a Deletion,
- * not an Image and if a thumbnail of the File already exist.
+ * not an Image and if it is a thumbnail File.
  * If so, it'll return nothing.
  * Otherwise this method will return a converted Version of the File,
  * and puts a Database Reference.

@@ -37,6 +37,7 @@ export class Account {
     this.logoId = logoId;
     this.logoName = logoName;
     this. logoUrl = logoUrl;
+    this.thumbLogoUrl = thumbLogoUrl;
   }
 
 }

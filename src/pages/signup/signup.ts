@@ -72,7 +72,7 @@ export class SignUpPage extends BasePage {
           this.signUpSuccessToast();
         }).catch((err) => {
           this.loading.dismiss();
-          this.showAlert('Registrieren', 'Ein Fehler ist aufgetreten.');
+          this.showAlert('Registrieren', 'Ein Nutzer mit dieser E Mail Adresse ist bereits registriert.');
           console.error(err);
         });
       this.loading.dismiss();
