@@ -5,43 +5,42 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-list>
+    <!-- Because it is an Observerble we need to pass the async-pipe -->
+    <ion-card *ngFor="let course of favouriteCourseListData | async">
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="{{course.thumbCreatorPhotoURL}}">
+        </ion-avatar>
+        <h2>{{course.creatorName}}</h2>
+      </ion-item>
+      <br>
 
-    <ion-item>
-      <ion-avatar item-start>
-        <img src="assets/imgs/logo.png">
-      </ion-avatar>
-      <h2>Stephan Teacher</h2>
-      <p>Dezember 20, 2017</p>
-    </ion-item>
+      <img src="{{course.thumbTitleImageUrl}}"
+           alt="Image not found"
+           onerror="this.onerror = null; this.src='assets/imgs/imageloading600x340.jpg';"
+           (click)="openCourseContentListPage(course);">
 
-    <img src="assets/imgs/logolarge.jpg">
+      <ion-card-content>
+        <h2>{{course.title}}</h2>
+        <div class="top-margin-1"></div>
+        <p>{{course.description}}</p>
+      </ion-card-content>
 
-    <ion-card-content>
-      <h1>Cloud Computing</h1><br>
-      <p>In diesem Tutorial geht es um das Thema Cloud Computing am Bespiel einer E-Learning App.
-        HTML, CSS, JavaScript, TypeScript, Angular, Firebase...</p>
-    </ion-card-content>
-
-    <ion-row>
-      <ion-col>
-        <button ion-button icon-start clear small>
-          <ion-icon name="thumbs-up"></ion-icon>
-          <div>724</div>
+      <div class="element-to-right">
+        <button ion-button clear color="primary" (click)="selectCourseItem(course);"
+                *ngIf="authUid === course.creatorUid">
+          <ion-icon name="more"></ion-icon>
         </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-left on clear small>
-          <ion-icon name="text"></ion-icon>
-          <div>103</div>
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-end clear small>
+        <!-- added favourite for dummy purposes -->
+        <button ion-button clear color="light" (click)="favouriteCourse(course)"
+                *ngIf="course.favourite === false || course.favourite === null || course.favourite === undefined">
           <ion-icon name="heart"></ion-icon>
         </button>
-      </ion-col>
-    </ion-row>
-
-  </ion-card>
+        <button ion-button clear color="primary" (click)="favouriteCourse(course)" *ngIf="course.favourite === true">
+          <ion-icon name="heart"></ion-icon>
+        </button>
+      </div>
+    </ion-card>
+  </ion-list>
 </ion-content>

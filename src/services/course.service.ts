@@ -88,6 +88,21 @@ export class CourseService {
   }
 
   /**
+   * Get My Favourite Courses to display Course information.
+   * Added for Dummy purposes.
+   *
+   * @returns {FirebaseListObservable<Course[]>}
+   */
+  public getMyFavouriteCourses(): FirebaseListObservable<Course[]> {
+    return this.afDb.list(`/courses/`, {
+      query: {
+        orderByChild: 'favourite',
+        equalTo: true
+      }
+    }) as FirebaseListObservable<any[]>;
+  }
+
+  /**
    * Get Courses Subscription to get access to Course data to work with.
    * Do not forget to unsubscribe with unsubscribeGetCourseSubscription() method.
    *

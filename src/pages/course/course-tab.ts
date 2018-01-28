@@ -52,7 +52,7 @@ export class CourseTabPage extends BasePage {
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
    * @param {FileService} fileService The File Service, provides Methods for Files
-   * @param {ActionSheetController} actionSheetCtrl
+   * @param {ActionSheetController} actionSheetCtrl The actionSheet Controller
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -124,7 +124,11 @@ export class CourseTabPage extends BasePage {
             });
 
             // course database
-            await this.courseListData.remove(course.$key);
+            try {
+              await this.courseListData.remove(course.$key);
+            } catch(err) {
+              this.showAlert('Kurs', 'Ein Fehler ist aufgetreten: ' + err.message )
+            }
           }
         },
         {
