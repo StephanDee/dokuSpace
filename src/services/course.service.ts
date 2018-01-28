@@ -125,10 +125,28 @@ export class CourseService {
    * @returns {Promise<void>}
    */
   public setCourseCreatorName(courseId: string, creatorName: string): Promise<void> {
+    if (courseId === null) {
+      return Promise.reject(new Error('Die Course ID darf nicht null sein.'));
+    }
     if (creatorName.length < 1 || creatorName.length > 25 || !creatorName.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
     return this.afDb.object(`/courses/${courseId}/creatorName`).set(creatorName) as Promise<void>;
+  }
+
+  /**
+   * Set a Course to favourite.
+   * added only for dummy purposes.
+   *
+   * @param {string} courseId The Course ID
+   * @param {boolean} favourite The Favourite Course
+   * @returns {Promise<void>}
+   */
+  public setFavourite(courseId: string, favourite: boolean): Promise<void> {
+    if (favourite === null || courseId === null) {
+      return Promise.reject(new Error('Favourite oder Course ID darf nicht null sein.'));
+    }
+    return this.afDb.object(`/courses/${courseId}/favourite`).set(favourite) as Promise<void>;
   }
 
   /**
@@ -142,7 +160,7 @@ export class CourseService {
     const photoURL = Profile.DEFAULT_PHOTOURL;
 
     if (courseId === null) {
-      return Promise.reject(new Error('CourseId darf nicht null sein.'));
+      return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
     }
     return this.afDb.object(`/courses/${courseId}`).update({
       creatorPhotoURL: photoURL,
@@ -159,6 +177,9 @@ export class CourseService {
    * @returns {Promise<void>}
    */
   public updateCourseTitleAndDescription(courseId: string, title: string, description: string): Promise<void> {
+    if (courseId === null) {
+      return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
+    }
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
@@ -182,7 +203,7 @@ export class CourseService {
    */
   public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
     if (courseId === null) {
-      return Promise.reject(new Error('KursId darf nicht null sein.'));
+      return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
     }
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
@@ -209,18 +230,27 @@ export class CourseService {
 
   // only used in test spec
   public deleteCourse(courseId: string): Promise<void> {
+    if (courseId === null) {
+      return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
+    }
     return this.afDb.list(`courses/${courseId}`).remove() as Promise<void>;
   }
 
   // not needed anymore, outsourced to Cloud Functions
-  private updateCreatorPhotoURL(courseId: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
-    if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
-      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
-    }
-    return this.afDb.object(`/courses/${courseId}`).update({
-      creatorPhotoURL: creatorPhotoURL,
-      thumbCreatorPhotoURL: thumbCreatorPhotoURL
-    }) as Promise<void>;
-  }
+  // public updateCreatorPhotoURL(courseId: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
+  //   if (courseId === null) {
+  //     return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
+  //   }
+  //   if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+  //     return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+  //   }
+  //   if (!thumbCreatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !thumbCreatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+  //     return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+  //   }
+  //   return this.afDb.object(`/courses/${courseId}`).update({
+  //     creatorPhotoURL: creatorPhotoURL,
+  //     thumbCreatorPhotoURL: thumbCreatorPhotoURL
+  //   }) as Promise<void>;
+  // }
 
 }

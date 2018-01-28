@@ -76,6 +76,9 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public setProfileName(uid: string, userName: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     if (userName.length < 1 || userName.length > 25 || !userName.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
@@ -90,6 +93,9 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public setProfileEmail(uid: string, userEmail: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     if (!userEmail.match(BasePage.REGEX_EMAIL)) {
       return Promise.reject(new Error('Es wurde keine E Mail Adresse eingeben.'));
     }
@@ -104,6 +110,9 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public setProfileEmailVerified(uid: string, userEmailVerified: boolean): Promise<void> {
+    if (uid === null || userEmailVerified === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     return this.afDb.object(`profiles/${uid}/emailVerified`).set(userEmailVerified) as Promise<void>;
   }
 
@@ -115,6 +124,9 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public setProfileRole(uid: string, userRole: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     if (userRole !== Profile.ROLE_STUDENT && userRole !== Profile.ROLE_TEACHER) {
       return Promise.reject(new Error('Es gibt nur die Rolle Student und Teacher.'));
     }
@@ -130,6 +142,9 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public setProfilePhotoName(uid: string, userPhotoName: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     if (!userPhotoName.includes('.jpg' || '.JPG' || '.jpeg' || '.JPEG' || '.png' || '.PNG')) {
       return Promise.reject(new Error('Daten dürfen nur im jpg/jpeg oder png Format hochgeladen werden.'));
     }
@@ -159,6 +174,9 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public deleteProfilePhotoId(uid: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     return this.afDb.object(`/profiles/${uid}/photoId`).remove() as Promise<void>;
   }
 
@@ -169,11 +187,17 @@ export class ProfileService {
    * @returns {Promise<void>}
    */
   public deleteProfilePhotoName(uid: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     return this.afDb.object(`/profiles/${uid}/photoName`).remove() as Promise<void>;
   }
 
   // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
   public setProfilePhotoURL(uid: string, userPhotoURL: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     if (!userPhotoURL.includes(File.DEFAULT_FILE_URL) && !userPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
@@ -182,6 +206,9 @@ export class ProfileService {
 
   // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
   public deleteProfileNameTESTONLY(uid: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     return this.afDb.object(`/profiles/${uid}/name`).set(null) as Promise<void>;
   }
 

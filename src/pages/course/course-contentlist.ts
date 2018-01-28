@@ -90,10 +90,14 @@ export class CourseContentListPage extends BasePage {
           handler: () => {
             // Delete current CourseItem
 
-            // storage
-            this.fileService.deleteContentVideo(this.authUid, this.courseId, content.$key, content.videoName);
-            // database
-            this.contentListData.remove(content.$key);
+            try {
+              // storage
+              this.fileService.deleteContentVideo(this.authUid, this.courseId, content.$key, content.videoName);
+              // database
+              this.contentListData.remove(content.$key);
+            } catch (err) {
+              this.showAlert("Content", "Das Löschen ist Fehlgeschlagen." + "_:" + err.message);
+            }
           }
         },
         {

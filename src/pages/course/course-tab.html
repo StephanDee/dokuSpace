@@ -36,7 +36,7 @@
 
         <img src="{{course.thumbTitleImageUrl}}"
              alt="Image not found"
-             onerror="this.onerror = null; this.src='assets/imgs/imagenotfound600x340.jpg';"
+             onerror="this.onerror = null; this.src='assets/imgs/imageloading600x340.jpg';"
              (click)="openCourseContentListPage(course);">
 
         <ion-card-content>
@@ -49,7 +49,11 @@
           <button ion-button clear color="primary" (click)="selectCourseItem(course);" *ngIf="authUid === course.creatorUid">
             <ion-icon name="more"></ion-icon>
           </button>
-          <button ion-button clear color="light">
+          <!-- added favourite for dummy purposes -->
+          <button ion-button clear color="light" (click)="favouriteCourse(course)" *ngIf="course.favourite === false || course.favourite === null || course.favourite === undefined">
+            <ion-icon name="heart"></ion-icon>
+          </button>
+          <button ion-button clear color="primary" (click)="favouriteCourse(course)" *ngIf="course.favourite === true">
             <ion-icon name="heart"></ion-icon>
           </button>
         </div>
@@ -69,7 +73,7 @@
 
         <img src="{{myCourse.thumbTitleImageUrl}}"
              alt="Image not found"
-             onerror="this.onerror = null; this.src='assets/imgs/imagenotfound600x340.jpg';"
+             onerror="this.onerror = null; this.src='assets/imgs/imageloading600x340.jpg';"
              (click)="openCourseContentListPage(myCourse);">
 
         <ion-card-content>
@@ -82,7 +86,11 @@
           <button ion-button clear color="primary" (click)="selectCourseItem(myCourse);">
             <ion-icon name="more"></ion-icon>
           </button>
-          <button ion-button clear color="light">
+          <!-- added favourite for dummy purposes -->
+          <button ion-button clear color="light" (click)="favouriteCourse(myCourse)" *ngIf="myCourse.favourite === false || myCourse.favourite === null || myCourse.favourite === undefined">
+            <ion-icon name="heart"></ion-icon>
+          </button>
+          <button ion-button clear color="primary" (click)="favouriteCourse(myCourse)" *ngIf="myCourse.favourite === true">
             <ion-icon name="heart"></ion-icon>
           </button>
         </div>

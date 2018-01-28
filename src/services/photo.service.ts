@@ -26,6 +26,9 @@ export class PhotoService {
    * @returns {Promise<void>}
    */
   public deleteProfilePhoto(authUid: string, photoId: string): Promise<void> {
+    if (authUid === null || photoId === null) {
+      return Promise.reject(new Error('authUid und photoId darf nicht null sein.'));
+    }
     return this.afDb.object(`/photos/${authUid}/${photoId}`).remove() as Promise<void>;
   }
 }

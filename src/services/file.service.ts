@@ -161,6 +161,9 @@ export class FileService {
    * @returns {Promise<void>}
    */
   public deleteProfileImage(authUid: string, fileName: any): Promise<void> {
+    if (authUid === null || fileName === null) {
+      return Promise.reject(new Error('AuthUid und fileName darf nicht null sein.'));
+    }
     return this.fireStore.ref(`profiles/${authUid}/photo/${fileName}`).delete() &&
       this.fireStore.ref(`profiles/${authUid}/photo/thumb_${fileName}`).delete() as Promise<void>;
   }
@@ -305,7 +308,7 @@ export class FileService {
    */
   private setCourseOrUpdateTitleImageIdURLAndName(authUid: string, fileName: string, courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string) {
     this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).getDownloadURL().then(async (url) => {
-      if (title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
+      if (authUid !== null && title !== null && description !== null && creatorName !== null && creatorUid !== null && creatorPhotoURL !== null && thumbCreatorPhotoURL !== null) {
 
         // Without Cloud Functions
         //const titleImageId = this.afDb.list(`/courses`).push({}).key;
@@ -318,6 +321,8 @@ export class FileService {
         course.creatorUid = creatorUid;
         course.creatorPhotoURL = creatorPhotoURL;
         course.thumbCreatorPhotoURL = thumbCreatorPhotoURL;
+        // favourite for dummy purposes
+        course.favourite = false;
         // course.titleImageId = titleImageId;
         // course.titleImageUrl = url;
         // course.titleImageName = fileName;
@@ -351,6 +356,9 @@ export class FileService {
    * @returns {Promise<void>}
    */
   public deleteCourseTitleImage(authUid: string, courseId: string, fileName: any): Promise<void> {
+    if (authUid === null || courseId === null || fileName === null) {
+      return Promise.reject(new Error('authUid, courseId, fileName dürfen nicht null sein.'));
+    }
     return this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/${fileName}`).delete() &&
       this.fireStore.ref(`profiles/${authUid}/courses/${courseId}/thumb_${fileName}`).delete() as Promise<void>;
   }
@@ -478,8 +486,8 @@ export class FileService {
     this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).getDownloadURL().then(async (url) => {
       if (title !== null && description !== null) {
         // validate Data
-        if (courseId === null || contentId === null) {
-          return Promise.reject(new Error('KursId und ContentId dürfen nicht null sein.'));
+        if (authUid === null || courseId === null || contentId === null) {
+          return Promise.reject(new Error('AuthUid, KursId und ContentId dürfen nicht null sein.'));
         }
         if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
           return Promise.reject(new Error('Name muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
@@ -529,6 +537,9 @@ export class FileService {
    * @returns {Promise<void>}
    */
   public deleteContentVideo(authUid: string, courseId: string, contentId: string, fileName: any): Promise<void> {
+    if (authUid === null || courseId === null || contentId === null || fileName === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
     return this.fireStore.ref(`profiles/${authUid}/contents/${courseId}/${contentId}/${fileName}`).delete() as Promise<void>;
   }
 
@@ -599,6 +610,9 @@ export class FileService {
 
   // Photo Service Method.
   private deleteProfilePhoto(authUid: string, photoId: string): Promise<void> {
+    if (authUid === null|| photoId === null) {
+      return Promise.reject(new Error('User ID oder photo ID darf nicht null sein.'));
+    }
     return this.afDb.object(`/photos/${authUid}/${photoId}`).remove() as Promise<void>;
   }
 

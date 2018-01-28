@@ -61,19 +61,27 @@ export class ProfileListPage extends BasePage {
   protected selectProfileItem(profile: Profile) {
 
     this.actionSheetCtrl.create({
-      title: `Profil: ${profile.name}`,
+      title: `Profil: ${profile.email}`,
       buttons: [
         {
           text: 'Rolle zu ' + Profile.ROLE_STUDENT + ' ändern',
           handler: () => {
-            this.profileService.setProfileRole(profile.$key, Profile.ROLE_STUDENT);
+            try {
+              this.profileService.setProfileRole(profile.$key, Profile.ROLE_STUDENT);
+            } catch (err) {
+              this.showAlert("Content", "Das Löschen ist Fehlgeschlagen." + "_:" + err.message);
+            }
             this.roleSuccessToast();
           }
         },
         {
           text: 'Rolle zu ' + Profile.ROLE_TEACHER + ' ändern',
           handler: () => {
-            this.profileService.setProfileRole(profile.$key, Profile.ROLE_TEACHER);
+            try {
+              this.profileService.setProfileRole(profile.$key, Profile.ROLE_TEACHER);
+            } catch (err) {
+              this.showAlert("Content", "Das Löschen ist Fehlgeschlagen." + "_:" + err.message);
+            }
             this.roleSuccessToast();
           }
         },

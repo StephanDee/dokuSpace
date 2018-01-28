@@ -164,4 +164,19 @@ export class CourseTabPage extends BasePage {
     modal.present();
   }
 
+  /**
+   * Sets the Course to Favourites.
+   * At the moment only for Dummy purposes.
+   *
+   * @param {Course} course The selected Course
+   */
+  favouriteCourse(course: Course) {
+    if (course.favourite === true) {
+      this.courseService.setFavourite(course.$key, false);
+    }
+    if (course.favourite === false || course.favourite === null || course.favourite === undefined) {
+      this.courseService.setFavourite(course.$key, true);
+    }
+  }
+
 }

@@ -28,7 +28,9 @@ export class Course {
   // For users who choose this course to their favourites.
   // public favouriteId: string;
   // public favouriteUserId: string;
-  // public favourite: boolean;
+
+  // added for dummy purposes
+  public favourite: boolean;
 
   // Company Key
   // public accountKey: string;
@@ -51,6 +53,7 @@ export class Course {
    * @param {string} titleImageName The Course Title Image Name, File Name
    * @param {string} titleImageUrl The Course Title Image URL, Reference to the File
    * @param {string} thumbTitleImageUrl The Course Thumbnail Title Image URL, Regerence to the Thumbnail File
+   * @param {boolean} favourite The Favourite Course.
    */
   public constructor(courseId: string = null,
                      title: string = null,
@@ -62,7 +65,8 @@ export class Course {
                      titleImageId: string = null,
                      titleImageName: string = null,
                      titleImageUrl: string = null,
-                     thumbTitleImageUrl: string = null) {
+                     thumbTitleImageUrl: string = null,
+                     favourite: boolean = null) {
     this.courseId = courseId;
     this.title = title;
     this.description = description;
@@ -74,6 +78,7 @@ export class Course {
     this.titleImageName = titleImageName;
     this.titleImageUrl = titleImageUrl;
     this.thumbTitleImageUrl = thumbTitleImageUrl;
+    this.favourite = favourite;
   }
 
 }

@@ -113,6 +113,9 @@ export class ContentService {
    * @returns {Promise<void>}
    */
   public updateContentTitleAndDescription(courseId: string, contentId: string, title: string, description: string): Promise<void> {
+    if (courseId === null || contentId === null) {
+      return Promise.reject(new Error('Die Kurs ID und Content ID darf nicht null sein.'));
+    }
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
     }
@@ -129,6 +132,9 @@ export class ContentService {
    * @returns {Promise<void>}
    */
   public deleteContent(courseId: string): Promise<void> {
+    if (courseId === null) {
+      return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
+    }
     return this.afDb.object(`contents/${courseId}`).remove() as Promise<void>;
   }
 
@@ -146,8 +152,8 @@ export class ContentService {
    * @returns {Promise<void>}
    */
   public createContent(authUid: string, courseId: string, contentId: string, title: string, description: string, videoName: string, videoUrl: string): Promise<void> {
-    if (courseId === null || contentId === null) {
-      return Promise.reject(new Error('KursId und Titelbild dürfen nicht null sein.'));
+    if (authUid === null || courseId === null || contentId === null) {
+      return Promise.reject(new Error('authUid, KursId und Titelbild dürfen nicht null sein.'));
     }
     if (title.length < 1 || title.length > 25 || !title.match(BasePage.REGEX_START_NOBLANK)) {
       return Promise.reject(new Error('Titel muss mind. 1 und max. 25 Zeichen lang und nicht leer sein.'));
