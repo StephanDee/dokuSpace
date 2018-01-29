@@ -62,6 +62,7 @@ export class ProfileListPage extends BasePage {
 
     this.actionSheetCtrl.create({
       title: `Profil: ${profile.email}`,
+      subTitle: `Rolle: ${profile.role}`,
       buttons: [
         {
           text: 'Rolle zu ' + Profile.ROLE_STUDENT + ' ändern',

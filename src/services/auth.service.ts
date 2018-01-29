@@ -105,6 +105,16 @@ export class AuthService {
   }
 
   /**
+   * Logout.
+   *
+   * @returns {Promise<void>}
+   */
+  public logout(): Promise<void> {
+    return this.afAuth.auth.signOut() as Promise<void>;
+  }
+
+  // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
+  /**
    * Gets the current User.
    *
    * @returns {firebase.User | null}
@@ -113,6 +123,7 @@ export class AuthService {
     return this.afAuth.auth.currentUser;
   }
 
+  // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
   /**
    * Gets the authenticated User Email.
    *
@@ -120,15 +131,6 @@ export class AuthService {
    */
   public getAuthEmail() {
     return this.afAuth.auth.currentUser.email;
-  }
-
-  /**
-   * Logout.
-   *
-   * @returns {Promise<void>}
-   */
-  public logout(): Promise<void> {
-    return this.afAuth.auth.signOut() as Promise<void>;
   }
 
 }

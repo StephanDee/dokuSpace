@@ -14,7 +14,7 @@ import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { Profile } from '../models/profile';
 
 /**
- * This class represents the Initial Page of the App.
+ * This class represents the initial Page of the App.
  *
  * @author Stephan Dünkel
  * @copyright dokuSpace 2018
