@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "author": "Stephan Dünkel",
   "homepage": "https://github.com/StephanDee/dokuSpace",
+  "license": "BSD 2-Clause",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
