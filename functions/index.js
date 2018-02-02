@@ -266,11 +266,13 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     // }
 
     // if filePath matches nothing
-    return ref.child(`/thumbnails/${profileUid}`).push({
-      originalFileUrl: fileUrl,
-      thumbnailFileUrl: thumbFileUrl,
-      fileName: fileName
-    });
+    if (!filePath.includes('/courses/') && !filePath.includes('photo')) {
+      return ref.child(`/thumbnails/${profileUid}`).push({
+        originalFileUrl: fileUrl,
+        thumbnailFileUrl: thumbFileUrl,
+        fileName: fileName
+      });
+    }
   });
 
 });

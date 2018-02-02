@@ -4,7 +4,7 @@
     <ion-list-header>Benutzer Accounts</ion-list-header>
     <ion-item *ngFor="let profile of profileData | async" (click)="selectProfileItem(profile);">
       <ion-avatar item-start>
-        <img src="{{profile.photoURL}}">
+        <img src="{{profile.thumbPhotoURL}}">
       </ion-avatar>
       <h3>{{profile.email}}</h3>
       <p>{{profile.role}}</p>
