@@ -17,7 +17,7 @@
     <p padding-horizontal>Titel & Beschreibung bearbeiten:</p>
     <ion-item>
       <ion-label floating>Title</ion-label>
-      <ion-input type="text" formControlName="title" maxlength="25"
+      <ion-input type="text" formControlName="title"
                  value="{{(contentData | async)?.title}}"></ion-input>
     </ion-item>
     <div class="element-to-right">
@@ -29,7 +29,7 @@
 
     <ion-item>
       <ion-label floating>Beschreibung</ion-label>
-      <ion-textarea rows="6" type="text" formControlName="description" maxlength="255"
+      <ion-textarea rows="6" type="text" formControlName="description"
                     value="{{(contentData | async)?.description}}"></ion-textarea>
     </ion-item>
     <div class="element-to-right">
