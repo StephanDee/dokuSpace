@@ -8,13 +8,13 @@
       <h1 class="circle circle-text" item-start>{{i + 1}}</h1>
       <p (click)="openContentPage(content);">{{content.title}}</p>
       <button item-end ion-button clear large (click)="selectContentItem(content)"
-              *ngIf="authUid === content.creatorUid">
+              *ngIf="authUid === content.creatorUid && (profileData | async)?.role === profileRoleTeacher">
         <ion-icon name="more"></ion-icon>
       </button>
     </ion-item>
   </ion-list>
 
-  <ion-fab right bottom *ngIf="creatorUid === authUid">
+  <ion-fab right bottom *ngIf="creatorUid === authUid && (profileData | async)?.role === profileRoleTeacher">
     <button ion-fab color="danger" (click)="openCreateContentModal()">
       <ion-icon name="add"></ion-icon>
     </button>

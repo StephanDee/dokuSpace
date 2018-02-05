@@ -35,6 +35,7 @@ export class CourseTabPage extends BasePage {
   // Attributes
   protected authUid: string;
   protected segment = 'allcourses';
+  protected profileRoleTeacher: string;
   protected profileData: FirebaseObjectObservable<Profile>;
   protected courseListData: FirebaseListObservable<Course[]>;
   protected myCourseListData: FirebaseListObservable<Course[]>;
@@ -74,6 +75,7 @@ export class CourseTabPage extends BasePage {
    */
   ngOnInit() {
     this.authUid = this.authService.getAuthUid();
+    this.profileRoleTeacher = Profile.ROLE_TEACHER;
     this.profileData = this.profileService.getProfile(this.authUid);
     this.courseListData = this.courseService.getCourses();
     this.myCourseListData = this.courseService.getMyCourses(this.authUid);

@@ -4,14 +4,16 @@ import {
   NavController
 } from 'ionic-angular';
 import { BasePage } from '../base/base';
-import { FirebaseListObservable } from 'angularfire2/database-deprecated';
-import { Course } from '../../models/course';
-import { FileService } from '../../services/file.service';
-import { ContentService } from '../../services/content.service';
-import { CourseService } from '../../services/course.service';
+import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
+import { ContentService } from '../../services/content.service';
+import { FileService } from '../../services/file.service';
+import { CourseService } from '../../services/course.service';
 import { CourseEditModalPage } from '../course/modals/course-edit-modal';
 import { CourseContentListPage } from '../course/course-contentlist';
+import { Course } from '../../models/course';
+import { Profile } from '../../models/profile';
 
 /**
  * This class represents the Favourite Tab Page.
@@ -23,12 +25,14 @@ import { CourseContentListPage } from '../course/course-contentlist';
 @Component({
   selector: 'page-favourite-tab',
   templateUrl: 'favourite-tab.html',
-  providers: [AuthService, CourseService, ContentService, FileService]
+  providers: [AuthService, ProfileService, CourseService, ContentService, FileService]
 })
 export class FavouriteTabPage extends BasePage {
 
   // Attributes
   protected authUid: string;
+  protected profileRoleTeacher: string;
+  protected profileData: FirebaseObjectObservable<Profile>;
   protected favouriteCourseListData: FirebaseListObservable<Course[]>;
 
   /**
@@ -38,7 +42,8 @@ export class FavouriteTabPage extends BasePage {
    * @param {AlertController} alertCtrl The Alert Controller
    * @param {LoadingController} loadingCtrl The Loading Controller
    * @param {ModalController} modalCtrl The Modal Controller
-   * @param {AuthService} authService The Auth Service, provides Methods for Contents
+   * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
+   * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
    * @param {FileService} fileService The File Service, provides Methods for Files
@@ -49,6 +54,7 @@ export class FavouriteTabPage extends BasePage {
               public loadingCtrl: LoadingController,
               protected modalCtrl: ModalController,
               private authService: AuthService,
+              private profileService: ProfileService,
               private courseService: CourseService,
               private contentService: ContentService,
               private fileService: FileService,
@@ -61,6 +67,8 @@ export class FavouriteTabPage extends BasePage {
    */
   ngOnInit() {
     this.authUid = this.authService.getAuthUid();
+    this.profileRoleTeacher = Profile.ROLE_TEACHER;
+    this.profileData = this.profileService.getProfile(this.authUid);
     this.favouriteCourseListData = this.courseService.getMyFavouriteCourses();
   }
 

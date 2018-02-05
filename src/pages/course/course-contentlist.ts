@@ -7,11 +7,13 @@ import { BasePage } from '../base/base';
 import { AuthService } from '../../services/auth.service';
 import { ContentService } from '../../services/content.service';
 import { FileService } from '../../services/file.service';
-import { FirebaseListObservable } from 'angularfire2/database-deprecated';
+import { ProfileService } from '../../services/profile.service';
+import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { ContentPage } from '../content/content-page';
 import { ContentEditModalPage } from '../content/modals/content-edit-modal';
 import { ContentCreateModalPage } from '../content/modals/content-create-modal';
 import { Content } from '../../models/content';
+import { Profile } from '../../models/profile';
 
 /**
  * This class represents the Course Content List Page.
@@ -22,7 +24,7 @@ import { Content } from '../../models/content';
 @Component({
   selector: 'page-course-contentlist',
   templateUrl: 'course-contentlist.html',
-  providers: [AuthService, ContentService, FileService]
+  providers: [AuthService, ProfileService, ContentService, FileService]
 })
 export class CourseContentListPage extends BasePage {
 
@@ -30,6 +32,8 @@ export class CourseContentListPage extends BasePage {
   protected authUid: string;
   protected creatorUid: string;
   protected courseId: string;
+  protected profileRoleTeacher: string;
+  protected profileData: FirebaseObjectObservable<Profile>;
   protected contentListData: FirebaseListObservable<Content[]>;
 
   /**
@@ -42,6 +46,7 @@ export class CourseContentListPage extends BasePage {
    * @param {ActionSheetController} actionSheetCtrl The Action Sheet Controller, used for the Action Sheet in this Page
    * @param {NavParams} navParams The Navigation Parameter from the previous Page
    * @param {AuthService} authService The Auth Service, provides Methods for the Authenticated User
+   * @param {ProfileService} profileService The Profile Service, provides Methods for the Profile
    * @param {ContentService} contentService The Content Service, provides Methods for the Contents
    * @param {FileService} fileService the File Service, provides Methods for the Files
    */
@@ -52,6 +57,7 @@ export class CourseContentListPage extends BasePage {
               protected actionSheetCtrl: ActionSheetController,
               protected navParams: NavParams,
               private authService: AuthService,
+              private profileService: ProfileService,
               private contentService: ContentService,
               private fileService: FileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
@@ -64,6 +70,8 @@ export class CourseContentListPage extends BasePage {
     this.authUid = this.authService.getAuthUid();
     this.courseId = this.navParams.get('courseId');
     this.creatorUid = this.navParams.get('creatorUid');
+    this.profileRoleTeacher = Profile.ROLE_TEACHER;
+    this.profileData = this.profileService.getProfile(this.authUid);
     this.contentListData = this.contentService.getContents(this.courseId);
   }
 

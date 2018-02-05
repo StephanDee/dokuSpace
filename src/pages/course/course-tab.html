@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-fab right bottom *ngIf="(profileData | async)?.role === 'Teacher'">
+  <ion-fab right bottom *ngIf="(profileData | async)?.role === profileRoleTeacher">
     <button ion-fab color="danger" (click)="openCreateCourseModal();">
       <ion-icon name="add"></ion-icon>
     </button>
@@ -16,7 +16,7 @@
       <ion-segment-button value="allcourses">
         Alle Kurse
       </ion-segment-button>
-      <ion-segment-button value="mycourses" *ngIf="(profileData | async)?.role === 'Teacher'">
+      <ion-segment-button value="mycourses" *ngIf="(profileData | async)?.role === profileRoleTeacher">
         Meine Kurse
       </ion-segment-button>
     </ion-segment>
@@ -46,7 +46,7 @@
         </ion-card-content>
 
         <div class="element-to-right">
-          <button ion-button clear color="primary" (click)="selectCourseItem(course);" *ngIf="authUid === course.creatorUid">
+          <button ion-button clear color="primary" (click)="selectCourseItem(course);" *ngIf="authUid === course.creatorUid && (profileData | async)?.role === profileRoleTeacher">
             <ion-icon name="more"></ion-icon>
           </button>
           <!-- added favourite for dummy purposes -->

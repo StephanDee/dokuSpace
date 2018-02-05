@@ -101,14 +101,10 @@ export class FileService {
 
           // get file name
           let fileName = nativePath.split('/').pop();
-
           // get file type
           let fileType = nativePath.split('.').pop();
 
-          if (fileType !== ('jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG')) {
-            this.loading.dismiss();
-            alert('Die Datei ist nicht vom Typ JPG, JPEG oder PNG. Profilbild wurde nicht erstellt. Versuchen Sie es erneuert.');
-          } else {
+          if (fileType === 'jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG') {
             let authUid = this.getAuthUid();
             let imgBlob;
 
@@ -131,10 +127,10 @@ export class FileService {
               await this.unsubscribeGetPhotoSubscription();
             });
 
-            if (fileType === ('jpg' || 'jpeg' || 'JPG' || 'JPEG')) {
+            if (fileType === 'jpg' || 'jpeg' || 'JPG' || 'JPEG') {
               imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
             }
-            if (fileType === ('png' || 'PNG')) {
+            if (fileType === 'png' || 'PNG') {
               imgBlob = new Blob([event.target.result], {type: 'image/png'});
             }
             let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
@@ -147,6 +143,9 @@ export class FileService {
               this.loading.dismiss();
               alert('Upload Failed: ' + err.code + ' _: ' + err.message);
             });
+          } else {
+            this.loading.dismiss();
+            alert('Die Datei ist nicht vom Typ JPG, JPEG oder PNG. Profilbild wurde nicht erstellt. Versuchen Sie es erneuert.');
           }
         }
       });
@@ -252,21 +251,17 @@ export class FileService {
 
           // get file name
           let fileName = nativePath.split('/').pop();
-
           // get file type
           let fileType = nativePath.split('.').pop();
 
-          if (fileType !== ('jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG')) {
-            this.loading.dismiss();
-            alert('Die Datei ist nicht vom Typ JPG, JPEG oder PNG. Kurs wurde nicht erstellt. Versuchen Sie es erneuert.');
-          } else {
+          if (fileType === 'jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG') {
             let authUid = this.getAuthUid();
             let imgBlob;
 
-            if (fileType === ('jpg' || 'jpeg' || 'JPG' || 'JPEG')) {
+            if (fileType === 'jpg' || 'jpeg' || 'JPG' || 'JPEG') {
               imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
             }
-            if (fileType === ('png' || 'PNG')) {
+            if (fileType === 'png' || 'PNG') {
               imgBlob = new Blob([event.target.result], {type: 'image/png'});
             }
 
@@ -287,6 +282,9 @@ export class FileService {
               this.loading.dismiss();
               alert('Upload Failed: ' + err.code + ' _: ' + err.message);
             });
+          } else {
+            this.loading.dismiss();
+            alert('Die Datei ist nicht vom Typ JPG, JPEG oder PNG. Kurs wurde nicht erstellt. Versuchen Sie es erneuert.');
           }
         }
       });
@@ -436,14 +434,10 @@ export class FileService {
 
           // get file name
           let fileName = nativePath.split('/').pop();
-
           // get file type
           let fileType = nativePath.split('.').pop();
 
-          if (fileType !== ('mp4' || 'MP4')) {
-            this.loading.dismiss();
-            alert('Die Datei ist nicht vom Typ mp4. Content wurde nicht erstellt. Versuchen Sie es erneuert.');
-          } else {
+          if (fileType === 'mp4' || 'MP4') {
             let authUid = this.getAuthUid();
             let imgBlob;
 
@@ -466,6 +460,9 @@ export class FileService {
               this.loading.dismiss();
               alert('Upload Failed: ' + err.code + ' _: ' + err.message);
             });
+          } else {
+            this.loading.dismiss();
+            alert('Die Datei ist nicht vom Typ MP4. Content wurde nicht erstellt. Versuchen Sie es erneuert.');
           }
         }
       });
@@ -610,7 +607,7 @@ export class FileService {
 
   // Photo Service Method.
   private deleteProfilePhoto(authUid: string, photoId: string): Promise<void> {
-    if (authUid === null|| photoId === null) {
+    if (authUid === null || photoId === null) {
       return Promise.reject(new Error('User ID oder photo ID darf nicht null sein.'));
     }
     return this.afDb.object(`/photos/${authUid}/${photoId}`).remove() as Promise<void>;

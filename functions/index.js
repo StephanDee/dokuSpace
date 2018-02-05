@@ -18,7 +18,7 @@ const ref = admin.database().ref();
 // storage modules
 const gcs = require('@google-cloud/storage')({keyFilename: 'dokuspace-67e76-firebase-adminsdk-6c17m-d90ed717c0.json'});
 // provides methods to execute external programms
-const spawn = require('child-process-promise').spawn;
+const spawn = require('child-process-promise').spawn; // Pass an additional cature option to buffer the result
 
 /**
  * Triggers onCreate Authentication events.
@@ -31,7 +31,7 @@ exports.createProfile = functions.auth.user().onCreate(event => {
   // user data
   const uid = event.data.uid;
   const email = event.data.email;
-  const emailVerified = false;
+  const emailVerified = false; // only Event Parameters are returned, the rest is hardcoded.
   const superAdmin = false;
   const role = 'Student';
   const photoURL = event.data.photoURL ||
@@ -154,10 +154,10 @@ exports.updateCourseCreatorThumbPhotoURL = functions.database
  */
 exports.generateThumbnail = functions.storage.object().onChange(event => {
   // file data
-  const object = event.data;
-  const filePath = object.name;
+  const object = event.data; // The Storage object.
+  const filePath = object.name; // File path in the bucket.
   const fileName = filePath.split('/').pop();
-  const fileBucket = object.bucket;
+  const fileBucket = object.bucket; // The Storage bucket that contains the file.
   const bucket = gcs.bucket(fileBucket);
   const tempFilePath = `/tmp/${fileName}`;
   const ref = admin.database().ref(); // not needed
@@ -166,6 +166,8 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   // This REGEX matches to the end of a string that contains a slash
   // followed by zero or more or any character that is not a /slash
   const thumbFilePath = filePath.replace(/(\/)?([^\/]*)$/, '$1thumb_$2');
+  // console.log('$1: ', RegExp.$1); // Path
+  // console.log('$2: ', RegExp.$2); // Filename
 
   // data output
   console.log('filePath: ', filePath);
@@ -197,7 +199,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     // executes the imagemagick convert cli
     return spawn('convert', [tempFilePath, '-thumbnail', '600x340>', tempFilePath]);
   }).then(() => {
-    // write image to storage
+    // write converted image to storage
     console.log('Thumbnail created at', tempFilePath);
     return bucket.upload(tempFilePath, {
       destination: thumbFilePath
@@ -265,7 +267,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     // });
     // }
 
-    // if filePath matches nothing
+    // if filePath matches nothing, should never happen, but just to be sure
     if (!filePath.includes('/courses/') && !filePath.includes('photo')) {
       return ref.child(`/thumbnails/${profileUid}`).push({
         originalFileUrl: fileUrl,
