@@ -40,7 +40,7 @@ export class MyApp {
    *
    * @param {Platform} platform The Platform of the App
    * @param {StatusBar} statusBar The StatusBar of the App
-   * @param {SplashScreen} splashScreen The SplashScreen of the APp
+   * @param {SplashScreen} splashScreen The SplashScreen of the App
    * @param {AuthService} authService The Auth Service, provides Methods for Authentication
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    */
