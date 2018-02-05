@@ -90,6 +90,7 @@ export class ProfileTabPage extends BasePage {
       let photoId = data.photoId;
       let photoName = data.photoName;
 
+      // delete profileImage in Cloud Storage
       if (photoName !== undefined && photoId !== undefined) {
         this.fileService.deleteProfileImage(authUid, photoName);
 
@@ -107,7 +108,7 @@ export class ProfileTabPage extends BasePage {
           console.log(err);
         });
 
-        // delete photoId and photoName
+        // delete photoId and photoName in Profile
         this.profileService.deleteProfilePhotoId(authUid);
         this.profileService.deleteProfilePhotoName(authUid);
 
