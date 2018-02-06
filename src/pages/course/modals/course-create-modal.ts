@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { CourseService } from '../../../services/course.service';
-import { FileService } from '../../../services/file.service';
+import { CourseFileService } from '../../../services/course.file.service';
 import { BasePage } from '../../base/base';
 
 /**
@@ -16,7 +16,7 @@ import { BasePage } from '../../base/base';
 @Component({
   selector: 'page-course-create-modal',
   templateUrl: './course-create-modal.html',
-  providers: [AuthService, ProfileService, CourseService, FileService]
+  providers: [AuthService, ProfileService, CourseService, CourseFileService]
 })
 export class CourseCreateModalPage extends BasePage {
 
@@ -34,7 +34,7 @@ export class CourseCreateModalPage extends BasePage {
    * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
-   * @param {FileService} fileService The File Service, provides Methods for Files
+   * @param {CourseFileService} courseFileService The Course File Service, provides Methods for Course Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -44,7 +44,7 @@ export class CourseCreateModalPage extends BasePage {
               private authService: AuthService,
               private profileService: ProfileService,
               private courseService: CourseService,
-              private fileService: FileService) {
+              private courseFileService: CourseFileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -89,7 +89,7 @@ export class CourseCreateModalPage extends BasePage {
       let thumbPhotoURL = data.thumbPhotoURL;
 
       // Choose Title Image and create Course
-      await this.fileService.chooseAndUploadCourseTitleImage(courseId,
+      await this.courseFileService.chooseAndUploadCourseTitleImage(courseId,
         this.courseCreateModalForm.value.title,
         this.courseCreateModalForm.value.description,
         name,

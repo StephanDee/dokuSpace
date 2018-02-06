@@ -6,7 +6,8 @@ import {
 } from 'angularfire2/database-deprecated';
 import { Subscription } from 'rxjs/Subscription';
 import { Content } from '../models/content';
-import { BasePage } from "../pages/base/base";
+import { BasePage } from '../pages/base/base';
+import { File } from '../models/file';
 
 /**
  * This class represents the Content Service.
@@ -104,6 +105,28 @@ export class ContentService {
   }
 
   /**
+   * Update Content Video Name and Url.
+   *
+   * @param {string} courseId The Course ID
+   * @param {string} contentId The Content ID
+   * @param {string} videoUrl The Video Url
+   * @param {string} videoName The Video Name
+   * @returns {Promise<void>}
+   */
+  public updateContentVideoNameAndUrl(courseId: string, contentId: string, videoUrl: string, videoName: string): Promise<void> {
+    if (courseId === null || contentId === null) {
+      return Promise.reject(new Error('Die Kurs ID und Content ID darf nicht null sein.'));
+    }
+    if (!videoUrl.includes(File.DEFAULT_FILE_URL) && !videoUrl.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
+    if (!videoName.includes('.mp4' || '.MP4')) {
+      return Promise.reject(new Error('Daten dürfen nur im mp4 Format hochgeladen werden.'));
+    }
+    return this.afDb.object(`/contents/${courseId}/${contentId}/`).update({videoUrl: videoUrl, videoName: videoName}) as Promise<void>;
+  }
+
+  /**
    * Updates Content Title and Description.
    *
    * @param {string} courseId The Course ID
@@ -138,7 +161,6 @@ export class ContentService {
     return this.afDb.object(`contents/${courseId}`).remove() as Promise<void>;
   }
 
-  // used in file.service.ts
   /**
    * Creates a Content.
    *

@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CourseService } from '../../../services/course.service';
-import { FileService } from '../../../services/file.service';
 import { BasePage } from '../../base/base';
 import { Course } from '../../../models/course';
 import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
+import { AuthService } from '../../../services/auth.service';
+import { CourseFileService } from '../../../services/course.file.service';
 
 /**
  * This class represents the Course Create Modal Page.
@@ -16,7 +17,7 @@ import { FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 @Component({
   selector: 'page-course-edit-modal',
   templateUrl: './course-edit-modal.html',
-  providers: [CourseService, FileService]
+  providers: [AuthService, CourseService, CourseFileService]
 })
 export class CourseEditModalPage extends BasePage {
 
@@ -35,7 +36,7 @@ export class CourseEditModalPage extends BasePage {
    * @param {NavParams} navParams The Navigation Parameter, from the previous Page
    * @param {FormBuilder} formBuilder The Form Builder, for Form Validation
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
-   * @param {FileService} fileService The File Service, provides Methods for Files
+   * @param {CourseFileService} courseFileService The Course File Service, provides Methods for Course Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -44,7 +45,7 @@ export class CourseEditModalPage extends BasePage {
               protected navParams: NavParams,
               protected formBuilder: FormBuilder,
               private courseService: CourseService,
-              private fileService: FileService) {
+              private courseFileService: CourseFileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -82,7 +83,7 @@ export class CourseEditModalPage extends BasePage {
    * Choose and Upload new Title Image.
    */
   protected chooseAndUploadNewTitleImage() {
-    this.fileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null, null);
+    this.courseFileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null, null);
   }
 
   /**

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FileService } from '../../../services/file.service';
+import { AuthService } from '../../../services/auth.service';
+import { ContentFileService } from '../../../services/content.file.service';
 import { ContentService } from '../../../services/content.service';
 import { BasePage } from '../../base/base'
 
@@ -14,7 +15,7 @@ import { BasePage } from '../../base/base'
 @Component({
   selector: 'page-content-create-modal',
   templateUrl: './content-create-modal.html',
-  providers: [ContentService, FileService]
+  providers: [AuthService, ContentService, ContentFileService]
 })
 export class ContentCreateModalPage extends BasePage {
 
@@ -31,7 +32,7 @@ export class ContentCreateModalPage extends BasePage {
    * @param {NavParams} navParams The Navigation Controller, provides Parameter from other Pages
    * @param {FormBuilder} formBuilder, The Form Builder, used to create validation
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
-   * @param {FileService} fileService The File Service, provides Methods for Files
+   * @param {ContentFileService} contentFileService The Content File Service, provides Methods for Content Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -40,7 +41,7 @@ export class ContentCreateModalPage extends BasePage {
               protected navParams: NavParams,
               protected formBuilder: FormBuilder,
               private contentService: ContentService,
-              private fileService: FileService) {
+              private contentFileService: ContentFileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -80,7 +81,7 @@ export class ContentCreateModalPage extends BasePage {
     const contentId = this.contentService.createContentId();
 
     // Choose Title Image and create Course
-    this.fileService.chooseAndUploadContentVideo(this.courseId,
+    this.contentFileService.chooseAndUploadContentVideo(this.courseId,
       contentId,
       this.contentCreateModalForm.value.title,
       this.contentCreateModalForm.value.description).then(() => {

@@ -8,7 +8,8 @@ import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/d
 import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { ContentService } from '../../services/content.service';
-import { FileService } from '../../services/file.service';
+import { CourseFileService } from '../../services/course.file.service';
+import { ContentFileService } from '../../services/content.file.service';
 import { CourseService } from '../../services/course.service';
 import { CourseEditModalPage } from '../course/modals/course-edit-modal';
 import { CourseContentListPage } from '../course/course-contentlist';
@@ -25,7 +26,7 @@ import { Profile } from '../../models/profile';
 @Component({
   selector: 'page-favourite-tab',
   templateUrl: 'favourite-tab.html',
-  providers: [AuthService, ProfileService, CourseService, ContentService, FileService]
+  providers: [AuthService, ProfileService, CourseService, ContentService, CourseFileService, ContentFileService]
 })
 export class FavouriteTabPage extends BasePage {
 
@@ -46,7 +47,8 @@ export class FavouriteTabPage extends BasePage {
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
-   * @param {FileService} fileService The File Service, provides Methods for Files
+   * @param {CourseFileService} courseFileService The Course File Service, provides Methods for Course Files
+   * @param {ContentFileService} contentFileService The Content File Service, provides Methods for Content Files
    * @param {ActionSheetController} actionSheetCtrl The actionSheet Controller
    */
   constructor(public navCtrl: NavController,
@@ -57,7 +59,8 @@ export class FavouriteTabPage extends BasePage {
               private profileService: ProfileService,
               private courseService: CourseService,
               private contentService: ContentService,
-              private fileService: FileService,
+              private courseFileService: CourseFileService,
+              private contentFileService: ContentFileService,
               private actionSheetCtrl: ActionSheetController) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
@@ -96,7 +99,7 @@ export class FavouriteTabPage extends BasePage {
             // Delete current CourseItem and its Contents
 
             // course storage
-            await this.fileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
+            await this.courseFileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
 
             // delete all contents of the course
             await this.contentService.getContentsSubscription(course.$key).then(async (data) => {
@@ -105,7 +108,7 @@ export class FavouriteTabPage extends BasePage {
                 const videoName = ids.videoName;
 
                 // content storage
-                await this.fileService.deleteContentVideo(this.authUid, course.$key, contentId, videoName);
+                await this.contentFileService.deleteContentVideo(this.authUid, course.$key, contentId, videoName);
 
                 // content database
                 await this.contentService.deleteContent(course.$key);

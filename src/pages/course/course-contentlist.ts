@@ -6,7 +6,7 @@ import {
 import { BasePage } from '../base/base';
 import { AuthService } from '../../services/auth.service';
 import { ContentService } from '../../services/content.service';
-import { FileService } from '../../services/file.service';
+import { ContentFileService } from '../../services/content.file.service';
 import { ProfileService } from '../../services/profile.service';
 import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { ContentPage } from '../content/content-page';
@@ -24,7 +24,7 @@ import { Profile } from '../../models/profile';
 @Component({
   selector: 'page-course-contentlist',
   templateUrl: 'course-contentlist.html',
-  providers: [AuthService, ProfileService, ContentService, FileService]
+  providers: [AuthService, ProfileService, ContentService, ContentFileService]
 })
 export class CourseContentListPage extends BasePage {
 
@@ -48,7 +48,7 @@ export class CourseContentListPage extends BasePage {
    * @param {AuthService} authService The Auth Service, provides Methods for the Authenticated User
    * @param {ProfileService} profileService The Profile Service, provides Methods for the Profile
    * @param {ContentService} contentService The Content Service, provides Methods for the Contents
-   * @param {FileService} fileService the File Service, provides Methods for the Files
+   * @param {ContentFileService} contentFileService the Content File Service, provides Methods for the Content Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -59,7 +59,7 @@ export class CourseContentListPage extends BasePage {
               private authService: AuthService,
               private profileService: ProfileService,
               private contentService: ContentService,
-              private fileService: FileService) {
+              private contentFileService: ContentFileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
   }
 
@@ -100,7 +100,7 @@ export class CourseContentListPage extends BasePage {
 
             try {
               // storage
-              this.fileService.deleteContentVideo(this.authUid, this.courseId, content.$key, content.videoName);
+              this.contentFileService.deleteContentVideo(this.authUid, this.courseId, content.$key, content.videoName);
               // database
               this.contentListData.remove(content.$key);
             } catch (err) {

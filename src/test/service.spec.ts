@@ -311,8 +311,9 @@ describe('Client+Firebase CourseServiceTest', () => {
       let creatorName = 'Teacher 103';
       let creatorUid = authUid;
       let creatorPhotoURL = Profile.DEFAULT_PHOTOURL;
+      let thumbCreatorPhotoURL = Profile.DEFAULT_PHOTOURL;
 
-      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
+      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL, thumbCreatorPhotoURL);
 
       await courseService.getCourseSubscription(courseId).then((data) => {
         let courseIdData = data.courseId;
@@ -321,12 +322,14 @@ describe('Client+Firebase CourseServiceTest', () => {
         let creatorNameData = data.creatorName;
         let creatorUidData = data.creatorUid;
         let creatorPhotoURLData = data.creatorPhotoURL;
+        let thumbCreatorPhotoURLData = data.thumbCreatorPhotoURL;
         expect(courseIdData).toBe(courseId);
         expect(titleData).toBe(title);
         expect(descriptionData).toBe(description);
         expect(creatorNameData).toBe(creatorName);
         expect(creatorUidData).toBe(creatorUid);
         expect(creatorPhotoURLData).toBe(creatorPhotoURL);
+        expect(thumbCreatorPhotoURLData).toBe(thumbCreatorPhotoURLData);
       });
       await courseService.unsubscribeGetCourseSubscription();
 
@@ -395,9 +398,10 @@ describe('Client+Firebase ContentServiceTest', () => {
       let creatorName = 'Teacher 103';
       let creatorUid = authUid;
       let creatorPhotoURL = Profile.DEFAULT_PHOTOURL;
+      let thumbCreatorPhotoURL = Profile.DEFAULT_PHOTOURL;
 
       // create course for content
-      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL);
+      await courseService.createCourse(courseId, title, description, creatorName, creatorUid, creatorPhotoURL, thumbCreatorPhotoURL);
 
       // Content Dummy Inputs
       let contentId = courseService.createCourseId();

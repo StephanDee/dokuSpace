@@ -12,12 +12,13 @@ import { AuthService } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { CourseService } from '../../services/course.service';
 import { ContentService } from '../../services/content.service';
-import { FileService } from '../../services/file.service';
+import { CourseFileService } from '../../services/course.file.service';
 import { Profile } from '../../models/profile';
 import { Course } from '../../models/course';
 import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { CourseContentListPage } from './course-contentlist';
 import { CourseEditModalPage } from './modals/course-edit-modal';
+import { ContentFileService } from '../../services/content.file.service';
 
 /**
  * This class represents the Course Tab Page.
@@ -28,7 +29,7 @@ import { CourseEditModalPage } from './modals/course-edit-modal';
 @Component({
   selector: 'page-course-tab',
   templateUrl: 'course-tab.html',
-  providers: [AuthService, ProfileService, CourseService, ContentService, FileService]
+  providers: [AuthService, ProfileService, CourseService, ContentService, CourseFileService, ContentFileService]
 })
 export class CourseTabPage extends BasePage {
 
@@ -52,8 +53,9 @@ export class CourseTabPage extends BasePage {
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
-   * @param {FileService} fileService The File Service, provides Methods for Files
+   * @param {CourseFileService} courseFileService The Course File Service, provides Methods for Course Files
    * @param {ActionSheetController} actionSheetCtrl The actionSheet Controller
+   * @param {ContentFileService} contentFileService The Content File Service, provides Methods for Content Files
    */
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
@@ -64,8 +66,9 @@ export class CourseTabPage extends BasePage {
               private profileService: ProfileService,
               private courseService: CourseService,
               private contentService: ContentService,
-              private fileService: FileService,
-              private actionSheetCtrl: ActionSheetController) {
+              private courseFileService: CourseFileService,
+              private actionSheetCtrl: ActionSheetController,
+              private contentFileService: ContentFileService) {
     super(navCtrl, alertCtrl, loadingCtrl);
     menuCtrl.enable(false);
   }
@@ -105,7 +108,7 @@ export class CourseTabPage extends BasePage {
             // Delete current CourseItem and its Contents
 
             // course storage
-            await this.fileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
+            await this.courseFileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
 
             // delete all contents of the course
             await this.contentService.getContentsSubscription(course.$key).then(async (data) => {
@@ -114,7 +117,7 @@ export class CourseTabPage extends BasePage {
                 const videoName = ids.videoName;
 
                 // content storage
-                await this.fileService.deleteContentVideo(this.authUid, course.$key, contentId, videoName);
+                await this.contentFileService.deleteContentVideo(this.authUid, course.$key, contentId, videoName);
 
                 // content database
                 await this.contentService.deleteContent(course.$key);

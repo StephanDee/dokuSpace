@@ -11,12 +11,12 @@ import { BasePage } from '../base/base';
 import { FirebaseObjectObservable } from "angularfire2/database-deprecated";
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
+import { ProfileFileService } from '../../services/profile.file.service';
+import { PhotoService } from '../../services/photo.service';
+import { CourseService } from '../../services/course.service';
 import { Profile } from '../../models/profile';
 import { ProfileNameModalPage } from './modals/profile-name-modal';
 import { ProfileEmailModalPage } from './modals/profile-email-modal';
-import { FileService } from '../../services/file.service';
-import { PhotoService } from '../../services/photo.service';
-import { CourseService } from '../../services/course.service';
 
 /**
  * This class represents the Profile Tab Page.
@@ -27,7 +27,7 @@ import { CourseService } from '../../services/course.service';
 @Component({
   selector: 'page-profile-tab',
   templateUrl: 'profile-tab.html',
-  providers: [ProfileService, AuthService, FileService, PhotoService, CourseService]
+  providers: [ProfileService, AuthService, ProfileFileService, PhotoService, CourseService]
 })
 export class ProfileTabPage extends BasePage {
 
@@ -44,7 +44,7 @@ export class ProfileTabPage extends BasePage {
    * @param {ModalController} modalCtrl The Modal Controller for the Modal Pages
    * @param {AuthService} authService The Auth Service, provides Methods for the Authenticated User
    * @param {ProfileService} profileService The Profile Service, provides Methods for the Profiles
-   * @param {FileService} fileService The File Service, provides Methods for the Files
+   * @param {ProfileFileService} profileFileService The Profile File Service, provides Methods for the Profile Files
    * @param {PhotoService} photoService The Photo Service, provides Methods for the Photos
    * @param {CourseService} courseService The Course Service, provides Methods for the Courses
    */
@@ -55,7 +55,7 @@ export class ProfileTabPage extends BasePage {
               protected modalCtrl: ModalController,
               private authService: AuthService,
               private profileService: ProfileService,
-              private fileService: FileService,
+              private profileFileService: ProfileFileService,
               private photoService: PhotoService,
               private courseService: CourseService) {
     super(navCtrl, alertCtrl, loadingCtrl);
@@ -92,7 +92,7 @@ export class ProfileTabPage extends BasePage {
 
       // delete profileImage in Cloud Storage
       if (photoName !== undefined && photoId !== undefined) {
-        this.fileService.deleteProfileImage(authUid, photoName);
+        this.profileFileService.deleteProfileImage(authUid, photoName);
 
         // update creatorPhotoURL for courses, when user deleted photoURL and set to default PhotoURL
         await this.courseService.getCoursesSubscription().then(async (data) => {
@@ -132,7 +132,7 @@ export class ProfileTabPage extends BasePage {
    * Choose and Upload a Profile Photo.
    */
   protected chooseAndUploadProfilePhoto() {
-    this.fileService.chooseAndUploadProfileImage();
+    this.profileFileService.chooseAndUploadProfileImage();
   }
 
   /**

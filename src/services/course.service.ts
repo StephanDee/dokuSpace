@@ -204,7 +204,6 @@ export class CourseService {
     return this.afDb.object(`/courses/${courseId}/`).update({title, description}) as Promise<void>;
   }
 
-  // used in file.service.ts
   /**
    * Create Course.
    *
@@ -214,9 +213,10 @@ export class CourseService {
    * @param {string} creatorName The Creator Name
    * @param {string} creatorUid The CreatorUid
    * @param {string} creatorPhotoURL The Creator Photo Url
+   * @param {string} thumbCreatorPhotoURL The Thumbnail Creator Photo URL
    * @returns {Promise<void>}
    */
-  public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string): Promise<void> {
+  public createCourse(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
     if (courseId === null) {
       return Promise.reject(new Error('Die Kurs ID darf nicht null sein.'));
     }
@@ -232,6 +232,9 @@ export class CourseService {
     if (!creatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !creatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
+    if (!thumbCreatorPhotoURL.includes(File.DEFAULT_FILE_URL) && !thumbCreatorPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
     const course = new Course();
     course.courseId = courseId;
     course.title = title;
@@ -239,6 +242,9 @@ export class CourseService {
     course.creatorName = creatorName;
     course.creatorUid = creatorUid;
     course.creatorPhotoURL = creatorPhotoURL;
+    course.thumbCreatorPhotoURL = thumbCreatorPhotoURL;
+    // for dummy purposes
+    course.favourite = false;
 
     return this.afDb.object(`/courses/${courseId}`).set(course) as Promise<void>;
   }
