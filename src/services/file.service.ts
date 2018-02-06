@@ -104,7 +104,7 @@ export class FileService {
           // get file type
           let fileType = nativePath.split('.').pop();
 
-          if (fileType === 'jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG') {
+          if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png' || fileType === 'JPG' || fileType === 'JPEG' || fileType === 'PNG') {
             let authUid = this.getAuthUid();
             let imgBlob;
 
@@ -127,10 +127,10 @@ export class FileService {
               await this.unsubscribeGetPhotoSubscription();
             });
 
-            if (fileType === 'jpg' || 'jpeg' || 'JPG' || 'JPEG') {
+            if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'JPG' || fileType === 'JPEG') {
               imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
             }
-            if (fileType === 'png' || 'PNG') {
+            if (fileType === 'png' || fileType === 'PNG') {
               imgBlob = new Blob([event.target.result], {type: 'image/png'});
             }
             let imageStore = this.fireStore.ref().child(`profiles/${authUid}/photo/${fileName}`);
@@ -254,14 +254,14 @@ export class FileService {
           // get file type
           let fileType = nativePath.split('.').pop();
 
-          if (fileType === 'jpg' || 'jpeg' || 'png' || 'JPG' || 'JPEG' || 'PNG') {
+          if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png' || fileType === 'JPG' || fileType === 'JPEG' || fileType === 'PNG') {
             let authUid = this.getAuthUid();
             let imgBlob;
 
-            if (fileType === 'jpg' || 'jpeg' || 'JPG' || 'JPEG') {
+            if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'JPG' || fileType === 'JPEG') {
               imgBlob = new Blob([event.target.result], {type: 'image/jpeg'});
             }
-            if (fileType === 'png' || 'PNG') {
+            if (fileType === 'png' || fileType === 'PNG') {
               imgBlob = new Blob([event.target.result], {type: 'image/png'});
             }
 
@@ -437,7 +437,7 @@ export class FileService {
           // get file type
           let fileType = nativePath.split('.').pop();
 
-          if (fileType === 'mp4' || 'MP4') {
+          if (fileType === 'mp4' || fileType === 'MP4') {
             let authUid = this.getAuthUid();
             let imgBlob;
 
