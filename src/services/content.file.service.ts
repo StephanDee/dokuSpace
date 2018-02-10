@@ -7,7 +7,7 @@ import { AuthService } from "./auth.service";
 import { ContentService } from "./content.service";
 
 /**
- * This class represents the File Service.
+ * This class represents the Content File Service.
  *
  * @author Stephan Dünkel
  * @copyright dokuSpace 2018

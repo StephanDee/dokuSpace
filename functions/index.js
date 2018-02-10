@@ -18,7 +18,7 @@ const ref = admin.database().ref();
 // storage modules
 const gcs = require('@google-cloud/storage')({keyFilename: 'dokuspace-67e76-firebase-adminsdk-6c17m-d90ed717c0.json'});
 // provides methods to execute external programms
-const spawn = require('child-process-promise').spawn; // Pass an additional cature option to buffer the result
+const spawn = require('child-process-promise').spawn; // Pass an additional capture option to buffer the result
 
 /**
  * Triggers onCreate Authentication events.
