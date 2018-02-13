@@ -1,14 +1,18 @@
 /**
+ * Enumeration Role, can only have the value of 'Student' or 'Teacher'.
+ */
+export enum Role {
+  STUDENT = 'Student',
+  TEACHER = 'Teacher'
+}
+
+/**
  * This class represents a Profile of a User.
  *
  * @author Stephan Dünkel
  * @copyright dokuSpace 2018
  */
 export class Profile {
-
-  // Role Attribute Values
-  public static readonly ROLE_STUDENT = 'Student';
-  public static readonly ROLE_TEACHER = 'Teacher';
 
   // Default PhotoURL
   public static readonly DEFAULT_PHOTOURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/defaultprofile_430x300.jpg?alt=media&token=a06a7924-cca4-4995-bee5-c8be08aa3815';
@@ -18,7 +22,7 @@ export class Profile {
   public email: string;
   public emailVerified: boolean;
   public superAdmin: boolean;
-  public role: string;
+  public role: Role;
 
   // User Image
   public photoId: string;
@@ -54,7 +58,7 @@ export class Profile {
               email: string = null,
               emailVerified: boolean = null,
               superAdmin: boolean = null,
-              role: string = null,
+              role: Role = null,
               photoId: string = null,
               photoName: string = null,
               photoURL: string = null,

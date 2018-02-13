@@ -13,7 +13,7 @@ import { ProfileService } from '../../services/profile.service';
 import { CourseService } from '../../services/course.service';
 import { ContentService } from '../../services/content.service';
 import { CourseFileService } from '../../services/course.file.service';
-import { Profile } from '../../models/profile';
+import { Profile, Role } from '../../models/profile';
 import { Course } from '../../models/course';
 import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { CourseContentListPage } from './course-contentlist';
@@ -36,7 +36,7 @@ export class CourseTabPage extends BasePage {
   // Attributes
   protected authUid: string;
   protected segment = 'allcourses';
-  protected profileRoleTeacher: string;
+  protected profileRoleTeacher: Role.TEACHER;
   protected profileData: FirebaseObjectObservable<Profile>;
   protected courseListData: FirebaseListObservable<Course[]>;
   protected myCourseListData: FirebaseListObservable<Course[]>;
@@ -78,7 +78,7 @@ export class CourseTabPage extends BasePage {
    */
   ngOnInit() {
     this.authUid = this.authService.getAuthUid();
-    this.profileRoleTeacher = Profile.ROLE_TEACHER;
+    this.profileRoleTeacher = Role.TEACHER;
     this.profileData = this.profileService.getProfile(this.authUid);
     this.courseListData = this.courseService.getCourses();
     this.myCourseListData = this.courseService.getMyCourses(this.authUid);

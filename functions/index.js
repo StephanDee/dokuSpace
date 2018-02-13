@@ -163,8 +163,8 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   const ref = admin.database().ref(); // not needed
   const file = bucket.file(filePath);
 
-  // This REGEX matches to the end of a string that contains a slash
-  // followed by zero or more or any character that is not a /slash
+  // The REGEX matches to the last string that contains a /slash
+  // followed by any character or number that is not a /slash
   const thumbFilePath = filePath.replace(/(\/)?([^\/]*)$/, '$1thumb_$2');
   // console.log('$1: ', RegExp.$1); // Path
   // console.log('$2: ', RegExp.$2); // Filename
@@ -256,16 +256,6 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
         titleImageName: fileName
       });
     }
-
-    // content videoUrl -> contents ONLY VIDEO
-    // if (filePath.includes('/profiles/') && filePath.includes('/contents/')) {
-    // return ref.child(`/content/${courseId}/${contentId}`).update({
-    // videoId: key,
-    // videoURL: fileUrl,
-    // thumbVideoURL: thumbFileUrl,
-    // videoName: fileName
-    // });
-    // }
 
     // if filePath matches nothing, should never happen, but just to be sure
     if (!filePath.includes('/courses/') && !filePath.includes('photo')) {

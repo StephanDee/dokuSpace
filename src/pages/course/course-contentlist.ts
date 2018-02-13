@@ -13,7 +13,7 @@ import { ContentPage } from '../content/content-page';
 import { ContentEditModalPage } from '../content/modals/content-edit-modal';
 import { ContentCreateModalPage } from '../content/modals/content-create-modal';
 import { Content } from '../../models/content';
-import { Profile } from '../../models/profile';
+import { Profile, Role } from '../../models/profile';
 
 /**
  * This class represents the Course Content List Page.
@@ -32,7 +32,7 @@ export class CourseContentListPage extends BasePage {
   protected authUid: string;
   protected creatorUid: string;
   protected courseId: string;
-  protected profileRoleTeacher: string;
+  protected profileRoleTeacher: Role.TEACHER;
   protected profileData: FirebaseObjectObservable<Profile>;
   protected contentListData: FirebaseListObservable<Content[]>;
 
@@ -70,7 +70,7 @@ export class CourseContentListPage extends BasePage {
     this.authUid = this.authService.getAuthUid();
     this.courseId = this.navParams.get('courseId');
     this.creatorUid = this.navParams.get('creatorUid');
-    this.profileRoleTeacher = Profile.ROLE_TEACHER;
+    this.profileRoleTeacher = Role.TEACHER;
     this.profileData = this.profileService.getProfile(this.authUid);
     this.contentListData = this.contentService.getContents(this.courseId);
   }

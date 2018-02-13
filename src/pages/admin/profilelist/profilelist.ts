@@ -7,7 +7,7 @@ import { BasePage } from '../../base/base';
 import { FirebaseListObservable } from 'angularfire2/database-deprecated';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
-import { Profile } from '../../../models/profile';
+import { Profile, Role } from '../../../models/profile';
 
 /**
  * This class represents the ProfileListPage.
@@ -65,23 +65,23 @@ export class ProfileListPage extends BasePage {
       subTitle: `Rolle: ${profile.role}`,
       buttons: [
         {
-          text: 'Rolle zu ' + Profile.ROLE_STUDENT + ' ändern',
+          text: 'Rolle zu ' + Role.STUDENT + ' ändern',
           handler: () => {
             try {
-              this.profileService.setProfileRole(profile.$key, Profile.ROLE_STUDENT);
+              this.profileService.setProfileRole(profile.$key, Role.STUDENT);
             } catch (err) {
-              this.showAlert("Content", "Das Löschen ist Fehlgeschlagen." + "_:" + err.message);
+              this.showAlert("Rolle", "Das Ändern der Rolle ist Fehlgeschlagen." + "_:" + err.message);
             }
             this.roleSuccessToast();
           }
         },
         {
-          text: 'Rolle zu ' + Profile.ROLE_TEACHER + ' ändern',
+          text: 'Rolle zu ' + Role.TEACHER + ' ändern',
           handler: () => {
             try {
-              this.profileService.setProfileRole(profile.$key, Profile.ROLE_TEACHER);
+              this.profileService.setProfileRole(profile.$key, Role.TEACHER);
             } catch (err) {
-              this.showAlert("Content", "Das Löschen ist Fehlgeschlagen." + "_:" + err.message);
+              this.showAlert("Rolle", "Das Ändern der Rolle ist Fehlgeschlagen." + "_:" + err.message);
             }
             this.roleSuccessToast();
           }

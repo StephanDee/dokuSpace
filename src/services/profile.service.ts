@@ -3,7 +3,7 @@ import {
   AngularFireDatabase, FirebaseListObservable,
   FirebaseObjectObservable
 } from 'angularfire2/database-deprecated';
-import { Profile } from '../models/profile';
+import { Profile, Role } from '../models/profile';
 import { File } from '../models/file';
 import { Subscription } from 'rxjs/Subscription';
 import { BasePage } from '../pages/base/base';
@@ -127,7 +127,7 @@ export class ProfileService {
     if (uid === null) {
       return Promise.reject(new Error('User ID darf nicht null sein.'));
     }
-    if (userRole !== Profile.ROLE_STUDENT && userRole !== Profile.ROLE_TEACHER) {
+    if (userRole !== Role.STUDENT && userRole !== Role.TEACHER) {
       return Promise.reject(new Error('Es gibt nur die Rolle Student und Teacher.'));
     }
     return this.afDb.object(`/profiles/${uid}/role`).set(userRole) as Promise<void>;

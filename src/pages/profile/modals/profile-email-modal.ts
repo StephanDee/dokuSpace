@@ -80,11 +80,13 @@ export class ProfileEmailModalPage extends BasePage {
       if (email !== this.profileEmailModalForm.value.currentEmail) {
         this.showAlert('Verifikation Fehlgeschlagen', 'Bitte geben Sie ihre E Mail Adresse ein.');
       } else {
-        await this.authService.login(this.profileEmailModalForm.value.currentEmail, this.profileEmailModalForm.value.password).then(async () => {
-          // get Auth Uid
-          const authUid = this.authService.getAuthUid();
+        if (email === this.profileEmailModalForm.value.email) {
+          this.showAlert('E Mail', 'Die eingegebene E Mail Adresse stimmt mit der Derzeitigen überein. Bitte geben Sie eine andere E Mail Adresse ein.');
+        } else {
+          await this.authService.login(this.profileEmailModalForm.value.currentEmail, this.profileEmailModalForm.value.password).then(async () => {
+            // get Auth Uid
+            const authUid = this.authService.getAuthUid();
 
-          if (currentAuth === authUid) {
             // Update Auth Email
             await this.authService.updateAuthEmail(this.profileEmailModalForm.value.email);
 
@@ -96,25 +98,14 @@ export class ProfileEmailModalPage extends BasePage {
                 this.dismiss();
               });
             this.loading.dismiss();
-          } else {
-            this.dismiss();
-            this.signOut();
-            this.showAlert('Verifikation Fehlgeschlagen', 'Bitte geben Sie nur ihre Daten zur Verifikation ein. Sie werden ausgeloggt.');
-          }
-        });
+          });
+        }
       }
     }).catch((err) => {
-      this.showAlert('Verifikation Fehlgeschlagen', 'Das Passwort wurde falsch eingegeben, versuchen Sie es erneuert.');
+      this.showAlert('Verifikation Fehlgeschlagen', 'Das Passwort wurde falsch eingegeben oder die gewünschte E Mail Adresse ist schon vorhanden, versuchen Sie es erneuert.');
       console.log(err);
     });
     await this.profileService.unsubscribeGetProfileSubscription();
-  }
-
-  /**
-   * Logout.
-   */
-  private signOut() {
-    this.authService.logout();
   }
 
   /**

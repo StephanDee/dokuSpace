@@ -14,7 +14,7 @@ import { CourseService } from '../../services/course.service';
 import { CourseEditModalPage } from '../course/modals/course-edit-modal';
 import { CourseContentListPage } from '../course/course-contentlist';
 import { Course } from '../../models/course';
-import { Profile } from '../../models/profile';
+import { Profile, Role } from '../../models/profile';
 
 /**
  * This class represents the Favourite Tab Page.
@@ -32,7 +32,7 @@ export class FavouriteTabPage extends BasePage {
 
   // Attributes
   protected authUid: string;
-  protected profileRoleTeacher: string;
+  protected profileRoleTeacher: Role.TEACHER;
   protected profileData: FirebaseObjectObservable<Profile>;
   protected favouriteCourseListData: FirebaseListObservable<Course[]>;
 
@@ -70,7 +70,7 @@ export class FavouriteTabPage extends BasePage {
    */
   ngOnInit() {
     this.authUid = this.authService.getAuthUid();
-    this.profileRoleTeacher = Profile.ROLE_TEACHER;
+    this.profileRoleTeacher = Role.TEACHER;
     this.profileData = this.profileService.getProfile(this.authUid);
     this.favouriteCourseListData = this.courseService.getMyFavouriteCourses();
   }
