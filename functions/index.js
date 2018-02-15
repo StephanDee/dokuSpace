@@ -155,9 +155,9 @@ exports.updateCourseCreatorThumbPhotoURL = functions.database
 exports.generateThumbnail = functions.storage.object().onChange(event => {
   // file data
   const object = event.data; // The Storage object.
-  const filePath = object.name; // File path in the bucket.
+  const filePath = object.name; // File Path in the bucket.
   const fileName = filePath.split('/').pop();
-  const fileBucket = object.bucket; // The Storage bucket that contains the file.
+  const fileBucket = object.bucket; // The Storage Bucket that contains the File.
   const bucket = gcs.bucket(fileBucket);
   const tempFilePath = `/tmp/${fileName}`;
   const ref = admin.database().ref(); // not needed
@@ -169,7 +169,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   // console.log('$1: ', RegExp.$1); // Path
   // console.log('$2: ', RegExp.$2); // Filename
 
-  // data output
+  // Data Output
   console.log('filePath: ', filePath);
 
   // IMPORTANT: check that thumbnails exist, to stop infinite loops
@@ -178,28 +178,28 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     return;
   }
 
-  // only images will be converted
+  // only Images will be converted
   if (!object.contentType.startsWith('image/')) {
     console.log('This is not an image.');
     return;
   }
 
-  // deletion events should be ignored
+  // Deletion Events should be ignored
   if (object.resourceState === 'not_exists') {
     console.log('This is a deletion event.');
     return;
   }
 
-  // download the image
+  // download the Image
   return bucket.file(filePath).download({
     destination: tempFilePath
   }).then(() => {
-    // resize the image
+    // resize the Image
     console.log('Image downloaded locally to', tempFilePath);
     // executes the imagemagick convert cli
     return spawn('convert', [tempFilePath, '-thumbnail', '600x340>', tempFilePath]);
   }).then(() => {
-    // write converted image to storage
+    // write Converted Image to Storage
     console.log('Thumbnail created at', tempFilePath);
     return bucket.upload(tempFilePath, {
       destination: thumbFilePath
@@ -210,9 +210,9 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     const thumbFile = bucket.file(thumbFilePath);
     const config = {
       action: 'read',
-      expires: '01-01-2500' // should expire somewhere far in the future.
+      expires: '01-01-2500' // should expire somewhere far in the future
     };
-    return Promise.all([ // returns an array of promisses
+    return Promise.all([ // returns an array of Promisses
       thumbFile.getSignedUrl(config),
       file.getSignedUrl(config)
     ]);
