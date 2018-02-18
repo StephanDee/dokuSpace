@@ -55,7 +55,7 @@ export class CourseFileService extends BasePage {
    */
   public chooseAndUploadCourseTitleImage(courseId: string, title: string, description: string, creatorName: string, creatorUid: string, creatorPhotoURL: string, thumbCreatorPhotoURL: string): Promise<void> {
     return this.fileChooser.open().then((url) => {
-      (<any>window).FilePath.resolveNativePath(url, (result) => {
+      (<any>window).FilePath.resolveNativePath(url, (result) => { // FilePath must be the Type of <any>
         let nativePath: any;
         nativePath = result;
         this.uploadCourseTitleImage(nativePath, courseId, title, description, creatorName, creatorUid, creatorPhotoURL, thumbCreatorPhotoURL);
