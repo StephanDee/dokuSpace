@@ -30,8 +30,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { FileChooser } from '@ionic-native/file-chooser';
-import { FilePath } from '@ionic-native/file-path';
-import { File } from '@ionic-native/file';
 
 /**
  * This is the Module of the App.
@@ -92,8 +90,6 @@ import { File } from '@ionic-native/file';
     StatusBar,
     SplashScreen,
     FileChooser,
-    FilePath,
-    File,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
