@@ -27,9 +27,9 @@ export class BasePage implements OnInit {
    * @param {AlertController} alertCtrl The Alert Controller
    * @param {LoadingController} loadingCtrl The Loading Controller
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController) {
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController) {
   }
 
   /**

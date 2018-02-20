@@ -51,9 +51,9 @@ export class FavouriteTabPage extends BasePage {
    * @param {ContentFileService} contentFileService The Content File Service, provides Methods for Content Files
    * @param {ActionSheetController} actionSheetCtrl The actionSheet Controller
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected modalCtrl: ModalController,
               private authService: AuthService,
               private profileService: ProfileService,

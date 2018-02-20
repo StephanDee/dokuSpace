@@ -30,9 +30,9 @@ export class SignUpPage extends BasePage {
    * @param {FormBuilder} formBuilder The Form Builder, for Form Validation
    * @param {AuthService} authService The Auth Controller, provides Methods for the authenticated User
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
               protected formBuilder: FormBuilder,
               private authService: AuthService) {

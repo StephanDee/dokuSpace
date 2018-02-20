@@ -33,9 +33,9 @@ export class ProfileNameModalPage extends BasePage {
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,

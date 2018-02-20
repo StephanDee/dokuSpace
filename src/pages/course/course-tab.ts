@@ -57,9 +57,9 @@ export class CourseTabPage extends BasePage {
    * @param {ActionSheetController} actionSheetCtrl The actionSheet Controller
    * @param {ContentFileService} contentFileService The Content File Service, provides Methods for Content Files
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected menuCtrl: MenuController,
               protected modalCtrl: ModalController,
               private authService: AuthService,
@@ -107,9 +107,6 @@ export class CourseTabPage extends BasePage {
           handler: async () => {
             // Delete current CourseItem and its Contents
 
-            // course storage
-            await this.courseFileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
-
             // delete all contents of the course
             await this.contentService.getContentsSubscription(course.$key).then(async (data) => {
               for (let ids of data) {
@@ -128,8 +125,10 @@ export class CourseTabPage extends BasePage {
               console.log(err);
             });
 
-            // course database
             try {
+              // course storage
+              await this.courseFileService.deleteCourseTitleImage(this.authUid, course.$key, course.titleImageName);
+              // course database
               await this.courseListData.remove(course.$key);
             } catch(err) {
               this.showAlert('Kurs', 'Ein Fehler ist aufgetreten: ' + err.message )

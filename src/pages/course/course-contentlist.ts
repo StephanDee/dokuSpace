@@ -50,9 +50,9 @@ export class CourseContentListPage extends BasePage {
    * @param {ContentService} contentService The Content Service, provides Methods for the Contents
    * @param {ContentFileService} contentFileService the Content File Service, provides Methods for the Content Files
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected modalCtrl: ModalController,
               protected actionSheetCtrl: ActionSheetController,
               protected navParams: NavParams,

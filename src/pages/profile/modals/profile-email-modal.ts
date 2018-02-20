@@ -31,9 +31,9 @@ export class ProfileEmailModalPage extends BasePage {
    * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,

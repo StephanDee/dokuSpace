@@ -39,9 +39,9 @@ export class ContentEditModalPage extends BasePage {
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
    * @param {ContentFileService} contentFileService The Content File Service, provides Methods for Content Files
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected viewCtrl: ViewController,
               protected navParams: NavParams,
               protected formBuilder: FormBuilder,

@@ -28,9 +28,9 @@ export class LoginPage extends BasePage {
    * @param {FormBuilder} formBuilder The Form Builder, for Form Validation
    * @param {AuthService} authService The Auth Service, provides Methods for the authenticated User
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected formBuilder: FormBuilder,
               private authService: AuthService) {
     super(navCtrl, alertCtrl, loadingCtrl);

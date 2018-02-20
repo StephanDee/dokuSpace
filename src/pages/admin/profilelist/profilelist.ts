@@ -36,9 +36,9 @@ export class ProfileListPage extends BasePage {
    * @param {ActionSheetController} actionSheetCtrl The ActionSheet Controller
    * @param {ProfileService} profileService The ProfileService, provides Methods for Profiles
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected toastCtrl: ToastController,
               protected actionSheetCtrl: ActionSheetController,
               private profileService: ProfileService) {

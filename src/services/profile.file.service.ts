@@ -30,9 +30,9 @@ export class ProfileFileService extends BasePage {
    * @param {photoService} photoService The PhotoService, provides Methods for the Photos
    * @param {FileChooser} fileChooser The File Chooser, imported ionic Module
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
               private authService: AuthService,
               private photoService: PhotoService,

@@ -31,9 +31,9 @@ export class CourseFileService extends BasePage {
    * @param {CourseService} courseService The CourseService, provides Methods for the Courses
    * @param {FileChooser} fileChooser The File Chooser, imported ionic Module
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
               private authService: AuthService,
               private courseService: CourseService,

@@ -36,9 +36,9 @@ export class CourseCreateModalPage extends BasePage {
    * @param {CourseService} courseService The Course Service, provides Methods for Courses
    * @param {CourseFileService} courseFileService The Course File Service, provides Methods for Course Files
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected viewCtrl: ViewController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,

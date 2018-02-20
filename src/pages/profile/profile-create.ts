@@ -33,9 +33,9 @@ export class ProfileCreatePage extends BasePage {
    * @param {AuthService} authService The Auth Service, provides Methods for authenticated Users
    * @param {ProfileService} profileService The Profile Service, provides Methods for Profiles
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected formBuilder: FormBuilder,
               private authService: AuthService,
               private profileService: ProfileService) {

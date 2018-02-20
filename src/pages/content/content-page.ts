@@ -33,9 +33,9 @@ export class ContentPage extends BasePage {
    * @param {NavParams} navParams The Navigation Params from the other Page
    * @param {ContentService} contentService The Content Service, provides Methods for Contents
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected navParams: NavParams,
               private contentService: ContentService) {
     super(navCtrl, alertCtrl, loadingCtrl);

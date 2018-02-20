@@ -48,9 +48,9 @@ export class ProfileTabPage extends BasePage {
    * @param {PhotoService} photoService The Photo Service, provides Methods for the Photos
    * @param {CourseService} courseService The Course Service, provides Methods for the Courses
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               protected menuCtrl: MenuController,
               protected modalCtrl: ModalController,
               private authService: AuthService,
@@ -90,8 +90,8 @@ export class ProfileTabPage extends BasePage {
       let photoId = data.photoId;
       let photoName = data.photoName;
 
-      // delete profileImage in Cloud Storage
       if (photoName !== undefined && photoId !== undefined) {
+        // delete profileImage in Cloud Storage
         this.profileFileService.deleteProfileImage(authUid, photoName);
 
         // update creatorPhotoURL for courses, when user deleted photoURL and set to default PhotoURL

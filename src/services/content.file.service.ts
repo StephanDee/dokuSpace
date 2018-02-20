@@ -30,9 +30,9 @@ export class ContentFileService extends BasePage {
    * @param {ContentService} contentService The ContentService, provides Methods for the Contents
    * @param {FileChooser} fileChooser The File Chooser, imported ionic Module
    */
-  constructor(public navCtrl: NavController,
-              public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController,
+  constructor(protected navCtrl: NavController,
+              protected alertCtrl: AlertController,
+              protected loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
               private authService: AuthService,
               private contentService: ContentService,
