@@ -84,6 +84,7 @@ export class CourseEditModalPage extends BasePage {
    */
   protected chooseAndUploadNewTitleImage() {
     this.courseFileService.chooseAndUploadCourseTitleImage(this.courseId, null, null, null, null, null, null);
+    this.dismiss();
   }
 
   /**

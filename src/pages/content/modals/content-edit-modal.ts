@@ -86,6 +86,7 @@ export class ContentEditModalPage extends BasePage {
    */
   protected chooseAndUploadNewVideo() {
     this.contentFileService.chooseAndUploadContentVideo(this.courseId, this.contentId, null, null);
+    this.dismiss();
   }
 
   /**

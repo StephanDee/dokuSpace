@@ -175,24 +175,6 @@ export class ProfileService {
     return this.afDb.object(`/profiles/${uid}/photoName`).remove() as Promise<void>;
   }
 
-  // not used here. @injectable file.service.ts uses these methods.
-  /**
-   * Set Profile Photo Name.
-   *
-   * @param {string} uid The authencicated User ID
-   * @param {string} userPhotoName The Photo Name
-   * @returns {Promise<void>}
-   */
-  public setProfilePhotoName(uid: string, userPhotoName: string): Promise<void> {
-    if (uid === null) {
-      return Promise.reject(new Error('User ID darf nicht null sein.'));
-    }
-    if (!userPhotoName.includes('.jpg' || '.JPG' || '.jpeg' || '.JPEG' || '.png' || '.PNG')) {
-      return Promise.reject(new Error('Daten dürfen nur im jpg/jpeg oder png Format hochgeladen werden.'));
-    }
-    return this.afDb.object(`/profiles/${uid}/photoName`).set(userPhotoName) as Promise<void>;
-  }
-
   // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
   public setProfilePhotoURL(uid: string, userPhotoURL: string): Promise<void> {
     if (uid === null) {
@@ -202,6 +184,17 @@ export class ProfileService {
       return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
     }
     return this.afDb.object(`/profiles/${uid}/photoURL`).set(userPhotoURL) as Promise<void>;
+  }
+
+  // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
+  public setProfileThumbPhotoURL(uid: string, userThumbPhotoURL: string): Promise<void> {
+    if (uid === null) {
+      return Promise.reject(new Error('User ID darf nicht null sein.'));
+    }
+    if (!userThumbPhotoURL.includes(File.DEFAULT_FILE_URL) && !userThumbPhotoURL.includes(File.DEFAULT_FILE_URL_DIRECT)) {
+      return Promise.reject(new Error('Daten dürfen nur auf die dokuSpace Cloud hochgeladen werden.'));
+    }
+    return this.afDb.object(`/profiles/${uid}/thumbPhotoURL`).set(userThumbPhotoURL) as Promise<void>;
   }
 
   // ONLY FOR TEST PURPOSES, DO NOT USE THIS METHOD IN PRODUCTION
