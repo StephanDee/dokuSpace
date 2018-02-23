@@ -160,7 +160,6 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   const fileBucket = object.bucket; // The Storage Bucket that contains the File.
   const bucket = gcs.bucket(fileBucket);
   const tempFilePath = `/tmp/${fileName}`;
-  const ref = admin.database().ref(); // not needed
   const file = bucket.file(filePath);
 
   // The REGEX matches to the last string that contains a /slash
@@ -196,8 +195,8 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   }).then(() => {
     // resize the Image
     console.log('Image downloaded locally to', tempFilePath);
-    // executes the imagemagick convert cli
-    return spawn('convert', [tempFilePath, '-thumbnail', '600x340>', tempFilePath]);
+    // execute imagemagick to convert the Image
+    return spawn('convert', [tempFilePath, '-thumbnail', '600x400>', tempFilePath]);
   }).then(() => {
     // write Converted Image to Storage
     console.log('Thumbnail created at', tempFilePath);
@@ -222,6 +221,8 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
     const originalResult = results[1];
     const thumbFileUrl = thumbResult[0];
     const fileUrl = originalResult[0];
+    // console.log('thumbresult:', results[0]); // Array
+    // console.log('thumbfile:', thumbFileUrl); // First Element in Array
 
     // get profileUid and courseId from filePath
     const profileUid = filePath.split('/')[1];
@@ -232,6 +233,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
 
     // profile photoURL -> profiles
     if (filePath.includes('profiles/') && filePath.includes('/photo/')) {
+      // console.log('Return photoURL from photo.');
       return ref.child(`/profiles/${profileUid}`).update({
           photoId: key,
           photoURL: fileUrl,
@@ -248,7 +250,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
 
     // course titleImageUrl -> courses
     if (filePath.includes('profiles/') && filePath.includes('/courses/')) {
-      console.log('Return TitleImage Info from Courses.');
+      // console.log('Return TitleImage Info from Courses.');
       return ref.child(`/courses/${courseId}`).update({
         titleImageId: key,
         titleImageUrl: fileUrl,
