@@ -225,43 +225,55 @@ describe('Client+Firebase AuthService and ProfileService Test', () => {
   it('should set Email, EmailVerified, PhotoUrl (ProfileService).',
     inject([AuthService, ProfileService], async (authService: AuthService, profileService: ProfileService) => {
 
+      // prevent timeout_interval error -> extend time
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
       let currentEmail = 't100@t100.t100';
-      let newEmail = 't101@t101.t101';
+      let newEmail = 't105@t105.t105';
       let newPhotoURL = 'https://firebasestorage.googleapis.com/v0/b/dokuspace-67e76.appspot.com/o/test.JPG';
 
       // login test account
       await authService.login('t100@t100.t100', 't100t100');
+      // if failed start from newEmail
+      // await authService.login('t105@t105.t105', 't100t100');
 
       // get authUid
       let authUid = await authService.getAuthUid();
 
+      await authService.updateAuthEmail(newEmail);
       await profileService.setProfileEmail(authUid, newEmail);
       await profileService.setProfileEmailVerified(authUid, true);
       await profileService.setProfilePhotoURL(authUid, newPhotoURL);
+      await profileService.setProfileThumbPhotoURL(authUid, newPhotoURL);
 
       // Check database entry values of the User
       await profileService.getProfileSubscription(authUid).then((data) => {
         let email = data.email;
         let emailVerified = data.emailVerified;
         let photoURL = data.photoURL;
+        let thumbPhotoURL = data.thumbPhotoURL;
         expect(email).toBe(newEmail);
         expect(emailVerified).toBeTruthy();
         expect(photoURL).toBe(newPhotoURL);
+        expect(thumbPhotoURL).toBe(newPhotoURL);
       });
       await profileService.unsubscribeGetProfileSubscription();
 
       // set all back to default
+      await authService.updateAuthEmail(currentEmail);
       await profileService.setProfileEmail(authUid, currentEmail);
       await profileService.setProfileEmailVerified(authUid, false);
-      await profileService.updateProfilePhotoURLToDefault(authUid);
+      await profileService.updateProfilePhotoURLToDefault(authUid); // updates both thumbPhotoUrl and photoUrl
       // and check
       await profileService.getProfileSubscription(authUid).then((data) => {
         let email = data.email;
         let emailVerified = data.emailVerified;
         let photoURL = data.photoURL;
+        let thumbPhotoUrl = data.thumbPhotoURL;
         expect(email).toBe(currentEmail);
         expect(emailVerified).toBeFalsy();
         expect(photoURL).toBe(Profile.DEFAULT_PHOTOURL);
+        expect(thumbPhotoUrl).toBe(Profile.DEFAULT_PHOTOURL);
       });
       await profileService.unsubscribeGetProfileSubscription();
 
@@ -329,7 +341,7 @@ describe('Client+Firebase CourseServiceTest', () => {
         expect(creatorNameData).toBe(creatorName);
         expect(creatorUidData).toBe(creatorUid);
         expect(creatorPhotoURLData).toBe(creatorPhotoURL);
-        expect(thumbCreatorPhotoURLData).toBe(thumbCreatorPhotoURLData);
+        expect(thumbCreatorPhotoURLData).toBe(thumbCreatorPhotoURL);
       });
       await courseService.unsubscribeGetCourseSubscription();
 
@@ -347,6 +359,7 @@ describe('Client+Firebase CourseServiceTest', () => {
         expect(titleData).toBe(newTitle);
         expect(descriptionData).toBe(newDescription);
       });
+      await courseService.unsubscribeGetCourseSubscription();
 
       // delete course
       await courseService.deleteCourse(courseId);
@@ -437,7 +450,7 @@ describe('Client+Firebase ContentServiceTest', () => {
       // edit content
       await contentService.updateContentTitleAndDescription(courseId, contentId, newTitle, newDescription);
 
-      await contentService.getContentSubscription(courseId, contentId).then( (data) => {
+      await contentService.getContentSubscription(courseId, contentId).then((data) => {
         let titleData = data.title;
         let descriptionData = data.description;
         expect(titleData).toBe(newTitle);
